@@ -29,6 +29,8 @@ Vetowall doesn't issue tokens or hold reserves. It sits between whatever signs (
 | `programs/vetowall` | The control program (Anchor) |
 | `docs/SPEC.md` | The v2 spec shared by the program, the issuer console and the guardian |
 | `programs/mock_vault` | A small lending vault used to replay the Drift attack, with and without Vetowall |
+| `idl/` | Generated IDLs for both programs |
+| `docs/SPEC.md` | The v2 contract shared by the program, console and guardian |
 
 ## Build and test
 
@@ -36,8 +38,10 @@ Requires Agave CLI 4.3 and Anchor CLI 1.2.
 
 ```sh
 anchor build --arch v0   # SBPF v0 loads on every cluster and in LiteSVM
-cargo test -p vetowall --test drift_replay
+cargo test -p vetowall   # drift_replay + issuer
 ```
+
+The generated IDLs are committed in `idl/` for the console and the guardian. `docs/SPEC.md` is the v2 contract (issuer control plane).
 
 `programs/vetowall/tests/drift_replay.rs` runs the attack in LiteSVM with the real timelocks (48h, 72h, 7 days), skipping the clock forward:
 
@@ -51,6 +55,20 @@ cargo test -p vetowall --test drift_replay
 | `guardian_can_pause_but_nothing_else` | The guardian can pause instantly, but can't unpause or change limits |
 | `config_changes_take_the_max_timelock_and_the_guardian_cannot_block_its_rotation` | Rotating the guardian takes 7 days and the guardian can't veto it |
 | `only_the_proposer_queues_and_only_the_authority_signs` | Forged proposers, foreign signers and swapped policy accounts are rejected |
+
+`programs/vetowall/tests/issuer.rs` runs a stablecoin issuer on a real Token-2022 mint (with the Pausable extension) whose mint, freeze and pause authorities are Vetowall's PDA:
+
+| Test | What it shows |
+|---|---|
+| `mint_within_cap_runs_instantly` | A mint inside the daily cap runs through `execute_now` with proposer + approver, and is charged to the window. Leaving out the reserve account fails |
+| `over_cap_mint_waits_out_the_timelock` | Over the cap, `execute_now` fails with `OverCap`; the same mint queued as `Params` executes after 48h |
+| `mint_above_attested_reserves_fails_on_both_paths` | Supply + amount above the attested reserves fails with `OverReserves` in the fast lane and at `execute` |
+| `stale_attestation_is_refused` | An attestation older than its max age fails with `StaleReserve` until re-attested |
+| `cap_window_resets_after_a_day` | The cap stays spent until the 24h window ends, then refills |
+| `missing_approver_signature_fails` | Without the approver (or with the wrong one), `queue` and `execute_now` fail with `NotApprover` |
+| `only_the_attestor_can_attest` | The admin, proposer or an attacker can't attest reserves |
+| `freeze_goes_through_the_params_timelock` | `FreezeAccount` has no fast lane; queued, it freezes the account after 48h |
+| `pausable_sub_instructions_resolve_to_their_own_policies` | Pause `[44, 1]` and Resume `[44, 2]` share a first byte but hit separate policies: the guardian pauses instantly, Resume takes 48h |
 
 ## License
 
