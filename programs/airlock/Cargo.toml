@@ -1,7 +1,7 @@
 [package]
 name = "airlock"
 version = "0.1.0"
-description = "Created with Anchor"
+description = "Onchain firewall between a protocol multisig and its admin instructions"
 edition.workspace = true
 rust-version.workspace = true
 
@@ -21,7 +21,8 @@ custom-panic = []
 
 
 [dependencies]
-anchor-lang = "1.2.0"
+anchor-lang = { version = "1.2.0", features = ["init-if-needed"] }
+solana-instructions-sysvar = "3.0.1"
 
 [dev-dependencies]
 litesvm = "0.10.0"
