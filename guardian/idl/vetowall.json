@@ -1,0 +1,831 @@
+{
+  "address": "G8LSBa3y5XqY5fK4R6NTK84oPru3W3hsNzRwjunLWedr",
+  "metadata": {
+    "name": "vetowall",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Onchain firewall between a protocol multisig and its admin instructions"
+  },
+  "instructions": [
+    {
+      "name": "execute",
+      "discriminator": [
+        130,
+        221,
+        242,
+        154,
+        13,
+        193,
+        189,
+        29
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "relations": [
+            "proposal"
+          ]
+        },
+        {
+          "name": "proposal",
+          "writable": true
+        },
+        {
+          "name": "instructions",
+          "address": "Sysvar1nstructions1111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "guardian_execute",
+      "discriminator": [
+        240,
+        104,
+        204,
+        247,
+        205,
+        168,
+        209,
+        108
+      ],
+      "accounts": [
+        {
+          "name": "config"
+        },
+        {
+          "name": "guardian",
+          "signer": true
+        },
+        {
+          "name": "policy"
+        },
+        {
+          "name": "instructions",
+          "address": "Sysvar1nstructions1111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "target_program",
+          "type": "pubkey"
+        },
+        {
+          "name": "accounts",
+          "type": {
+            "vec": {
+              "defined": {
+                "name": "StoredMeta"
+              }
+            }
+          }
+        },
+        {
+          "name": "data",
+          "type": "bytes"
+        }
+      ]
+    },
+    {
+      "name": "initialize",
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "proposer",
+          "type": "pubkey"
+        },
+        {
+          "name": "guardian",
+          "type": "pubkey"
+        },
+        {
+          "name": "delays",
+          "type": {
+            "array": [
+              "i64",
+              4
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "queue",
+      "discriminator": [
+        112,
+        64,
+        181,
+        10,
+        211,
+        85,
+        67,
+        206
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "writable": true
+        },
+        {
+          "name": "proposer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "proposal",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  112,
+                  111,
+                  115,
+                  97,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "config"
+              },
+              {
+                "kind": "account",
+                "path": "config.proposal_count",
+                "account": "Config"
+              }
+            ]
+          }
+        },
+        {
+          "name": "policy",
+          "docs": [
+            "may not exist yet, which means `Max`. Checked in `resolve_class`."
+          ]
+        },
+        {
+          "name": "instructions",
+          "address": "Sysvar1nstructions1111111111111111111111111"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "target_program",
+          "type": "pubkey"
+        },
+        {
+          "name": "accounts",
+          "type": {
+            "vec": {
+              "defined": {
+                "name": "StoredMeta"
+              }
+            }
+          }
+        },
+        {
+          "name": "data",
+          "type": "bytes"
+        }
+      ]
+    },
+    {
+      "name": "register",
+      "discriminator": [
+        211,
+        124,
+        67,
+        15,
+        211,
+        194,
+        178,
+        240
+      ],
+      "accounts": [
+        {
+          "name": "config"
+        },
+        {
+          "name": "governor",
+          "docs": [
+            "Pays for the policy account. After `seal` this is the authority PDA,",
+            "so it needs a little SOL."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "policy",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  108,
+                  105,
+                  99,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "config"
+              },
+              {
+                "kind": "arg",
+                "path": "target_program"
+              },
+              {
+                "kind": "arg",
+                "path": "discriminator"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "target_program",
+          "type": "pubkey"
+        },
+        {
+          "name": "discriminator",
+          "type": {
+            "array": [
+              "u8",
+              8
+            ]
+          }
+        },
+        {
+          "name": "class",
+          "type": {
+            "defined": {
+              "name": "ActionClass"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "seal",
+      "discriminator": [
+        102,
+        202,
+        171,
+        163,
+        27,
+        152,
+        105,
+        242
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "writable": true
+        },
+        {
+          "name": "admin",
+          "signer": true,
+          "relations": [
+            "config"
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "set_delays",
+      "discriminator": [
+        18,
+        56,
+        143,
+        125,
+        147,
+        15,
+        199,
+        108
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "writable": true
+        },
+        {
+          "name": "governor",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "delays",
+          "type": {
+            "array": [
+              "i64",
+              4
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "set_guardian",
+      "discriminator": [
+        147,
+        243,
+        50,
+        121,
+        154,
+        164,
+        50,
+        30
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "writable": true
+        },
+        {
+          "name": "governor",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "guardian",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "set_proposer",
+      "discriminator": [
+        239,
+        208,
+        161,
+        96,
+        112,
+        43,
+        227,
+        89
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "writable": true
+        },
+        {
+          "name": "governor",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "proposer",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "veto",
+      "discriminator": [
+        190,
+        152,
+        69,
+        226,
+        61,
+        150,
+        107,
+        215
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "relations": [
+            "proposal"
+          ]
+        },
+        {
+          "name": "guardian",
+          "signer": true
+        },
+        {
+          "name": "proposal",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "reason",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Config",
+      "discriminator": [
+        155,
+        12,
+        170,
+        224,
+        30,
+        250,
+        204,
+        130
+      ]
+    },
+    {
+      "name": "Policy",
+      "discriminator": [
+        222,
+        135,
+        7,
+        163,
+        235,
+        177,
+        33,
+        68
+      ]
+    },
+    {
+      "name": "Proposal",
+      "discriminator": [
+        26,
+        94,
+        189,
+        187,
+        116,
+        136,
+        53,
+        33
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "NonceTxForbidden",
+      "msg": "Privileged instructions can't run in a durable-nonce transaction"
+    },
+    {
+      "code": 6001,
+      "name": "NotProposer",
+      "msg": "Signer is not the configured proposer"
+    },
+    {
+      "code": 6002,
+      "name": "NotGuardian",
+      "msg": "Signer is not the configured guardian"
+    },
+    {
+      "code": 6003,
+      "name": "NotGovernor",
+      "msg": "Signer can't change Vetowall's config"
+    },
+    {
+      "code": 6004,
+      "name": "NotSealed",
+      "msg": "Config must be sealed before proposals can be queued"
+    },
+    {
+      "code": 6005,
+      "name": "AlreadySealed",
+      "msg": "Config is already sealed"
+    },
+    {
+      "code": 6006,
+      "name": "TooEarly",
+      "msg": "Proposal's timelock hasn't expired"
+    },
+    {
+      "code": 6007,
+      "name": "NotQueued",
+      "msg": "Proposal is not queued"
+    },
+    {
+      "code": 6008,
+      "name": "TooManyAccounts",
+      "msg": "Instruction has too many accounts"
+    },
+    {
+      "code": 6009,
+      "name": "DataTooLarge",
+      "msg": "Instruction data is too large"
+    },
+    {
+      "code": 6010,
+      "name": "ForeignSigner",
+      "msg": "Only Vetowall's authority PDA may sign a stored instruction"
+    },
+    {
+      "code": 6011,
+      "name": "BadPolicyAccount",
+      "msg": "Policy account doesn't match the target instruction"
+    },
+    {
+      "code": 6012,
+      "name": "SelfPolicy",
+      "msg": "Vetowall's own instructions can't be given a policy"
+    },
+    {
+      "code": 6013,
+      "name": "GuardianCannotVetoGovernance",
+      "msg": "The guardian can't veto changes to Vetowall's own config"
+    },
+    {
+      "code": 6014,
+      "name": "NotSafeClass",
+      "msg": "The guardian may only run instructions registered as Safe"
+    },
+    {
+      "code": 6015,
+      "name": "BadDelays",
+      "msg": "Delays must be non-negative and non-decreasing by class"
+    }
+  ],
+  "types": [
+    {
+      "name": "ActionClass",
+      "docs": [
+        "How dangerous an admin instruction is. Each class has its own timelock."
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Safe"
+          },
+          {
+            "name": "Params"
+          },
+          {
+            "name": "Authority"
+          },
+          {
+            "name": "Max"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Config",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "docs": [
+              "Sets up policies until `seal`; has no power afterwards."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "proposer",
+            "docs": [
+              "The only key that may queue proposals, normally a Squads vault PDA."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "guardian",
+            "docs": [
+              "May veto proposals and run `Safe` instructions. Nothing else."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "delays",
+            "docs": [
+              "Timelock in seconds, indexed by `ActionClass`."
+            ],
+            "type": {
+              "array": [
+                "i64",
+                4
+              ]
+            }
+          },
+          {
+            "name": "sealed",
+            "type": "bool"
+          },
+          {
+            "name": "proposal_count",
+            "type": "u64"
+          },
+          {
+            "name": "authority_bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Policy",
+      "docs": [
+        "Maps one instruction of a target program to an action class."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "config",
+            "type": "pubkey"
+          },
+          {
+            "name": "target_program",
+            "type": "pubkey"
+          },
+          {
+            "name": "discriminator",
+            "type": {
+              "array": [
+                "u8",
+                8
+              ]
+            }
+          },
+          {
+            "name": "class",
+            "type": {
+              "defined": {
+                "name": "ActionClass"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Proposal",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "config",
+            "type": "pubkey"
+          },
+          {
+            "name": "id",
+            "type": "u64"
+          },
+          {
+            "name": "target_program",
+            "type": "pubkey"
+          },
+          {
+            "name": "accounts",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "StoredMeta"
+                }
+              }
+            }
+          },
+          {
+            "name": "data",
+            "type": "bytes"
+          },
+          {
+            "name": "class",
+            "type": {
+              "defined": {
+                "name": "ActionClass"
+              }
+            }
+          },
+          {
+            "name": "queued_at",
+            "type": "i64"
+          },
+          {
+            "name": "eta",
+            "type": "i64"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "ProposalStatus"
+              }
+            }
+          },
+          {
+            "name": "veto_reason",
+            "docs": [
+              "SHA-256 of the guardian's written explanation, kept in its audit log."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProposalStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Queued"
+          },
+          {
+            "name": "Executed"
+          },
+          {
+            "name": "Vetoed"
+          }
+        ]
+      }
+    },
+    {
+      "name": "StoredMeta",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "pubkey",
+            "type": "pubkey"
+          },
+          {
+            "name": "is_signer",
+            "type": "bool"
+          },
+          {
+            "name": "is_writable",
+            "type": "bool"
+          }
+        ]
+      }
+    }
+  ],
+  "constants": [
+    {
+      "name": "AUTHORITY_SEED",
+      "type": "bytes",
+      "value": "[97, 117, 116, 104, 111, 114, 105, 116, 121]"
+    },
+    {
+      "name": "POLICY_SEED",
+      "type": "bytes",
+      "value": "[112, 111, 108, 105, 99, 121]"
+    },
+    {
+      "name": "PROPOSAL_SEED",
+      "type": "bytes",
+      "value": "[112, 114, 111, 112, 111, 115, 97, 108]"
+    }
+  ]
+}
