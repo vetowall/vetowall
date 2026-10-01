@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { PublicKey, Transaction } from '@solana/web3.js';
 import type { Ctx } from '../App';
-import { appendLog, prepare, run, send } from '../chain';
-import { fmtAmount, fmtDuration, fmtShort, godKeys, type Action } from '../model';
+import { prepare, run, send } from '../chain';
+import { fmtAmount, fmtDuration, fmtShort, godKeys } from '../model';
 import { ata, mintToIx } from '../token';
 import { Addr, Card, Stat, TaskStatus, Timeline, short, useNow, useTask } from '../ui';
 import { attestIx, executeIx, executeNowIx, pda, queueIx } from '../vetowall';
@@ -21,7 +21,6 @@ interface Pending {
   tx: Transaction;
   lane: Lane;
   amount: number;
-  dest: string;
   approved: boolean;
 }
 
@@ -66,7 +65,7 @@ export default function Operate({ ctx }: { ctx: Ctx }) {
     const roles = { config, proposer: op, approver: keys.approver.publicKey };
     const outer = chosen === 'fast' ? await executeNowIx(roles, ix, reservePda) : await queueIx(roles, ix);
     const [tx] = await keys.operator.sign([await prepare(new Transaction().add(outer), op)]);
-    setPending({ tx, lane: chosen, amount, dest: dest.toBase58(), approved: false });
+    setPending({ tx, lane: chosen, amount, approved: false });
     return 'Proposed and signed by the maker. Waiting for the checker.';
   }
 
@@ -79,21 +78,13 @@ export default function Operate({ ctx }: { ctx: Ctx }) {
 
   async function submit() {
     if (!pending || !keys) return;
-    const record: Action = {
-      id: null, path: 'fast lane', action: 'Mint', subject: pending.dest, amount: pending.amount, class: 'Params',
-      status: 'executed', queuedAt: Math.floor(Date.now() / 1000), eta: Math.floor(Date.now() / 1000),
-      maker: keys.operator.publicKey.toBase58(), checker: keys.approver.publicKey.toBase58(),
-    };
     setPending(null);
     try {
-      const sig = await send(pending.tx);
-      if (pending.lane === 'fast') appendLog(d.config, { ...record, tx: sig });
-      await ctx.refresh();
+      // A refused fast-lane mint is sent anyway, so the refusal is recorded onchain.
+      await send(pending.tx, pending.lane === 'fast');
       return pending.lane === 'fast' ? `Minted ${fmtAmount(pending.amount)} ${d.symbol}.` : 'Queued. The countdown is in the timeline below.';
-    } catch (e) {
-      if (pending.lane === 'fast') appendLog(d.config, { ...record, status: 'refused', note: `Refused onchain: ${(e as Error).message}` });
+    } finally {
       await ctx.refresh();
-      throw e;
     }
   }
 

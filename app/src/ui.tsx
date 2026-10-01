@@ -1,7 +1,11 @@
 // Small shared pieces: addresses, status pills, countdowns, the timeline.
 import { useEffect, useState, type ReactNode } from 'react';
 import { explorer } from './chain';
-import { fmtAmount, fmtDuration, fmtShort, fmtTime, type Action, type Snapshot } from './model';
+import { fmtAmount, fmtDuration, fmtShort, fmtTime, type Action, type Path, type Snapshot } from './model';
+
+const PATH_LABELS: Record<Path, string> = {
+  'fast lane': 'Fast lane', timelock: 'Timelock', guardian: 'Guardian action', attestor: 'Reserve attestation', governance: 'Config change',
+};
 
 export function useNow() {
   const [now, setNow] = useState(() => Date.now() / 1000);
@@ -108,7 +112,7 @@ export function Timeline({
                 </strong>
               </div>
               <div className="tl-meta">
-                {a.id !== null ? `Proposal #${a.id}` : a.path === 'guardian' ? 'Guardian action' : 'Fast lane'} · {a.class} class ·{' '}
+                {a.id !== null ? `Proposal #${a.id}` : PATH_LABELS[a.path]} · {a.class && `${a.class} class · `}
                 {fmtTime(a.queuedAt)}
                 {a.subject && <> · <Addr value={a.subject} live={live} /></>}
               </div>

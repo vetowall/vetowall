@@ -2,10 +2,11 @@
 // keys), sending, and explorer links.
 import { Connection, Keypair, PublicKey, SendTransactionError, Transaction } from '@solana/web3.js';
 import { getWallets } from '@wallet-standard/app';
-import type { Action } from './model';
 import idl from './idl/vetowall.json';
 
-export const RPC_URL = import.meta.env.VITE_RPC_URL || 'https://api.devnet.solana.com';
+// `import.meta.env` is Vite's; scripts run under Node read the same variable from the process env.
+export const RPC_URL =
+  import.meta.env?.VITE_RPC_URL || (typeof process !== 'undefined' && process.env.VITE_RPC_URL) || 'https://api.devnet.solana.com';
 export const connection = new Connection(RPC_URL, 'confirmed');
 const CHAIN = 'solana:devnet';
 type Wallet = ReturnType<ReturnType<typeof getWallets>['get']>[number];
@@ -93,9 +94,13 @@ export async function prepare(tx: Transaction, feePayer: PublicKey) {
   return tx;
 }
 
-export async function send(tx: Transaction): Promise<string> {
+/**
+ * With `skipPreflight`, a transaction the program refuses still lands, so the
+ * refusal itself is an onchain record (it costs the fee).
+ */
+export async function send(tx: Transaction, skipPreflight = false): Promise<string> {
   try {
-    const sig = await connection.sendRawTransaction(tx.serialize());
+    const sig = await connection.sendRawTransaction(tx.serialize(), { skipPreflight });
     const res = await connection.confirmTransaction(sig, 'confirmed');
     if (res.value.err) throw new Error(`Transaction failed: ${JSON.stringify(res.value.err)}`);
     return sig;
@@ -121,34 +126,13 @@ export async function explain(e: unknown): Promise<string> {
   const named = text.match(/Error Code: (\w+)\. Error Number: \d+\. Error Message: ([^\n.]+)/);
   if (named) return `${named[1]}: ${named[2]}`;
   // Codes below 6000 come from the program Vetowall called (e.g. Token-2022), whose own log line says more.
-  const hex = text.match(/custom program error: 0x([0-9a-f]+)/i);
-  const err = hex && ERRORS.get(parseInt(hex[1], 16));
+  // A transaction sent with skipPreflight fails at confirmation, as {"Custom":<decimal>}.
+  const hex = text.match(/custom program error: 0x([0-9a-f]+)/i)?.[1];
+  const err = ERRORS.get(hex ? parseInt(hex, 16) : Number(text.match(/"Custom":(\d+)/)?.[1]));
   if (err) return `${err.name}: ${err.msg}`;
   if (/blockhash not found|block height exceeded/i.test(text)) return 'The signed transaction expired. Propose it again.';
   if (/insufficient (funds|lamports)|no record of a prior credit/i.test(text)) return 'Not enough devnet SOL for fees. Use the airdrop button or faucet.solana.com.';
   const said = logs.filter((l) => l.startsWith('Program log: ') && !/Instruction: |executing proposal/.test(l)).at(-1);
   if (said) return said.slice('Program log: '.length);
   return String((e as Error)?.message ?? e).split('\n')[0];
-}
-
-// --- Browser-local log of actions that leave no Proposal account ------------
-// ponytail: fast-lane and refused attempts are only remembered in this
-// browser; read them from transaction history once the program records them.
-
-const logKey = (config: string) => `vetowall.log.${config}`;
-
-export function sessionLog(config: string): Action[] {
-  try {
-    return JSON.parse(localStorage.getItem(logKey(config)) ?? '[]');
-  } catch {
-    return [];
-  }
-}
-
-export function appendLog(config: string, a: Action) {
-  try {
-    localStorage.setItem(logKey(config), JSON.stringify([...sessionLog(config), a]));
-  } catch {
-    /* not persisted */
-  }
 }

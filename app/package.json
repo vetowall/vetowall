@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "test": "node --test src/report.test.ts"
+    "test": "node --test src/report.test.ts src/records.test.ts"
   },
   "dependencies": {
     "@anchor-lang/core": "^1.2.0",

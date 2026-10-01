@@ -23,6 +23,7 @@ export interface Row {
   checker: string;
   waiting_period_hours: string;
   earliest_effective_utc: string;
+  executed_utc: string;
   outcome: string;
   independent_review: string;
   reserve_check: string;
@@ -42,6 +43,7 @@ export const COLUMNS: Column[] = [
   { key: 'checker', header: 'Checker', control: 'Internal controls: dual control (independent approver)' },
   { key: 'waiting_period_hours', header: 'Waiting period (h)', control: 'Risk management: review window before high-risk changes take effect' },
   { key: 'earliest_effective_utc', header: 'Earliest effective (UTC)', control: 'Information systems: enforced effective time' },
+  { key: 'executed_utc', header: 'Executed (UTC)', control: 'Information systems: time the change took effect, recorded onchain' },
   { key: 'outcome', header: 'Outcome', control: 'Internal audit: final state of the change' },
   { key: 'independent_review', header: 'Guardian review', control: 'Internal audit / incident response: independent veto and its recorded reason' },
   { key: 'reserve_check', header: 'Reserve check', control: 'Internal controls: issuance bounded by attested reserves' },
@@ -61,6 +63,12 @@ function reserveCheck(a: Action): string {
   return 'Within attested reserves';
 }
 
+function custody(a: Action, d: Snapshot['deployment']): string {
+  if (a.path === 'attestor') return `Attestor key ${a.maker ?? ''}`;
+  if (a.path === 'governance' && a.maker !== d.authority) return `Admin key ${a.maker ?? ''} (setup, before seal)`;
+  return `Authority PDA ${d.authority}`;
+}
+
 export function reportRows(s: Snapshot): Row[] {
   const d = s.deployment;
   return [...s.actions]
@@ -72,16 +80,17 @@ export function reportRows(s: Snapshot): Row[] {
       subject: a.subject ?? d.mint,
       amount: a.amount !== undefined ? `${a.amount} ${d.symbol}` : '',
       path: a.path,
-      risk_class: a.class,
+      risk_class: a.class ?? 'n/a',
       maker: a.maker ?? '',
       checker: a.checker ?? (a.path === 'guardian' ? 'n/a (Safe action, guardian only)' : ''),
       waiting_period_hours: String(Math.round((a.eta - a.queuedAt) / 36) / 100),
       earliest_effective_utc: iso(a.eta),
+      executed_utc: a.executedAt ? iso(a.executedAt) : '',
       outcome: a.status,
       independent_review:
         a.status === 'vetoed' ? `Vetoed; reason sha256 ${a.vetoReason ?? ''}` : a.path === 'timelock' ? 'No veto' : 'n/a',
       reserve_check: reserveCheck(a),
-      key_custody: `Authority PDA ${d.authority}`,
+      key_custody: custody(a, d),
       evidence: a.address ? explorer('address', a.address) : a.tx ? explorer('tx', a.tx) : '',
     }));
 }

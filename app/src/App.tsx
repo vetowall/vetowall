@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
-import { burner, connection, connectWallet, keypairSigner, sessionLog, type Signer } from './chain';
+import { burner, connection, connectWallet, keypairSigner, type Signer } from './chain';
 import { demoSnapshot } from './demo';
 import type { Snapshot } from './model';
 import { isDeployed, loadSnapshot } from './vetowall';
@@ -83,9 +83,7 @@ export default function App() {
         new PublicKey(deployment.config),
         deployment.mint ? new PublicKey(deployment.mint) : undefined,
       );
-      if (!live) return setSnap(demoSnapshot);
-      live.actions.push(...sessionLog(deployment.config));
-      setSnap(live);
+      setSnap(live ?? demoSnapshot);
     } catch (e) {
       console.warn('Live data unavailable, showing demo data', e);
       setSnap(demoSnapshot);

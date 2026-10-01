@@ -3,10 +3,10 @@
 
 export type ActionClass = 'Safe' | 'Params' | 'Authority' | 'Max';
 export type Status = 'queued' | 'executed' | 'vetoed' | 'refused';
-export type Path = 'fast lane' | 'timelock' | 'guardian';
+export type Path = 'fast lane' | 'timelock' | 'guardian' | 'attestor' | 'governance';
 
 export interface Action {
-  /** Proposal id; null when no Proposal account exists (fast lane, refused). */
+  /** Proposal id; null when no Proposal account exists (every path but the timelock). */
   id: number | null;
   /** Proposal PDA, if any. */
   address?: string;
@@ -17,11 +17,14 @@ export interface Action {
   subject?: string;
   /** Token amount in whole units. */
   amount?: number;
-  class: ActionClass;
+  /** Unset for reserve and setup records, which aren't routed through a policy. */
+  class?: ActionClass;
   status: Status;
-  /** Unix seconds. */
+  /** Unix seconds: when it was requested (queued, or the record's own time). */
   queuedAt: number;
   eta: number;
+  /** Unix seconds, from the Proposal's `executed_at` or the record's timestamp. */
+  executedAt?: number;
   maker?: string;
   checker?: string;
   /** Hex SHA-256 of the guardian's explanation. */

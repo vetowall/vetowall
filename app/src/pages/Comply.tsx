@@ -75,7 +75,7 @@ export default function Comply({ ctx }: { ctx: Ctx }) {
             <dt>Waiting</dt><dd>{count('queued')}</dd>
             <dt>Vetoed</dt><dd>{count('vetoed')}</dd>
             <dt>Refused</dt><dd>{count('refused')}</dd>
-            <dt>Source</dt><dd>{snap.source === 'live' ? 'Proposal accounts on devnet' : 'Demo data'}</dd>
+            <dt>Source</dt><dd>{snap.source === 'live' ? 'Onchain change records on devnet' : 'Demo data'}</dd>
           </dl>
           <div className="actions">
             <button className="btn btn-primary" onClick={() => download(`vetowall-change-control-${stamp}.csv`, 'text/csv', toCSV(rows))}>Download CSV</button>

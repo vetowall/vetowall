@@ -1,11 +1,14 @@
 // Every call into the Vetowall program goes through this module. It is the
 // only file that reads the IDL, so swapping in the generated v2 IDL means
 // checking the account and argument names here and nowhere else.
-import { BN, Program, type Idl } from '@anchor-lang/core';
-import { PublicKey, SystemProgram, type AccountMeta, type TransactionInstruction } from '@solana/web3.js';
+import { BN, EventParser, Program, type BorshInstructionCoder, type Idl } from '@anchor-lang/core';
+import {
+  PublicKey, SystemProgram, type AccountMeta, type TransactionInstruction, type VersionedTransactionResponse,
+} from '@solana/web3.js';
 import idl from './idl/vetowall.json';
 import { connection } from './chain';
 import { CLASSES, type Action, type ActionClass, type Snapshot } from './model';
+import { describe, errorName, recordToAction, refusedAction, type DecodedRecord, type Routed } from './records';
 import { TOKEN_2022, readMint } from './token';
 
 // Anchor only needs a connection to build instructions and decode accounts;
@@ -207,25 +210,69 @@ export async function isDeployed() {
   return !!info?.executable;
 }
 
-const TOKEN_LABELS: Record<number, string> = {
-  6: 'Change authority', 7: 'Mint', 8: 'Burn (permanent delegate)', 10: 'Freeze account',
-  11: 'Thaw account', 14: 'Mint', 15: 'Burn (permanent delegate)',
-};
-
-function describe(target: PublicKey, data: Uint8Array, accounts: { pubkey: PublicKey }[], decimals: number) {
-  if (target.equals(PROGRAM_ID)) return { action: 'Vetowall config change' };
-  if (!target.equals(TOKEN_2022)) return { action: `Call to ${target.toBase58().slice(0, 4)}…` };
-  if (data[0] === 44) return { action: data[1] === 1 ? 'Pause transfers' : 'Resume transfers' };
-  const hasAmount = [7, 8, 14, 15].includes(data[0]) && data.length >= 9;
-  return {
-    action: TOKEN_LABELS[data[0]] ?? `Token-2022 instruction ${data[0]}`,
-    subject: accounts[data[0] === 7 || data[0] === 14 ? 1 : 0]?.pubkey.toBase58(),
-    amount: hasAmount ? Number(Buffer.from(data).readBigUInt64LE(1)) / 10 ** decimals : undefined,
-  };
-}
-
 const variant = (e: object) => Object.keys(e)[0];
 const hex = (b: number[]) => b.map((x) => x.toString(16).padStart(2, '0')).join('');
+
+// --- Change records from transaction history ----------------------------------
+
+const parser = new EventParser(PROGRAM_ID, program.coder);
+const ixCoder = program.coder.instruction as BorshInstructionCoder;
+// Confirmed transactions never change, so each is fetched and mapped once.
+// ponytail: one entry per signature for the page's lifetime; fine for a console.
+const seen = new Map<string, Action[]>();
+
+/** Fast-lane, guardian, reserve and setup actions, and refused fast-lane attempts, read from chain. */
+async function history(addresses: PublicKey[], decimals: number): Promise<Action[]> {
+  // ponytail: newest 1000 signatures per address; page with `before` if a config outgrows that.
+  const lists = await Promise.all(addresses.map((a) => connection.getSignaturesForAddress(a, { limit: 1000 })));
+  const sigs = [...new Set(lists.flat().map((s) => s.signature))];
+  const fresh = sigs.filter((s) => !seen.has(s));
+  for (let i = 0; i < fresh.length; i += 50) {
+    const chunk = fresh.slice(i, i + 50);
+    const txs = await connection.getTransactions(chunk, { maxSupportedTransactionVersion: 0, commitment: 'confirmed' });
+    txs.forEach((tx, j) => tx && seen.set(chunk[j], actionsOf(tx, chunk[j], decimals)));
+  }
+  return sigs.flatMap((s) => seen.get(s) ?? []);
+}
+
+/** Vetowall's top-level instructions in a transaction, decoded with the IDL. */
+function vetowallIxs(tx: VersionedTransactionResponse) {
+  const msg = tx.transaction.message;
+  const keys = msg.getAccountKeys({ accountKeysFromLookups: tx.meta?.loadedAddresses });
+  return msg.compiledInstructions
+    .filter((ix) => keys.get(ix.programIdIndex)?.equals(PROGRAM_ID))
+    .map((ix) => ({
+      decoded: ixCoder.decode(Buffer.from(ix.data)),
+      keys: ix.accountKeyIndexes.map((k) => keys.get(k)!.toBase58()),
+    }));
+}
+
+function actionsOf(tx: VersionedTransactionResponse, sig: string, decimals: number): Action[] {
+  const logs = tx.meta?.logMessages ?? [];
+  const ixs = vetowallIxs(tx);
+  if (tx.meta?.err) {
+    // Failed transactions emit nothing; a refused fast-lane attempt is still evidence.
+    const now = ixs.find((i) => i.decoded?.name === 'executeNow');
+    if (!now) return [];
+    const [, proposer, approver] = now.keys;
+    const args = now.decoded!.data as Routed & { targetProgram: PublicKey };
+    return [refusedAction(args, { proposer, approver: approver === PROGRAM_ID.toBase58() ? undefined : approver },
+      errorName(logs), tx.blockTime ?? 0, sig, decimals)];
+  }
+  // Routed records pair, in order, with the routed instructions that produced them.
+  const routed = ixs
+    .filter((i) => i.decoded?.name === 'executeNow' || i.decoded?.name === 'guardianExecute')
+    .map((i) => i.decoded!.data as Routed);
+  const out: Action[] = [];
+  for (const e of parser.parseLogs(logs)) {
+    if (e.name !== 'changeRecord') continue;
+    const r = e.data as DecodedRecord;
+    const k = Object.keys(r.kind)[0];
+    const a = recordToAction(r, sig, decimals, k === 'executedNow' || k === 'guardianExecuted' ? routed.shift() : undefined);
+    if (a) out.push(a);
+  }
+  return out;
+}
 
 /**
  * Reads a live deployment. Without a mint, uses the mint of the config's
@@ -237,10 +284,11 @@ export async function loadSnapshot(config: PublicKey, mintHint?: PublicKey): Pro
   const mint: PublicKey | undefined =
     mintHint ?? (await accounts.reserve.all([{ memcmp: { offset: 8, bytes: config.toBase58() } }]))[0]?.account.mint;
   if (!mint) return null;
+  const reservePda = pda.reserve(config, mint);
   const [proposals, m, reserve, policy] = await Promise.all([
     accounts.proposal.all([{ memcmp: { offset: 8, bytes: config.toBase58() } }]),
     readMint(connection, mint),
-    accounts.reserve.fetchNullable(pda.reserve(config, mint)),
+    accounts.reserve.fetchNullable(reservePda),
     accounts.policy.fetchNullable(pda.policy(config, TOKEN_2022, discOf(Uint8Array.of(7)))),
   ]);
   const unit = 10 ** m.decimals;
@@ -253,16 +301,19 @@ export async function loadSnapshot(config: PublicKey, mintHint?: PublicKey): Pro
       id: Number(p.id),
       address: publicKey.toBase58(),
       path: 'timelock',
-      ...describe(p.targetProgram, Uint8Array.from(p.data), p.accounts, m.decimals),
+      ...describe(p.targetProgram.toBase58(), Uint8Array.from(p.data), p.accounts, m.decimals),
       class: cls,
       status,
       queuedAt: Number(p.queuedAt),
       eta: Number(p.eta),
+      executedAt: Number(p.executedAt) || undefined,
       maker: proposer,
       checker: approver,
       vetoReason: status === 'vetoed' ? hex(p.vetoReason) : undefined,
     };
   });
+  // attest_reserve doesn't take the config, so its records are found via the Reserve.
+  actions.push(...(await history([config, reservePda], m.decimals)));
   const now = Date.now() / 1000;
   const limit = policy?.limit;
   return {
