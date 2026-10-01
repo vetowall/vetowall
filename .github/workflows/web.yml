@@ -1,0 +1,34 @@
+name: web
+
+# Tests and builds the Next.js console (web/). Deploys are Vercel's job.
+on:
+  push:
+    branches: [main]
+    paths: ['web/**', '.github/workflows/web.yml']
+  pull_request:
+    paths: ['web/**', '.github/workflows/web.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci --no-audit --no-fund
+      - run: npm test
+      - run: npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+      # The keyed RPC URL is server-only; fail if anything that looks like one reaches the client bundle.
+      - name: No RPC key in client assets
+        run: "! grep -rliE 'helius|api-key=' .next/static"
