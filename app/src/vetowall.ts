@@ -224,15 +224,32 @@ const seen = new Map<string, Action[]>();
 /** Fast-lane, guardian, reserve and setup actions, and refused fast-lane attempts, read from chain. */
 async function history(addresses: PublicKey[], decimals: number): Promise<Action[]> {
   // ponytail: newest 1000 signatures per address; page with `before` if a config outgrows that.
-  const lists = await Promise.all(addresses.map((a) => connection.getSignaturesForAddress(a, { limit: 1000 })));
+  const lists = [];
+  for (const a of addresses) lists.push(await withRetry(() => connection.getSignaturesForAddress(a, { limit: 1000 })));
   const sigs = [...new Set(lists.flat().map((s) => s.signature))];
-  const fresh = sigs.filter((s) => !seen.has(s));
-  for (let i = 0; i < fresh.length; i += 50) {
-    const chunk = fresh.slice(i, i + 50);
-    const txs = await connection.getTransactions(chunk, { maxSupportedTransactionVersion: 0, commitment: 'confirmed' });
-    txs.forEach((tx, j) => tx && seen.set(chunk[j], actionsOf(tx, chunk[j], decimals)));
+  // One request at a time: the public devnet RPC answers batched getTransactions
+  // with 429. A transaction that still can't be fetched is skipped and retried on
+  // the next refresh, so a rate limit thins the history instead of hiding it.
+  for (const sig of sigs.filter((s) => !seen.has(s))) {
+    const tx = await withRetry(() =>
+      connection.getTransaction(sig, { maxSupportedTransactionVersion: 0, commitment: 'confirmed' }),
+    ).catch(() => null);
+    if (tx) seen.set(sig, actionsOf(tx, sig, decimals));
   }
   return sigs.flatMap((s) => seen.get(s) ?? []);
+}
+
+/** Retries rate-limited RPC calls with backoff (0.5s, 1s, 2s, 4s). */
+async function withRetry<T>(call: () => Promise<T>): Promise<T> {
+  for (let attempt = 0; ; attempt++) {
+    try {
+      return await call();
+    } catch (e) {
+      const limited = /429|Too many requests/i.test(String((e as Error)?.message ?? e));
+      if (!limited || attempt >= 3) throw e;
+      await new Promise((r) => setTimeout(r, 500 * 2 ** attempt));
+    }
+  }
 }
 
 /** Vetowall's top-level instructions in a transaction, decoded with the IDL. */
@@ -313,7 +330,8 @@ export async function loadSnapshot(config: PublicKey, mintHint?: PublicKey): Pro
     };
   });
   // attest_reserve doesn't take the config, so its records are found via the Reserve.
-  actions.push(...(await history([config, reservePda], m.decimals)));
+  // History is best-effort: live account state still renders if the RPC refuses it.
+  actions.push(...(await history([config, reservePda], m.decimals).catch(() => [])));
   const now = Date.now() / 1000;
   const limit = policy?.limit;
   return {
