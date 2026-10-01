@@ -850,6 +850,21 @@
       ]
     }
   ],
+  "events": [
+    {
+      "name": "ChangeRecord",
+      "discriminator": [
+        21,
+        220,
+        139,
+        35,
+        164,
+        129,
+        12,
+        242
+      ]
+    }
+  ],
   "errors": [
     {
       "code": 6000,
@@ -1002,6 +1017,113 @@
           },
           {
             "name": "Max"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ChangeRecord",
+      "docs": [
+        "Fields that don't apply to a kind are `None`, zero or the default key",
+        "(see docs/SPEC.md, Events)."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "kind",
+            "type": {
+              "defined": {
+                "name": "RecordKind"
+              }
+            }
+          },
+          {
+            "name": "config",
+            "type": "pubkey"
+          },
+          {
+            "name": "proposal_id",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "target_program",
+            "type": "pubkey"
+          },
+          {
+            "name": "discriminator",
+            "docs": [
+              "Policy key of the routed instruction, zero-padded to 8 bytes."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                8
+              ]
+            }
+          },
+          {
+            "name": "amount",
+            "docs": [
+              "Limited policies' amount; the attested amount; a registered cap."
+            ],
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "class",
+            "type": {
+              "option": {
+                "defined": {
+                  "name": "ActionClass"
+                }
+              }
+            }
+          },
+          {
+            "name": "actor",
+            "docs": [
+              "The signer that acted: proposer, guardian, attestor or governor. The",
+              "default key for `execute`, which anyone may call."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "approver",
+            "docs": [
+              "Co-signing approver of `queue` / `execute_now`."
+            ],
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "subject",
+            "docs": [
+              "The key or mint a governance or reserve change is about."
+            ],
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "reason",
+            "docs": [
+              "SHA-256 of the guardian's explanation, for `Vetoed`."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
           }
         ]
       }
@@ -1250,6 +1372,25 @@
             "type": {
               "option": "u64"
             }
+          },
+          {
+            "name": "executed_at",
+            "docs": [
+              "When `execute` ran it; 0 until then."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "discriminator",
+            "docs": [
+              "Policy key the instruction was classified by (see `ChangeRecord`)."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                8
+              ]
+            }
           }
         ]
       }
@@ -1267,6 +1408,56 @@
           },
           {
             "name": "Vetoed"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RecordKind",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Queued"
+          },
+          {
+            "name": "Executed"
+          },
+          {
+            "name": "ExecutedNow"
+          },
+          {
+            "name": "Vetoed"
+          },
+          {
+            "name": "GuardianExecuted"
+          },
+          {
+            "name": "ReserveInitialized"
+          },
+          {
+            "name": "ReserveAttested"
+          },
+          {
+            "name": "AttestorSet"
+          },
+          {
+            "name": "Registered"
+          },
+          {
+            "name": "Sealed"
+          },
+          {
+            "name": "ProposerSet"
+          },
+          {
+            "name": "ApproverSet"
+          },
+          {
+            "name": "GuardianSet"
+          },
+          {
+            "name": "DelaysSet"
           }
         ]
       }
