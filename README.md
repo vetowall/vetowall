@@ -13,7 +13,28 @@ Vetowall is a Solana program that holds an issuer's Token-2022 authorities throu
 
 Vetowall doesn't issue tokens or hold reserves. It sits between whatever signs (a Squads multisig, a single key, an issuance provider's API) and the asset, and works alongside them.
 
-> Status: in active development for the Colosseum Crypto World's Fair (Sep 14 to Oct 12, 2026). The programs are live on devnet. The issuer console and demo config are next.
+> Status: in active development for the Colosseum Crypto World's Fair (Sep 14 to Oct 12, 2026). Live on devnet.
+
+## Try it in 60 seconds
+
+1. Open the issuer console: **https://vetowall.github.io/vetowall/**. It reads a live devnet issuer, `vUSD`, straight from chain; no wallet is needed to look around.
+2. **Operate** shows supply against attested reserves, today's fast-lane usage, and **0 god keys**: every authority on the vUSD mint is held by Vetowall. The timeline is built from onchain change records:
+   - a 1,000,000 vUSD fast-lane mint
+   - an 80,000,000 vUSD mint refused onchain (`OverReserves`)
+   - a 4,500,000 vUSD mint above the daily cap, executed only after its timelock
+   - an attempt to move the mint authority to an outside wallet, vetoed by the guardian
+3. **Comply** exports those records as a change-control report (CSV or JSON).
+4. To act yourself, click **Use demo keys** (devnet burner keys) or connect Phantom on devnet, then **Launch** your own token. It's created with every authority on Vetowall's PDA in a single transaction.
+
+| Live demo account (devnet) | Address |
+|---|---|
+| vUSD mint (Token-2022) | [`GHhMGStTRu2y3CGsmkY82DjUMc3oX5p8ajEVnuMNpdLV`](https://explorer.solana.com/address/GHhMGStTRu2y3CGsmkY82DjUMc3oX5p8ajEVnuMNpdLV?cluster=devnet) |
+| Vetowall config | [`BQodWY1t1CVVJHpGdR9UnDg3wY3gyTsBDne5y2hSfTgp`](https://explorer.solana.com/address/BQodWY1t1CVVJHpGdR9UnDg3wY3gyTsBDne5y2hSfTgp?cluster=devnet) |
+| Authority PDA (holds all 7 mint authorities) | [`6cKjrttWSv1bBQrZwZJGHXefnXmzrmyaJpwy7N6Kth3d`](https://explorer.solana.com/address/6cKjrttWSv1bBQrZwZJGHXefnXmzrmyaJpwy7N6Kth3d?cluster=devnet) |
+| Refused 80M mint | [`d4EGNN7g…`](https://explorer.solana.com/tx/d4EGNN7g51s1eb1FGxCyUoxSoMFEhfPa4VBRWWvcC2wzXieMkGRkC297b93fN9f3sMdoGvNBK8jfkyUfEqjLyQP?cluster=devnet) |
+| Guardian veto of the authority change | [`5sdNagmb…`](https://explorer.solana.com/tx/5sdNagmbPnKp8YEmeKJfe7DRMdswMmyqn4zvrTjsA6sxxbXEZx8huZnLhHiWRru8s8FE4w9pdcTBqkQnHAp4tAEG?cluster=devnet) |
+
+The demo is rebuilt with `npm run seed:devnet` in `app/` (see [app/README.md](app/README.md)).
 
 ## Devnet
 
@@ -22,7 +43,7 @@ Vetowall doesn't issue tokens or hold reserves. It sits between whatever signs (
 | `vetowall` | [`G8LSBa3y5XqY5fK4R6NTK84oPru3W3hsNzRwjunLWedr`](https://explorer.solana.com/address/G8LSBa3y5XqY5fK4R6NTK84oPru3W3hsNzRwjunLWedr?cluster=devnet) |
 | `mock_vault` | [`46BaaWFuFK3T8akXjL2xFzcv6M5AWAKXFcuxdU3jfc3a`](https://explorer.solana.com/address/46BaaWFuFK3T8akXjL2xFzcv6M5AWAKXFcuxdU3jfc3a?cluster=devnet) |
 
-Built with `anchor build --arch v0` from the commit tagged `devnet-2026-10-01`. The devnet demo config uses short delays (Safe 0s, Params 120s, Authority 180s, Max 300s) so the flow fits in a demo. The tests check the real delays: 48h, 72h and 7 days.
+Built with `anchor build --arch v0`. The current deploy is tagged `devnet-2026-10-01b` (slot 506197254). The devnet demo config uses short delays (Safe 0s, Params 120s, Authority 180s, Max 300s) so the flow fits in a demo. The tests check the real delays: 48h, 72h and 7 days.
 
 ## Prior work and credits
 
