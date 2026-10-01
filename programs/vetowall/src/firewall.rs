@@ -74,7 +74,9 @@ fn load_if_exists<T: AccountDeserialize>(account: &AccountInfo) -> Result<Option
     Ok(Some(T::try_deserialize(&mut &account.try_borrow_data()?[..])?))
 }
 
-/// Finds the policy for an instruction. `None` means the instruction is
+/// Finds the policy for an instruction, and the discriminator it was looked
+/// up by (the first 8 bytes of data when there's no `Target`, as for
+/// Vetowall's own instructions). `None` means the instruction is
 /// unregistered, which is class `Max`; so is every instruction that targets
 /// Vetowall itself. The caller picks the accounts, so both addresses are
 /// checked: a missing account can only make the class stricter, but a wrong
@@ -85,9 +87,9 @@ pub fn resolve_policy(
     data: &[u8],
     target: &AccountInfo,
     policy: &AccountInfo,
-) -> Result<Option<Policy>> {
+) -> Result<([u8; 8], Option<Policy>)> {
     if *target_program == crate::ID {
-        return Ok(None);
+        return Ok((discriminator(data, 8, &[]), None));
     }
     require_keys_eq!(
         target.key(),
@@ -95,7 +97,7 @@ pub fn resolve_policy(
         ErrorCode::BadPolicyAccount
     );
     let Some(target) = load_if_exists::<Target>(target)? else {
-        return Ok(None);
+        return Ok((discriminator(data, 8, &[]), None));
     };
     let disc = discriminator(data, target.disc_len, &target.wide_tags);
     require_keys_eq!(
@@ -103,7 +105,7 @@ pub fn resolve_policy(
         policy_address(config, target_program, &disc),
         ErrorCode::BadPolicyAccount
     );
-    load_if_exists::<Policy>(policy)
+    Ok((disc, load_if_exists::<Policy>(policy)?))
 }
 
 pub fn class_of(policy: &Option<Policy>) -> ActionClass {

@@ -7,6 +7,7 @@ use anchor_lang::prelude::*;
 use crate::{
     constants::{MAX_WIDE_TAGS, POLICY_SEED, TARGET_SEED},
     error::ErrorCode,
+    event::{ChangeRecord, RecordKind},
     state::{validate_delays, ActionClass, Config, Limit, Policy, Target},
 };
 
@@ -21,6 +22,10 @@ pub fn handle_set_proposer(ctx: Context<Govern>, proposer: Pubkey) -> Result<()>
     let config = &mut ctx.accounts.config;
     config.require_governor(&config.key(), &ctx.accounts.governor.key())?;
     config.proposer = proposer;
+    emit!(ChangeRecord {
+        subject: Some(proposer),
+        ..ChangeRecord::new(RecordKind::ProposerSet, config.key(), ctx.accounts.governor.key())?
+    });
     Ok(())
 }
 
@@ -28,6 +33,10 @@ pub fn handle_set_approver(ctx: Context<Govern>, approver: Option<Pubkey>) -> Re
     let config = &mut ctx.accounts.config;
     config.require_governor(&config.key(), &ctx.accounts.governor.key())?;
     config.approver = approver;
+    emit!(ChangeRecord {
+        subject: approver,
+        ..ChangeRecord::new(RecordKind::ApproverSet, config.key(), ctx.accounts.governor.key())?
+    });
     Ok(())
 }
 
@@ -35,6 +44,10 @@ pub fn handle_set_guardian(ctx: Context<Govern>, guardian: Pubkey) -> Result<()>
     let config = &mut ctx.accounts.config;
     config.require_governor(&config.key(), &ctx.accounts.governor.key())?;
     config.guardian = guardian;
+    emit!(ChangeRecord {
+        subject: Some(guardian),
+        ..ChangeRecord::new(RecordKind::GuardianSet, config.key(), ctx.accounts.governor.key())?
+    });
     Ok(())
 }
 
@@ -43,6 +56,7 @@ pub fn handle_set_delays(ctx: Context<Govern>, delays: [i64; 4]) -> Result<()> {
     let config = &mut ctx.accounts.config;
     config.require_governor(&config.key(), &ctx.accounts.governor.key())?;
     config.delays = delays;
+    emit!(ChangeRecord::new(RecordKind::DelaysSet, config.key(), ctx.accounts.governor.key())?);
     Ok(())
 }
 
@@ -56,6 +70,7 @@ pub struct Seal<'info> {
 pub fn handle_seal(ctx: Context<Seal>) -> Result<()> {
     require!(!ctx.accounts.config.sealed, ErrorCode::AlreadySealed);
     ctx.accounts.config.sealed = true;
+    emit!(ChangeRecord::new(RecordKind::Sealed, ctx.accounts.config.key(), ctx.accounts.admin.key())?);
     Ok(())
 }
 
@@ -137,5 +152,12 @@ pub fn handle_register(
     policy.discriminator = discriminator;
     policy.class = class;
     policy.limit = limit;
+    emit!(ChangeRecord {
+        target_program,
+        discriminator,
+        amount: limit.map(|l| l.cap),
+        class: Some(class),
+        ..ChangeRecord::new(RecordKind::Registered, config.key(), ctx.accounts.governor.key())?
+    });
     Ok(())
 }

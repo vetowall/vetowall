@@ -170,4 +170,8 @@ pub struct Proposal {
     pub veto_reason: [u8; 32],
     /// The amount moved, for instructions whose policy has a limit.
     pub amount: Option<u64>,
+    /// When `execute` ran it; 0 until then.
+    pub executed_at: i64,
+    /// Policy key the instruction was classified by (see `ChangeRecord`).
+    pub discriminator: [u8; 8],
 }

@@ -11,9 +11,10 @@ use {
             instruction::{AccountMeta, Instruction},
             system_program,
         },
-        AccountDeserialize, InstructionData, ToAccountMetas,
+        AnchorDeserialize, AccountDeserialize, Discriminator, InstructionData, ToAccountMetas,
+        __private::base64::{engine::general_purpose::STANDARD as B64, Engine},
     },
-    litesvm::{types::FailedTransactionMetadata, LiteSVM},
+    litesvm::{types::{FailedTransactionMetadata, TransactionMetadata}, LiteSVM},
     litesvm_token::{get_spl_account, CreateAssociatedTokenAccount},
     solana_keypair::Keypair,
     solana_message::{Message, VersionedMessage},
@@ -24,7 +25,7 @@ use {
         extension::{pausable::PausableConfig, BaseStateWithExtensions, ExtensionType, StateWithExtensions},
         state::{Account as TokenAccount, AccountState, Mint},
     },
-    vetowall::{error::ErrorCode as VetowallError, ActionClass, Limit, Policy, Proposal, ProposalStatus, StoredMeta, Target},
+    vetowall::{error::ErrorCode as VetowallError, ActionClass, ChangeRecord, RecordKind, Limit, Policy, Proposal, ProposalStatus, StoredMeta, Target},
 };
 
 const HOUR: i64 = 3600;
@@ -57,11 +58,13 @@ struct Env {
     reserve: Pubkey,
 }
 
-fn send(svm: &mut LiteSVM, ixs: &[Instruction], signers: &[&Keypair]) -> Result<(), FailedTransactionMetadata> {
+type Sent = Result<TransactionMetadata, FailedTransactionMetadata>;
+
+fn send(svm: &mut LiteSVM, ixs: &[Instruction], signers: &[&Keypair]) -> Sent {
     let blockhash = svm.latest_blockhash();
     let msg = Message::new_with_blockhash(ixs, Some(&signers[0].pubkey()), &blockhash);
     let tx = VersionedTransaction::try_new(VersionedMessage::Legacy(msg), signers).unwrap();
-    let res = svm.send_transaction(tx).map(|_| ());
+    let res = svm.send_transaction(tx);
     svm.expire_blockhash();
     res
 }
@@ -341,14 +344,35 @@ fn attest(env: &mut Env, amount: u64) {
 }
 
 /// Sends `ix` through the fast lane with both signatures and the reserve.
-fn fast(env: &mut Env, ix: &Instruction) -> Result<(), FailedTransactionMetadata> {
+fn fast(env: &mut Env, ix: &Instruction) -> Sent {
     let (p, a) = (env.proposer.insecure_clone(), env.approver.insecure_clone());
     tx!(env, [execute_now_ix(env, ix, Some(a.pubkey()), Some(env.reserve))], [&p, &a])
 }
 
-fn mint_now(env: &mut Env, amount: u64) -> Result<(), FailedTransactionMetadata> {
+fn mint_now(env: &mut Env, amount: u64) -> Sent {
     let ix = mint_ix(env, amount);
     fast(env, &ix)
+}
+
+/// The `ChangeRecord` events in a transaction's `Program data:` log lines.
+fn records(meta: &TransactionMetadata) -> Vec<ChangeRecord> {
+    meta.logs
+        .iter()
+        .filter_map(|l| l.strip_prefix("Program data: "))
+        .filter_map(|b64| B64.decode(b64).ok())
+        .filter(|d| d.starts_with(ChangeRecord::DISCRIMINATOR))
+        .map(|d| ChangeRecord::try_from_slice(&d[8..]).unwrap())
+        .collect()
+}
+
+fn one_record(meta: TransactionMetadata) -> ChangeRecord {
+    let mut all = records(&meta);
+    assert_eq!(all.len(), 1, "{all:?}");
+    all.remove(0)
+}
+
+fn now(env: &Env) -> i64 {
+    env.svm.get_sysvar::<Clock>().unix_timestamp
 }
 
 fn queue(env: &mut Env, ix: &Instruction) -> u64 {
@@ -500,4 +524,101 @@ fn pausable_sub_instructions_resolve_to_their_own_policies() {
     warp(&mut env.svm, 48 * HOUR);
     tx!(env, [execute_ix(&env, id, &resume, None)], [&env.admin]).unwrap();
     assert!(!paused(&env));
+}
+
+#[test]
+fn fast_lane_mint_leaves_a_change_record() {
+    let mut env = setup();
+    let rec = one_record(mint_now(&mut env, 400_000 * USD).unwrap());
+    assert_eq!(
+        rec,
+        ChangeRecord {
+            kind: RecordKind::ExecutedNow,
+            config: env.config,
+            proposal_id: None,
+            target_program: t22::ID,
+            discriminator: disc(&[MINT_TO]),
+            amount: Some(400_000 * USD),
+            class: Some(ActionClass::Params),
+            actor: env.proposer.pubkey(),
+            approver: Some(env.approver.pubkey()),
+            subject: None,
+            reason: [0; 32],
+            timestamp: now(&env),
+        }
+    );
+}
+
+#[test]
+fn queue_and_execute_leave_records_and_executed_at() {
+    let mut env = setup();
+    let big = mint_ix(&env, CAP + 1);
+    let (p, a) = (env.proposer.insecure_clone(), env.approver.insecure_clone());
+    let queued = one_record(tx!(env, [queue_ix(&env, &big, Some(a.pubkey()))], [&p, &a]).unwrap());
+    assert_eq!(
+        (queued.kind, queued.proposal_id, queued.discriminator, queued.amount, queued.class),
+        (RecordKind::Queued, Some(0), disc(&[MINT_TO]), Some(CAP + 1), Some(ActionClass::Params))
+    );
+    assert_eq!((queued.actor, queued.approver), (p.pubkey(), Some(a.pubkey())));
+    assert_eq!(load::<Proposal>(&env.svm, &proposal_pda(&env, 0)).executed_at, 0);
+
+    warp(&mut env.svm, 48 * HOUR);
+    attest(&mut env, RESERVES);
+    let rec = one_record(tx!(env, [execute_ix(&env, 0, &big, Some(env.reserve))], [&env.admin]).unwrap());
+    assert_eq!(
+        (rec.kind, rec.proposal_id, rec.discriminator, rec.amount, rec.class, rec.actor),
+        (RecordKind::Executed, Some(0), disc(&[MINT_TO]), Some(CAP + 1), Some(ActionClass::Params), Pubkey::default())
+    );
+    assert_eq!(rec.timestamp, now(&env));
+    let p: Proposal = load(&env.svm, &proposal_pda(&env, 0));
+    assert_eq!((p.status, p.executed_at), (ProposalStatus::Executed, now(&env)));
+}
+
+#[test]
+fn veto_and_guardian_pause_leave_records() {
+    let mut env = setup();
+    // SetAuthority has no policy: class Max, discriminator is its 1-byte tag.
+    let set_auth = t22::instruction::set_authority(
+        &t22::ID,
+        &env.mint,
+        Some(&env.attacker.pubkey()),
+        t22::instruction::AuthorityType::MintTokens,
+        &env.authority,
+        &[],
+    )
+    .unwrap();
+    let id = queue(&mut env, &set_auth);
+    let guardian = env.guardian.insecure_clone();
+    let reason = [7u8; 32];
+    let veto = Instruction::new_with_bytes(
+        vetowall::id(),
+        &vetowall::instruction::Veto { reason }.data(),
+        vetowall::accounts::Veto { config: env.config, guardian: guardian.pubkey(), proposal: proposal_pda(&env, id) }
+            .to_account_metas(None),
+    );
+    let rec = one_record(tx!(env, [veto], [&guardian]).unwrap());
+    assert_eq!(
+        rec,
+        ChangeRecord {
+            kind: RecordKind::Vetoed,
+            config: env.config,
+            proposal_id: Some(id),
+            target_program: t22::ID,
+            discriminator: disc(&[6]),
+            amount: None,
+            class: Some(ActionClass::Max),
+            actor: guardian.pubkey(),
+            approver: None,
+            subject: None,
+            reason,
+            timestamp: now(&env),
+        }
+    );
+
+    let pause = t22::extension::pausable::instruction::pause(&t22::ID, &env.mint, &env.authority, &[]).unwrap();
+    let rec = one_record(tx!(env, [guardian_execute_ix(&env, &pause)], [&guardian]).unwrap());
+    assert_eq!(
+        (rec.kind, rec.discriminator, rec.class, rec.actor, rec.proposal_id, rec.amount),
+        (RecordKind::GuardianExecuted, disc(&[PAUSABLE, PAUSE]), Some(ActionClass::Safe), guardian.pubkey(), None, None)
+    );
 }

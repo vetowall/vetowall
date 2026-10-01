@@ -43,8 +43,13 @@ Limit
 Reserve ["reserve", config, mint]
   config, mint, attestor, amount: u64, updated_at: i64, max_age: i64
 
-Proposal ["proposal", config, id_le_u64]     (unchanged from v1, plus `amount: Option<u64>` recorded for limited policies)
+Proposal ["proposal", config, id_le_u64]     (v1 fields, then, appended in this order:)
+  amount: Option<u64>        (recorded for limited policies)
+  executed_at: i64           (set by `execute`; 0 until then)
+  discriminator: [u8; 8]     (policy key the instruction was classified by; see Events)
 ```
+
+Proposal fields are only ever appended. Proposals are allocated at max size and serialized compactly, so one created before a field existed reads it as zero.
 
 ## Instructions
 
@@ -79,6 +84,44 @@ Proposal ["proposal", config, id_le_u64]     (unchanged from v1, plus `amount: O
 **Amount parsing:** a little-endian u64 at `amount_offset`. Data that's too short fails with `BadAmount`.
 
 **Mint supply:** read from the base mint layout (bytes 36..44, little-endian u64). The same layout holds for SPL Token and Token-2022.
+
+## Events
+
+Every privileged instruction emits one Anchor event, `ChangeRecord` (`emit!`, so a `Program data:` log line; discriminator in the IDL). It is the onchain change-control record: the console builds its timeline and report from these, read from the transaction history of the config (and of each `Reserve`, since `attest_reserve` doesn't take the config).
+
+```
+ChangeRecord
+  kind: RecordKind
+  config: Pubkey
+  proposal_id: Option<u64>
+  target_program: Pubkey         (default key when no instruction is routed)
+  discriminator: [u8; 8]         (policy key of the routed instruction: data[..n] zero-padded, n from
+                                  Target.disc_len and wide_tags; data[..8] when there is no Target)
+  amount: Option<u64>
+  class: Option<ActionClass>
+  actor: Pubkey                  (the signer that acted)
+  approver: Option<Pubkey>
+  subject: Option<Pubkey>
+  reason: [u8; 32]               (veto reason hash, zero otherwise)
+  timestamp: i64                 (Clock unix_timestamp)
+```
+
+| `kind` | Emitted by | proposal_id | target_program / discriminator | amount | class | actor | approver | subject |
+|---|---|---|---|---|---|---|---|---|
+| `Queued` | `queue` | yes | routed ix | limited policy's amount | resolved class | proposer | approver | |
+| `Executed` | `execute` | yes | routed ix | from proposal | from proposal | default key (anyone may execute) | | |
+| `ExecutedNow` | `execute_now` | | routed ix | limited policy's amount | policy class | proposer | approver | |
+| `Vetoed` | `veto` | yes | from proposal | from proposal | from proposal | guardian | | |
+| `GuardianExecuted` | `guardian_execute` | | routed ix | | `Safe` | guardian | | |
+| `ReserveInitialized` | `init_reserve` | | | | | governor | | mint |
+| `ReserveAttested` | `attest_reserve` | | | attested amount | | attestor | | mint |
+| `AttestorSet` | `set_attestor` | | | | | governor | | new attestor |
+| `Registered` | `register` | | registered program / discriminator | `limit.cap` | registered class | governor | | |
+| `Sealed` | `seal` | | | | | admin | | |
+| `ProposerSet` / `ApproverSet` / `GuardianSet` | `set_*` | | | | | governor | | new key (`None` = approver removed) |
+| `DelaysSet` | `set_delays` | | | | | governor | | |
+
+After `seal`, governance changes run as a proposal's CPI into Vetowall, so that transaction carries two records: `Executed` for the proposal and the `*Set` / `Registered` record from the inner call. New delays aren't in the record; read them from the config or the instruction data. Failed transactions emit nothing; a refused attempt is evidenced by the failed transaction itself (its instruction data and error log).
 
 ## Issuer policy pack (Token-2022 / SPL Token, `disc_len = 1`)
 

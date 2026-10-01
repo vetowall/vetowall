@@ -2,6 +2,7 @@ use anchor_lang::prelude::*;
 
 use crate::{
     error::ErrorCode,
+    event::{ChangeRecord, RecordKind},
     firewall::{check_reserve, forbid_durable_nonce, invoke_as_authority, read_amount, resolve_policy},
     state::{Config, Proposal, ProposalStatus, Reserve},
 };
@@ -32,15 +33,13 @@ pub fn handle_execute(ctx: Context<Execute>) -> Result<()> {
         proposal.status == ProposalStatus::Queued,
         ErrorCode::NotQueued
     );
-    require!(
-        Clock::get()?.unix_timestamp >= proposal.eta,
-        ErrorCode::TooEarly
-    );
+    let now = Clock::get()?.unix_timestamp;
+    require!(now >= proposal.eta, ErrorCode::TooEarly);
     forbid_durable_nonce(&ctx.accounts.instructions)?;
 
     // The timelock is about intent; the reserve bound is about the supply
     // right now, which may have moved while the proposal waited.
-    let policy = resolve_policy(
+    let (discriminator, policy) = resolve_policy(
         &config_key,
         &proposal.target_program,
         &proposal.data,
@@ -59,7 +58,16 @@ pub fn handle_execute(ctx: Context<Execute>) -> Result<()> {
     }
 
     proposal.status = ProposalStatus::Executed;
+    proposal.executed_at = now;
     msg!("executing proposal {}", proposal.id);
+    emit!(ChangeRecord {
+        proposal_id: Some(proposal.id),
+        target_program: proposal.target_program,
+        discriminator,
+        amount: proposal.amount,
+        class: Some(proposal.class),
+        ..ChangeRecord::new(RecordKind::Executed, config_key, Pubkey::default())?
+    });
     invoke_as_authority(
         &ctx.accounts.config,
         &config_key,

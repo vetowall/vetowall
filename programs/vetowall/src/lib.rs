@@ -1,5 +1,6 @@
 pub mod constants;
 pub mod error;
+pub mod event;
 pub mod firewall;
 pub mod instructions;
 pub mod state;
@@ -7,6 +8,7 @@ pub mod state;
 use anchor_lang::prelude::*;
 
 pub use constants::*;
+pub use event::*;
 pub use instructions::*;
 pub use state::*;
 

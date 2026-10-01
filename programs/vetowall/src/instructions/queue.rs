@@ -3,6 +3,7 @@ use anchor_lang::prelude::*;
 use crate::{
     constants::PROPOSAL_SEED,
     error::ErrorCode,
+    event::{ChangeRecord, RecordKind},
     firewall::{class_of, forbid_durable_nonce, read_amount, resolve_policy, validate_instruction},
     state::{Config, Proposal, ProposalStatus, StoredMeta},
 };
@@ -52,7 +53,7 @@ pub fn handle_queue(
     config.require_approver(ctx.accounts.approver.as_ref())?;
     forbid_durable_nonce(&ctx.accounts.instructions)?;
     validate_instruction(config, &config_key, &accounts, &data)?;
-    let policy = resolve_policy(
+    let (discriminator, policy) = resolve_policy(
         &config_key,
         &target_program,
         &data,
@@ -85,8 +86,18 @@ pub fn handle_queue(
     proposal.eta = eta;
     proposal.status = ProposalStatus::Queued;
     proposal.amount = amount;
+    proposal.discriminator = discriminator;
 
     ctx.accounts.config.proposal_count = id + 1;
     msg!("queued proposal {} class {:?} eta {}", id, class, eta);
+    emit!(ChangeRecord {
+        proposal_id: Some(id),
+        target_program,
+        discriminator,
+        amount,
+        class: Some(class),
+        approver: ctx.accounts.approver.as_ref().map(|a| a.key()),
+        ..ChangeRecord::new(RecordKind::Queued, config_key, ctx.accounts.proposer.key())?
+    });
     Ok(())
 }

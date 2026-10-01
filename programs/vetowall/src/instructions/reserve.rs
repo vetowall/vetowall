@@ -7,6 +7,7 @@ use anchor_lang::prelude::*;
 use crate::{
     constants::RESERVE_SEED,
     error::ErrorCode,
+    event::{ChangeRecord, RecordKind},
     firewall::forbid_durable_nonce,
     state::{Config, Reserve},
 };
@@ -43,6 +44,10 @@ pub fn handle_init_reserve(
     reserve.mint = mint;
     reserve.attestor = attestor;
     reserve.max_age = max_age;
+    emit!(ChangeRecord {
+        subject: Some(mint),
+        ..ChangeRecord::new(RecordKind::ReserveInitialized, config.key(), ctx.accounts.governor.key())?
+    });
     Ok(())
 }
 
@@ -58,6 +63,10 @@ pub fn handle_set_attestor(ctx: Context<SetAttestor>, attestor: Pubkey) -> Resul
     let config = &ctx.accounts.config;
     config.require_governor(&config.key(), &ctx.accounts.governor.key())?;
     ctx.accounts.reserve.attestor = attestor;
+    emit!(ChangeRecord {
+        subject: Some(attestor),
+        ..ChangeRecord::new(RecordKind::AttestorSet, config.key(), ctx.accounts.governor.key())?
+    });
     Ok(())
 }
 
@@ -80,5 +89,10 @@ pub fn handle_attest_reserve(ctx: Context<AttestReserve>, amount: u64) -> Result
     reserve.amount = amount;
     reserve.updated_at = Clock::get()?.unix_timestamp;
     msg!("reserve {} attested at {}", reserve.mint, amount);
+    emit!(ChangeRecord {
+        amount: Some(amount),
+        subject: Some(reserve.mint),
+        ..ChangeRecord::new(RecordKind::ReserveAttested, reserve.config, ctx.accounts.attestor.key())?
+    });
     Ok(())
 }

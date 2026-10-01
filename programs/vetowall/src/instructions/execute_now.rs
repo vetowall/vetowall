@@ -5,6 +5,7 @@ use anchor_lang::prelude::*;
 
 use crate::{
     error::ErrorCode,
+    event::{ChangeRecord, RecordKind},
     firewall::{
         charge_cap, check_reserve, forbid_durable_nonce, invoke_as_authority, read_amount,
         resolve_policy, validate_instruction,
@@ -50,25 +51,27 @@ pub fn handle_execute_now(
 
     // Unregistered instructions and Vetowall's own config are `Max`, which
     // never has a fast lane.
-    let mut policy = resolve_policy(
+    let (discriminator, policy) = resolve_policy(
         &config_key,
         &target_program,
         &data,
         &ctx.accounts.target,
         &ctx.accounts.policy,
-    )?
-    .ok_or(ErrorCode::NotFastLane)?;
+    )?;
+    let mut policy = policy.ok_or(ErrorCode::NotFastLane)?;
+    let mut amount = None;
 
     match policy.limit {
         Some(limit) => {
-            let amount = read_amount(&data, limit.amount_offset)?;
+            let amt = read_amount(&data, limit.amount_offset)?;
+            amount = Some(amt);
             if policy.class != ActionClass::Safe {
-                charge_cap(&mut policy, &limit, amount, Clock::get()?.unix_timestamp)?;
+                charge_cap(&mut policy, &limit, amt, Clock::get()?.unix_timestamp)?;
                 policy.try_serialize(&mut &mut ctx.accounts.policy.try_borrow_mut_data()?[..])?;
             }
             check_reserve(
                 &limit,
-                amount,
+                amt,
                 &accounts,
                 ctx.remaining_accounts,
                 ctx.accounts.reserve.as_ref(),
@@ -78,6 +81,14 @@ pub fn handle_execute_now(
     }
 
     msg!("fast lane {:?}", policy.class);
+    emit!(ChangeRecord {
+        target_program,
+        discriminator,
+        amount,
+        class: Some(policy.class),
+        approver: ctx.accounts.approver.as_ref().map(|a| a.key()),
+        ..ChangeRecord::new(RecordKind::ExecutedNow, config_key, ctx.accounts.proposer.key())?
+    });
     invoke_as_authority(
         config,
         &config_key,

@@ -5,6 +5,7 @@ use anchor_lang::prelude::*;
 
 use crate::{
     error::ErrorCode,
+    event::{ChangeRecord, RecordKind},
     firewall::{forbid_durable_nonce, invoke_as_authority, resolve_policy, validate_instruction},
     state::{ActionClass, Config, Proposal, ProposalStatus, StoredMeta},
 };
@@ -39,6 +40,15 @@ pub fn handle_veto(ctx: Context<Veto>, reason: [u8; 32]) -> Result<()> {
     proposal.status = ProposalStatus::Vetoed;
     proposal.veto_reason = reason;
     msg!("vetoed proposal {}", proposal.id);
+    emit!(ChangeRecord {
+        proposal_id: Some(proposal.id),
+        target_program: proposal.target_program,
+        discriminator: proposal.discriminator,
+        amount: proposal.amount,
+        class: Some(proposal.class),
+        reason,
+        ..ChangeRecord::new(RecordKind::Vetoed, proposal.config, ctx.accounts.guardian.key())?
+    });
     Ok(())
 }
 
@@ -72,7 +82,7 @@ pub fn handle_guardian_execute(
     );
     forbid_durable_nonce(&ctx.accounts.instructions)?;
     validate_instruction(config, &config_key, &accounts, &data)?;
-    let policy = resolve_policy(
+    let (discriminator, policy) = resolve_policy(
         &config_key,
         &target_program,
         &data,
@@ -83,6 +93,12 @@ pub fn handle_guardian_execute(
         policy.is_some_and(|p| p.class == ActionClass::Safe && p.limit.is_none()),
         ErrorCode::NotSafeClass
     );
+    emit!(ChangeRecord {
+        target_program,
+        discriminator,
+        class: Some(ActionClass::Safe),
+        ..ChangeRecord::new(RecordKind::GuardianExecuted, config_key, ctx.accounts.guardian.key())?
+    });
     invoke_as_authority(
         config,
         &config_key,
