@@ -1,0 +1,55 @@
+name: pages
+
+# Builds the issuer console (app/) and publishes it to GitHub Pages at
+# https://vetowall.github.io/vetowall/. The build uses a relative base and
+# hash routing, so it works under /vetowall/ without extra config.
+on:
+  push:
+    branches: [main]
+    paths: ['app/**', '.github/workflows/pages.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - run: npm ci --no-audit --no-fund
+      - run: npm test
+      - run: npm run build
+        env:
+          # Optional repository variables; without them the console shows seeded demo data.
+          VITE_CONFIG: ${{ vars.VITE_CONFIG }}
+          VITE_GUARDIAN_URL: ${{ vars.VITE_GUARDIAN_URL }}
+          VITE_RPC_URL: ${{ vars.VITE_RPC_URL }}
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: app/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
