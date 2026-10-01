@@ -15,6 +15,7 @@ import {
   createInitializePermanentDelegateInstruction,
   createMintToInstruction,
   createPauseInstruction,
+  createResumeInstruction,
   createSetAuthorityInstruction,
   getAssociatedTokenAddressSync,
   getMetadataPointerState,
@@ -91,6 +92,9 @@ export const freezeIx = (account: PublicKey, mint: PublicKey, authority: PublicK
   createFreezeAccountInstruction(account, mint, authority, [], TOKEN_2022);
 export const pauseIx = (mint: PublicKey, authority: PublicKey): TransactionInstruction =>
   createPauseInstruction(mint, authority, [], TOKEN_2022);
+
+export const resumeIx = (mint: PublicKey, authority: PublicKey): TransactionInstruction =>
+  createResumeInstruction(mint, authority, [], TOKEN_2022);
 
 const holder = (k: PublicKey | null | undefined) => (!k || k.equals(PublicKey.default) ? null : k.toBase58());
 

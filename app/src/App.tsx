@@ -34,15 +34,18 @@ type Page = keyof typeof PAGES;
 const LABELS: Record<Page, string> = { launch: 'Launch', operate: 'Operate', comply: 'Comply', guardian: 'Guardian' };
 
 const DEPLOYMENT_KEY = 'vetowall.deployment';
-function savedDeployment(): { config: string; mint: string } | null {
+/** The shared devnet demo config; the mint is found from its Reserve account. */
+const DEMO_CONFIG: string | undefined = import.meta.env.VITE_CONFIG;
+
+/** A token launched from this browser wins over the shared demo config. */
+function savedDeployment(): { config: string; mint?: string } | null {
   try {
     const saved = localStorage.getItem(DEPLOYMENT_KEY);
     if (saved) return JSON.parse(saved);
   } catch {
     /* use env */
   }
-  const { VITE_CONFIG: config, VITE_MINT: mint } = import.meta.env;
-  return config && mint ? { config, mint } : null;
+  return DEMO_CONFIG ? { config: DEMO_CONFIG } : null;
 }
 
 const pageFromHash = (): Page => {
@@ -76,7 +79,10 @@ export default function App() {
     setProgramUp(up);
     if (!up || !deployment) return setSnap(demoSnapshot);
     try {
-      const live = await loadSnapshot(new PublicKey(deployment.config), new PublicKey(deployment.mint));
+      const live = await loadSnapshot(
+        new PublicKey(deployment.config),
+        deployment.mint ? new PublicKey(deployment.mint) : undefined,
+      );
       if (!live) return setSnap(demoSnapshot);
       live.actions.push(...sessionLog(deployment.config));
       setSnap(live);

@@ -5,4 +5,6 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   base: './',
   plugins: [react()],
+  // web3.js + Anchor are ~230 kB gzipped; one chunk is fine for a console.
+  build: { chunkSizeWarningLimit: 1000 },
 });

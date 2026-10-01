@@ -182,7 +182,7 @@ export async function executeIx(config: PublicKey, proposal: PublicKey, reserve:
 export async function attestIx(config: PublicKey, mint: PublicKey, attestor: PublicKey, amount: bigint) {
   return program.methods
     .attestReserve(new BN(amount.toString()))
-    .accountsStrict({ attestor, reserve: pda.reserve(config, mint) })
+    .accountsStrict({ reserve: pda.reserve(config, mint), attestor, instructions: SYSVAR_IX })
     .instruction();
 }
 
@@ -227,10 +227,16 @@ function describe(target: PublicKey, data: Uint8Array, accounts: { pubkey: Publi
 const variant = (e: object) => Object.keys(e)[0];
 const hex = (b: number[]) => b.map((x) => x.toString(16).padStart(2, '0')).join('');
 
-/** Reads a live deployment. Returns null if the config doesn't exist or can't be decoded. */
-export async function loadSnapshot(config: PublicKey, mint: PublicKey): Promise<Snapshot | null> {
+/**
+ * Reads a live deployment. Without a mint, uses the mint of the config's
+ * first Reserve. Returns null if the config doesn't exist.
+ */
+export async function loadSnapshot(config: PublicKey, mintHint?: PublicKey): Promise<Snapshot | null> {
   const cfg = await accounts.config.fetchNullable(config);
   if (!cfg) return null;
+  const mint: PublicKey | undefined =
+    mintHint ?? (await accounts.reserve.all([{ memcmp: { offset: 8, bytes: config.toBase58() } }]))[0]?.account.mint;
+  if (!mint) return null;
   const [proposals, m, reserve, policy] = await Promise.all([
     accounts.proposal.all([{ memcmp: { offset: 8, bytes: config.toBase58() } }]),
     readMint(connection, mint),

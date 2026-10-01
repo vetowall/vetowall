@@ -120,11 +120,14 @@ export async function explain(e: unknown): Promise<string> {
   const text = logs.join('\n') + '\n' + String((e as Error)?.message ?? e);
   const named = text.match(/Error Code: (\w+)\. Error Number: \d+\. Error Message: ([^\n.]+)/);
   if (named) return `${named[1]}: ${named[2]}`;
+  // Codes below 6000 come from the program Vetowall called (e.g. Token-2022), whose own log line says more.
   const hex = text.match(/custom program error: 0x([0-9a-f]+)/i);
   const err = hex && ERRORS.get(parseInt(hex[1], 16));
   if (err) return `${err.name}: ${err.msg}`;
   if (/blockhash not found|block height exceeded/i.test(text)) return 'The signed transaction expired. Propose it again.';
   if (/insufficient (funds|lamports)|no record of a prior credit/i.test(text)) return 'Not enough devnet SOL for fees. Use the airdrop button or faucet.solana.com.';
+  const said = logs.filter((l) => l.startsWith('Program log: ') && !/Instruction: |executing proposal/.test(l)).at(-1);
+  if (said) return said.slice('Program log: '.length);
   return String((e as Error)?.message ?? e).split('\n')[0];
 }
 

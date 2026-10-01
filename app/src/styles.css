@@ -75,7 +75,7 @@ main { padding-top: 24px; padding-bottom: 24px; }
 .stat-value { font-size: 1.45rem; font-weight: 700; margin: 2px 0; }
 .stat-sub { color: var(--muted); font-size: 0.8rem; }
 meter { width: 100%; height: 8px; }
-.footer, .foot { color: var(--muted); font-size: 0.8rem; padding-bottom: 32px; }
+.foot { color: var(--muted); font-size: 0.8rem; padding-top: 8px; padding-bottom: 32px; }
 
 /* Controls */
 .btn {
@@ -179,6 +179,7 @@ fieldset.lanes input { width: auto; }
   .tl-side { align-items: flex-start; flex-direction: row; flex-wrap: wrap; }
   .form .row { grid-template-columns: 1fr; }
   h1 { font-size: 1.35rem; }
+  .stat-value { font-size: 1.2rem; }
 }
 
 @media print {

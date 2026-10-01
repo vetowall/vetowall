@@ -4,9 +4,9 @@ import type { Ctx } from '../App';
 import { run } from '../chain';
 import { demoDecisions } from '../demo';
 import { fmtTime, type Decision } from '../model';
-import { pauseIx } from '../token';
+import { pauseIx, resumeIx } from '../token';
 import { Addr, Card, TaskStatus, sha256, toHex, useTask } from '../ui';
-import { guardianExecuteIx, vetoIx } from '../vetowall';
+import { guardianExecuteIx, queueIx, vetoIx } from '../vetowall';
 
 const GUARDIAN_URL = import.meta.env.VITE_GUARDIAN_URL as string | undefined;
 
@@ -58,6 +58,18 @@ export default function Guardian({ ctx }: { ctx: Ctx }) {
     return 'Transfers paused. Resuming is a Params action, so it goes through maker-checker and the timelock.';
   }
 
+  async function queueResume() {
+    if (!keys) return;
+    const config = new PublicKey(d.config);
+    const ix = await queueIx(
+      { config, proposer: keys.operator.publicKey, approver: keys.approver.publicKey },
+      resumeIx(new PublicKey(d.mint), new PublicKey(d.authority)),
+    );
+    await run(new Transaction().add(ix), [keys.operator, keys.approver]);
+    await ctx.refresh();
+    return 'Resume queued by maker and checker. Execute it from the Operate timeline once its timelock ends.';
+  }
+
   async function veto(address: string, id: number | null) {
     if (!keys) return;
     const text = reasons[address]?.trim();
@@ -94,9 +106,16 @@ export default function Guardian({ ctx }: { ctx: Ctx }) {
         <Card title="Guardian controls">
           {canAct && isGuardian ? (
             <>
-              <button className="btn btn-danger" disabled={!!task.busy || snap.paused} onClick={() => task.run('Pausing', pause)}>
-                {snap.paused ? 'Transfers paused' : 'Pause transfers now'}
-              </button>
+              <div className="actions">
+                <button className="btn btn-danger" disabled={!!task.busy || snap.paused} onClick={() => task.run('Pausing', pause)}>
+                  {snap.paused ? 'Transfers paused' : 'Pause transfers now'}
+                </button>
+                {snap.paused && (
+                  <button className="btn" disabled={!!task.busy} onClick={() => task.run('Queueing resume', queueResume)}>
+                    Queue resume (maker + checker)
+                  </button>
+                )}
+              </div>
               {queued.length ? (
                 <ul className="veto-list">
                   {queued.map((a) => (

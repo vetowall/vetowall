@@ -2,9 +2,9 @@
   "address": "G8LSBa3y5XqY5fK4R6NTK84oPru3W3hsNzRwjunLWedr",
   "metadata": {
     "name": "vetowall",
-    "version": "0.2.0",
+    "version": "0.1.0",
     "spec": "0.1.0",
-    "description": "Hand-extended from v1 to docs/SPEC.md v2 by the console; replace with the generated IDL"
+    "description": "Onchain firewall between a protocol multisig and its admin instructions"
   },
   "instructions": [
     {
@@ -21,12 +21,19 @@
       ],
       "accounts": [
         {
-          "name": "attestor",
-          "signer": true
-        },
-        {
           "name": "reserve",
           "writable": true
+        },
+        {
+          "name": "attestor",
+          "signer": true,
+          "relations": [
+            "reserve"
+          ]
+        },
+        {
+          "name": "instructions",
+          "address": "Sysvar1nstructions1111111111111111111111111"
         }
       ],
       "args": [
@@ -50,7 +57,10 @@
       ],
       "accounts": [
         {
-          "name": "config"
+          "name": "config",
+          "relations": [
+            "proposal"
+          ]
         },
         {
           "name": "proposal",
@@ -60,11 +70,13 @@
           "name": "target"
         },
         {
-          "name": "policy",
-          "writable": true
+          "name": "policy"
         },
         {
           "name": "reserve",
+          "docs": [
+            "Required when the policy's limit names a reserve."
+          ],
           "optional": true
         },
         {
@@ -92,11 +104,13 @@
         },
         {
           "name": "proposer",
-          "writable": true,
           "signer": true
         },
         {
           "name": "approver",
+          "docs": [
+            "Required when the config names an approver."
+          ],
           "signer": true,
           "optional": true
         },
@@ -109,6 +123,9 @@
         },
         {
           "name": "reserve",
+          "docs": [
+            "Required when the policy's limit names a reserve."
+          ],
           "optional": true
         },
         {
@@ -212,7 +229,31 @@
         },
         {
           "name": "reserve",
-          "writable": true
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  115,
+                  101,
+                  114,
+                  118,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "config"
+              },
+              {
+                "kind": "arg",
+                "path": "mint"
+              }
+            ]
+          }
         },
         {
           "name": "system_program",
@@ -312,18 +353,53 @@
         },
         {
           "name": "approver",
+          "docs": [
+            "Required when the config names an approver."
+          ],
           "signer": true,
           "optional": true
         },
         {
           "name": "proposal",
-          "writable": true
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  112,
+                  111,
+                  115,
+                  97,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "config"
+              },
+              {
+                "kind": "account",
+                "path": "config.proposal_count",
+                "account": "Config"
+              }
+            ]
+          }
         },
         {
-          "name": "target"
+          "name": "target",
+          "docs": [
+            "yet, which means `Max`. Checked in `resolve_policy`."
+          ]
         },
         {
-          "name": "policy"
+          "name": "policy",
+          "docs": [
+            "exist yet, which means `Max`. Checked in `resolve_policy`."
+          ]
         },
         {
           "name": "instructions",
@@ -373,16 +449,70 @@
         },
         {
           "name": "governor",
+          "docs": [
+            "Pays for the target and policy accounts. After `seal` this is the",
+            "authority PDA, so it needs a little SOL."
+          ],
           "writable": true,
           "signer": true
         },
         {
           "name": "target",
-          "writable": true
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  97,
+                  114,
+                  103,
+                  101,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "config"
+              },
+              {
+                "kind": "arg",
+                "path": "target_program"
+              }
+            ]
+          }
         },
         {
           "name": "policy",
-          "writable": true
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  108,
+                  105,
+                  99,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "config"
+              },
+              {
+                "kind": "arg",
+                "path": "target_program"
+              },
+              {
+                "kind": "arg",
+                "path": "discriminator"
+              }
+            ]
+          }
         },
         {
           "name": "system_program",
@@ -453,6 +583,72 @@
         }
       ],
       "args": []
+    },
+    {
+      "name": "set_approver",
+      "discriminator": [
+        139,
+        202,
+        200,
+        122,
+        109,
+        173,
+        219,
+        116
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "writable": true
+        },
+        {
+          "name": "governor",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "approver",
+          "type": {
+            "option": "pubkey"
+          }
+        }
+      ]
+    },
+    {
+      "name": "set_attestor",
+      "discriminator": [
+        95,
+        11,
+        236,
+        157,
+        234,
+        146,
+        163,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "relations": [
+            "reserve"
+          ]
+        },
+        {
+          "name": "governor",
+          "signer": true
+        },
+        {
+          "name": "reserve",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "attestor",
+          "type": "pubkey"
+        }
+      ]
     },
     {
       "name": "set_delays",
@@ -742,38 +938,48 @@
     },
     {
       "code": 6017,
-      "name": "NotAttestor",
-      "msg": "Signer is not the reserve attestor"
+      "name": "NotFastLane",
+      "msg": "Instruction isn't Safe and its policy has no limit; queue it instead"
     },
     {
       "code": 6018,
-      "name": "NotFastLane",
-      "msg": "Instruction is not eligible for the fast lane"
+      "name": "OverCap",
+      "msg": "Amount exceeds what is left of the policy's cap for this window"
     },
     {
       "code": 6019,
-      "name": "OverCap",
-      "msg": "Amount exceeds the remaining cap for this window"
+      "name": "OverReserves",
+      "msg": "Supply plus amount would exceed the attested reserves"
     },
     {
       "code": 6020,
-      "name": "OverReserves",
-      "msg": "Supply after this mint would exceed attested reserves"
-    },
-    {
-      "code": 6021,
       "name": "StaleReserve",
       "msg": "Reserve attestation is older than its max age"
     },
     {
-      "code": 6022,
+      "code": 6021,
       "name": "BadAmount",
       "msg": "Instruction data is too short to hold the amount"
     },
     {
+      "code": 6022,
+      "name": "BadDiscriminator",
+      "msg": "Discriminator doesn't fit the target's disc_len"
+    },
+    {
       "code": 6023,
-      "name": "DiscLenMismatch",
-      "msg": "Discriminator length doesn't match the target"
+      "name": "WideTagsFull",
+      "msg": "Target already has the maximum number of wide tags"
+    },
+    {
+      "code": 6024,
+      "name": "BadReserveAccount",
+      "msg": "Reserve or mint account doesn't match the policy's limit"
+    },
+    {
+      "code": 6025,
+      "name": "NotAttestor",
+      "msg": "Signer is not the reserve's attestor"
     }
   ],
   "types": [
@@ -807,24 +1013,39 @@
         "fields": [
           {
             "name": "admin",
+            "docs": [
+              "Sets up policies until `seal`; has no power afterwards."
+            ],
             "type": "pubkey"
           },
           {
             "name": "proposer",
+            "docs": [
+              "The only key that may queue proposals, normally a Squads vault PDA."
+            ],
             "type": "pubkey"
           },
           {
             "name": "approver",
+            "docs": [
+              "When set, must co-sign every `queue` and `execute_now` (maker-checker)."
+            ],
             "type": {
               "option": "pubkey"
             }
           },
           {
             "name": "guardian",
+            "docs": [
+              "May veto proposals and run `Safe` instructions. Nothing else."
+            ],
             "type": "pubkey"
           },
           {
             "name": "delays",
+            "docs": [
+              "Timelock in seconds, indexed by `ActionClass`."
+            ],
             "type": {
               "array": [
                 "i64",
@@ -849,29 +1070,49 @@
     },
     {
       "name": "Limit",
+      "docs": [
+        "An amount the proposer and approver may move without a timelock, and",
+        "optionally a reserve bound that applies on every path."
+      ],
       "type": {
         "kind": "struct",
         "fields": [
           {
             "name": "amount_offset",
+            "docs": [
+              "Byte offset of the little-endian u64 amount in the instruction data."
+            ],
             "type": "u8"
           },
           {
             "name": "cap",
+            "docs": [
+              "Most that `execute_now` may move per window."
+            ],
             "type": "u64"
           },
           {
             "name": "window",
+            "docs": [
+              "Window length in seconds."
+            ],
             "type": "i64"
           },
           {
             "name": "reserve",
+            "docs": [
+              "If set, supply + amount must stay within this `Reserve`'s attestation."
+            ],
             "type": {
               "option": "pubkey"
             }
           },
           {
             "name": "mint_index",
+            "docs": [
+              "Index, in the stored instruction's accounts, of the mint whose supply",
+              "is checked."
+            ],
             "type": "u8"
           }
         ]
@@ -922,6 +1163,9 @@
           },
           {
             "name": "used",
+            "docs": [
+              "Amount spent through `execute_now` in the current window."
+            ],
             "type": "u64"
           },
           {
@@ -1000,6 +1244,9 @@
           },
           {
             "name": "amount",
+            "docs": [
+              "The amount moved, for instructions whose policy has a limit."
+            ],
             "type": {
               "option": "u64"
             }
@@ -1026,6 +1273,9 @@
     },
     {
       "name": "Reserve",
+      "docs": [
+        "An offchain attestation of the reserves backing a mint."
+      ],
       "type": {
         "kind": "struct",
         "fields": [
@@ -1051,6 +1301,9 @@
           },
           {
             "name": "max_age",
+            "docs": [
+              "Seconds after `updated_at` that the attestation stays usable."
+            ],
             "type": "i64"
           }
         ]
@@ -1078,6 +1331,9 @@
     },
     {
       "name": "Target",
+      "docs": [
+        "How a target program's instructions are told apart. One per target."
+      ],
       "type": {
         "kind": "struct",
         "fields": [
@@ -1091,10 +1347,17 @@
           },
           {
             "name": "disc_len",
+            "docs": [
+              "Discriminator length: 1 for SPL Token / Token-2022, 8 for Anchor."
+            ],
             "type": "u8"
           },
           {
             "name": "wide_tags",
+            "docs": [
+              "First bytes whose discriminator is 2 bytes long (Token-2022 extension",
+              "instructions such as Pausable). Only used when `disc_len == 1`."
+            ],
             "type": "bytes"
           }
         ]

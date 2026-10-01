@@ -26,8 +26,11 @@ interface Pending {
 }
 
 export default function Operate({ ctx }: { ctx: Ctx }) {
-  const { snap, keys, canAct } = ctx;
+  const { snap, keys } = ctx;
   const d = snap.deployment;
+  // A shared demo config only accepts its own proposer; launch your own token to drive it.
+  const canAct = ctx.canAct && keys?.operator.publicKey.toBase58() === d.proposer && keys.approver.publicKey.toBase58() === d.approver;
+  const canAttest = ctx.canAct && keys?.attestor.publicKey.toBase58() === d.attestor;
   const live = snap.source === 'live';
   const now = useNow();
   const task = useTask();
@@ -41,8 +44,9 @@ export default function Operate({ ctx }: { ctx: Ctx }) {
   const stale = !!snap.reserve && now - snap.reserve.updatedAt > snap.reserve.maxAge;
   const autoLane: Lane = amount <= capLeft ? 'fast' : 'queue';
   const chosen = lane ?? autoLane;
-  const verdict =
-    amount > reserveLeft
+  const verdict = snap.paused
+    ? { tone: 'bad', text: 'The mint is paused. Token-2022 refuses every mint until a Resume proposal executes.' }
+    : amount > reserveLeft
       ? { tone: 'bad', text: `Over attested reserves by ${fmtShort(amount - reserveLeft)} ${d.symbol}. The program refuses this on every path.` }
       : stale
         ? { tone: 'bad', text: 'The reserve attestation is older than its max age. The program refuses mints until it is refreshed.' }
@@ -162,7 +166,7 @@ export default function Operate({ ctx }: { ctx: Ctx }) {
                 <span>{pending?.lane === 'queue' ? `Runs after ${fmtDuration(d.delays[1])}` : 'Both signatures, one transaction'}</span>
               </li>
             </ol>
-            {!canAct && <p className="note">Read-only: {!keys ? 'connect a wallet or use demo keys' : 'launch a token first'} to mint. The checks above still work. Try 80000000 or 300000000000000.</p>}
+            {!canAct && <p className="note">Read-only: {!keys ? 'connect a wallet or use demo keys' : ctx.canAct ? 'your keys are not this config\'s maker and checker; launch your own token' : 'launch a token first'} to mint. The checks above still work. Try 80000000 or 300000000000000.</p>}
           </form>
           <TaskStatus task={task} />
         </Card>
@@ -196,7 +200,7 @@ export default function Operate({ ctx }: { ctx: Ctx }) {
               New attestation ({d.symbol})
               <input type="number" min={0} step="any" value={attest} onChange={(e) => setAttest(Number(e.target.value))} />
             </label>
-            <button className="btn" disabled={!canAct || !!task.busy}>Attest as attestor</button>
+            <button className="btn" disabled={!canAttest || !!task.busy}>Attest as attestor</button>
           </form>
           <p className="note">In production the attestor is the custodian's or auditor's key. Mints check against this figure onchain.</p>
         </Card>
@@ -205,7 +209,7 @@ export default function Operate({ ctx }: { ctx: Ctx }) {
         <Timeline
           snap={snap}
           actionFor={(a, t) =>
-            canAct && a.status === 'queued' && a.address && t >= a.eta ? (
+            ctx.canAct && a.status === 'queued' && a.address && t >= a.eta ? (
               <button
                 className="btn btn-primary btn-sm"
                 disabled={!!task.busy}

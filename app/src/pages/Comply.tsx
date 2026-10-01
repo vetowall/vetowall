@@ -9,8 +9,9 @@ import { Card, Pill, TaskStatus, download, short, useTask } from '../ui';
 import { queueIx } from '../vetowall';
 
 export default function Comply({ ctx }: { ctx: Ctx }) {
-  const { snap, keys, canAct } = ctx;
+  const { snap, keys } = ctx;
   const d = snap.deployment;
+  const canAct = ctx.canAct && keys?.operator.publicKey.toBase58() === d.proposer;
   const task = useTask();
   const [account, setAccount] = useState('');
   const rows = reportRows(snap);
@@ -112,7 +113,7 @@ export default function Comply({ ctx }: { ctx: Ctx }) {
                   <td>{r.requested_utc.slice(0, 16).replace('T', ' ')}</td>
                   <td>{r.action}{r.amount && <div className="muted">{Number(r.amount.split(' ')[0]).toLocaleString('en-US')} {d.symbol}</div>}</td>
                   <td>{r.risk_class}<div className="muted">{r.path}</div></td>
-                  <td>{r.maker ? <code>{short(r.maker)}</code> : '—'}<div className="muted">{!r.checker ? '—' : r.checker.length > 44 ? r.checker : <code>{short(r.checker)}</code>}</div></td>
+                  <td>{r.maker ? <code>{short(r.maker)}</code> : '—'}<div className="muted">{!r.checker ? '—' : r.checker.includes(' ') ? r.checker : <code>{short(r.checker)}</code>}</div></td>
                   <td>{r.waiting_period_hours}h</td>
                   <td><Pill status={r.outcome as 'queued'} /></td>
                   <td className="small">{r.independent_review === 'n/a' ? '' : r.independent_review.replace(/sha256 (\w{8})\w+/, 'sha256 $1…')}<div className="muted">{r.reserve_check}</div></td>
