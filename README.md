@@ -1,22 +1,33 @@
 # Vetowall
 
-An onchain firewall between a Solana protocol's multisig and its admin instructions.
+The control plane for stablecoin and tokenized-asset issuers on Solana: no single key, human or AI, can mint, freeze or seize outside policy.
 
-In April 2026 Drift lost $285M. Its contracts weren't broken. Security Council signers were tricked into pre-signing durable-nonce transactions, which were executed days later against a 2-of-5 multisig with a 0-second timelock. Vetowall closes that path in a program, so there is no offchain party to bypass:
+Every stablecoin and tokenized asset is controlled by admin keys that can mint, freeze or seize at will, usually with no onchain delay or cap. That is what failed at Drift (~$285M, April 2026: pre-signed admin transactions against a multisig whose timelock had been removed), Resolv ($80M of unbacked USR minted with a compromised key, March 2026) and Paxos ($300T of PYUSD minted by mistake, October 2025).
 
-- **Per-action timelocks.** Every admin instruction the protocol exposes is registered with a class (`Safe`, `Params`, `Authority`, `Max`), and each class has its own delay. Unknown instructions default to `Max`. Changing the delays is itself a `Max` action.
-- **Durable-nonce refusal.** `queue` and `execute` read the Instructions sysvar and fail if the transaction starts with `AdvanceNonceAccount`, so a pre-signed, future-executable payload can't reach the protocol.
-- **Veto-only guardian.** A guardian key can veto queued proposals and run instructions registered as `Safe` (such as `pause`). It can't execute anything else or move funds, and it can't veto changes to Vetowall's own config, so it can't block its own rotation.
+Vetowall is a Solana program that holds an issuer's Token-2022 authorities through its authority PDA. From then on:
 
-The protocol sets its admin authority to Vetowall's authority PDA. From then on, every admin action goes through `queue` → wait out the class delay → `execute`.
+- **Every privileged instruction has a class and a timelock.** Each admin instruction is registered as `Safe`, `Params`, `Authority` or `Max`, and each class has its own delay. Unregistered instructions default to `Max`. Once the config is sealed, changing Vetowall's own settings is itself a `Max` action, so nobody can quietly remove the delays.
+- **Mints are bounded** (in progress, see [docs/SPEC.md](docs/SPEC.md)). A maker-checker fast lane runs routine mints immediately up to a daily cap. Anything above the cap waits out the timelock, and no path can mint above attested reserves.
+- **The guardian can only stop things.** A guardian key can veto queued proposals and run instructions registered as `Safe` (such as pause). It can't mint, unpause or move funds, and it can't veto changes to Vetowall's own config, so it can't block its own rotation.
+- **Durable-nonce transactions are refused** on every path, as defense in depth. This uses the same Instructions-sysvar check as [Squads Nonce Guard](https://github.com/Squads-Protocol/nonce-guard) and [p-never-nonce](https://github.com/febo/pinocchio-never-nonce). On its own it would not have stopped Drift, because the attacker could execute pre-approved proposals with a fresh blockhash. The timelock and the veto are what stop that pattern.
+
+Vetowall doesn't issue tokens or hold reserves. It sits between whatever signs (a Squads multisig, a single key, an issuance provider's API) and the asset, and works alongside them.
 
 > Status: in active development for the Colosseum Crypto World's Fair (Sep 14 to Oct 12, 2026). Devnet deployment, live demo URL and explorer links will be added here.
+
+## Prior work and credits
+
+- **[OpenZeppelin AccessManager](https://docs.openzeppelin.com/contracts/5.x/access-control)** (EVM): a role and execution delay per function selector with a cancelling guardian. Vetowall applies the same idea to Solana programs and Token-2022 authorities.
+- **[Squads Smart Account](https://github.com/Squads-Protocol/smart-account-program) policies**: per-policy timelocks on the wallet side. Vetowall enforces on the asset side instead, so its limits hold even if the signing wallet is compromised, migrated or misconfigured.
+- **[Chainlink Proof of Reserve Secure Mint](https://blog.chain.link/secure-mint/)**: reserve-gated minting, already live on Solana. Vetowall's reserve bound takes an attested reserve account, and a Chainlink PoR adapter is planned.
+- **Earlier Colosseum hackathon projects in this space:** [Guardrail](https://colosseum.com/projects/explore/guardrail) (authority-wrapping primitive), [Settlin](https://colosseum.com/projects/explore/settlin) (PDA co-signer with transfer limits) and [Killswitch](https://colosseum.com/projects/explore/killswitch) (monitoring with auto-pause). Vetowall differs by holding issuers' Token-2022 authorities directly, bounding mints by attested reserves, and producing change-control records.
 
 ## Layout
 
 | Path | What it is |
 |---|---|
-| `programs/vetowall` | The firewall program (Anchor) |
+| `programs/vetowall` | The control program (Anchor) |
+| `docs/SPEC.md` | The v2 spec shared by the program, the issuer console and the guardian |
 | `programs/mock_vault` | A small lending vault used to replay the Drift attack, with and without Vetowall |
 
 ## Build and test
