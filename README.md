@@ -13,7 +13,16 @@ Vetowall is a Solana program that holds an issuer's Token-2022 authorities throu
 
 Vetowall doesn't issue tokens or hold reserves. It sits between whatever signs (a Squads multisig, a single key, an issuance provider's API) and the asset, and works alongside them.
 
-> Status: in active development for the Colosseum Crypto World's Fair (Sep 14 to Oct 12, 2026). Devnet deployment, live demo URL and explorer links will be added here.
+> Status: in active development for the Colosseum Crypto World's Fair (Sep 14 to Oct 12, 2026). The programs are live on devnet. The issuer console and demo config are next.
+
+## Devnet
+
+| Program | Address |
+|---|---|
+| `vetowall` | [`G8LSBa3y5XqY5fK4R6NTK84oPru3W3hsNzRwjunLWedr`](https://explorer.solana.com/address/G8LSBa3y5XqY5fK4R6NTK84oPru3W3hsNzRwjunLWedr?cluster=devnet) |
+| `mock_vault` | [`46BaaWFuFK3T8akXjL2xFzcv6M5AWAKXFcuxdU3jfc3a`](https://explorer.solana.com/address/46BaaWFuFK3T8akXjL2xFzcv6M5AWAKXFcuxdU3jfc3a?cluster=devnet) |
+
+Built with `anchor build --arch v0` from the commit tagged `devnet-2026-10-01`. The devnet demo config uses short delays (Safe 0s, Params 120s, Authority 180s, Max 300s) so the flow fits in a demo. The tests check the real delays: 48h, 72h and 7 days.
 
 ## Prior work and credits
 
