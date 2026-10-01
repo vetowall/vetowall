@@ -1,33 +1,40 @@
 use anchor_lang::prelude::*;
+use anchor_spl::token::{Mint, Token, TokenAccount};
 
-use crate::{constants::*, state::Counter};
+use crate::{constants::*, state::Vault};
 
 #[derive(Accounts)]
 pub struct Initialize<'info> {
     #[account(mut)]
-    pub payer: Signer<'info>,
+    pub creator: Signer<'info>,
     #[account(
         init,
-        payer = payer,
-        space = 8 + Counter::INIT_SPACE,
-        seeds = [COUNTER_SEED],
+        payer = creator,
+        space = 8 + Vault::INIT_SPACE,
+        seeds = [VAULT_SEED, creator.key().as_ref()],
         bump
     )]
-    pub counter: Account<'info, Counter>,
+    pub vault: Account<'info, Vault>,
+    pub usdc_mint: Account<'info, Mint>,
+    #[account(
+        init,
+        payer = creator,
+        seeds = [RESERVE_SEED, vault.key().as_ref()],
+        bump,
+        token::mint = usdc_mint,
+        token::authority = vault
+    )]
+    pub reserve: Account<'info, TokenAccount>,
+    pub token_program: Program<'info, Token>,
     pub system_program: Program<'info, System>,
 }
 
-pub fn handle_initialize(ctx: Context<Initialize>) -> Result<()> {
-    ctx.accounts.counter.count = 0;
-    ctx.accounts.counter.authority = ctx.accounts.payer.key();
-
-    let cpi_accounts = anchor_lang::system_program::Transfer {
-        from: ctx.accounts.payer.to_account_info(),
-        to: ctx.accounts.counter.to_account_info(),
-    };
-    let cpi_ctx = CpiContext::new(anchor_lang::system_program::ID, cpi_accounts);
-    anchor_lang::system_program::transfer(cpi_ctx, HELLO_WORLD_LAMPORTS)?;
-
-    msg!("Hello, world! Counter initialized");
+pub fn handle_initialize(ctx: Context<Initialize>, withdraw_limit: u64) -> Result<()> {
+    let vault = &mut ctx.accounts.vault;
+    vault.creator = ctx.accounts.creator.key();
+    vault.admin = ctx.accounts.creator.key();
+    vault.usdc_mint = ctx.accounts.usdc_mint.key();
+    vault.withdraw_limit = withdraw_limit;
+    vault.bump = ctx.bumps.vault;
     Ok(())
 }

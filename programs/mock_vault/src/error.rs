@@ -2,8 +2,20 @@ use anchor_lang::prelude::*;
 
 #[error_code]
 pub enum ErrorCode {
-    #[msg("Only the counter authority can update this counter")]
+    #[msg("Signer is not the vault admin")]
     Unauthorized,
-    #[msg("Counter has reached the maximum value")]
-    CounterOverflow,
+    #[msg("Vault is paused")]
+    Paused,
+    #[msg("Collateral mint is not listed")]
+    NotListed,
+    #[msg("No free market slot")]
+    MarketsFull,
+    #[msg("Collateral weight must be at most 10000 bps")]
+    BadWeight,
+    #[msg("Borrow exceeds the per-transaction withdraw limit")]
+    OverLimit,
+    #[msg("Borrow exceeds the position's collateral credit")]
+    InsufficientCredit,
+    #[msg("Arithmetic overflow")]
+    MathOverflow,
 }
