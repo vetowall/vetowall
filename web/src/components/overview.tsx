@@ -173,7 +173,7 @@ export default function Overview() {
         <div className="section-head">
           <h2 id="record-title">What the program stopped, and what it let through</h2>
           <p className="muted">
-            Drift, Resolv and Paxos each came down to one admin key acting alone. These are the same moves, tried against {sym}
+            Drift, Resolv and Paxos each came down to admin authority with no onchain delay or cap: a multisig whose timelock had been removed, a mint key with no limit, a fat-fingered mint nothing could stop. These are the same moves, tried against {sym}
             {live ? ' on devnet. Each row links to its transaction or account on Solana Explorer.' : '. In sample mode the links are turned off.'}
           </p>
         </div>
