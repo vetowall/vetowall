@@ -24,9 +24,22 @@ The protocol sets its admin authority to Airlock's authority PDA. From then on, 
 Requires Agave CLI 4.3 and Anchor CLI 1.2.
 
 ```sh
-anchor build
-cargo test
+anchor build --arch v0   # SBPF v0 loads on every cluster and in LiteSVM
+cargo test -p airlock --test drift_replay
 ```
+
+`programs/airlock/tests/drift_replay.rs` runs the attack in LiteSVM with the real timelocks (48h, 72h, 7 days), skipping the clock forward:
+
+| Test | What it shows |
+|---|---|
+| `control_unguarded_vault_is_drained_by_presigned_admin_tx` | A hot admin key pre-signs "list collateral + raise withdraw limit 20x" against a durable nonce. 300 blocks later it lands, and a worthless token borrows the whole reserve |
+| `presigned_durable_nonce_queue_is_refused` | The same pre-signed pattern against Airlock fails with `NonceTxForbidden` |
+| `presigned_durable_nonce_execute_is_refused` | Executing a matured proposal from a durable-nonce transaction also fails |
+| `each_class_waits_out_its_own_timelock` | A listing waits 48h; an unregistered instruction defaults to 7 days |
+| `guardian_veto_stops_the_drift_replay` | The guardian vetoes both proposals, they can never execute, and the reserve is untouched |
+| `guardian_can_pause_but_nothing_else` | The guardian can pause instantly, but can't unpause or change limits |
+| `config_changes_take_the_max_timelock_and_the_guardian_cannot_block_its_rotation` | Rotating the guardian takes 7 days and the guardian can't veto it |
+| `only_the_proposer_queues_and_only_the_authority_signs` | Forged proposers, foreign signers and swapped policy accounts are rejected |
 
 ## License
 

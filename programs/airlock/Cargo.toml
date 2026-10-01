@@ -30,6 +30,14 @@ solana-message = "3.0.1"
 solana-transaction = "3.0.2"
 solana-signer = "3.0.0"
 solana-keypair = "3.0.1"
+solana-system-interface = { version = "2.0.0", features = ["bincode"] }
+solana-nonce = "3.4.0"
+solana-hash = "3"
+litesvm-token = "0.10.0"
+mock_vault = { path = "../mock_vault", features = ["no-entrypoint"] }
+# mock_vault's token accounts need anchor-spl's IDL impls when `anchor build`
+# generates airlock's IDL with this crate in the dev graph.
+anchor-spl = { version = "1.2.0", default-features = false, features = ["token", "token_2022", "idl-build"] }
 
 
 [lints.rust]
