@@ -1,5 +1,10 @@
 # Vetowall
 
+[![ci](https://github.com/vetowall/vetowall/actions/workflows/ci.yml/badge.svg)](https://github.com/vetowall/vetowall/actions/workflows/ci.yml)
+[![pages](https://github.com/vetowall/vetowall/actions/workflows/pages.yml/badge.svg)](https://github.com/vetowall/vetowall/actions/workflows/pages.yml)
+
+**[Live demo](https://vetowall.github.io/vetowall/)** · [Program on devnet](https://explorer.solana.com/address/G8LSBa3y5XqY5fK4R6NTK84oPru3W3hsNzRwjunLWedr?cluster=devnet) · [Live vUSD mint](https://explorer.solana.com/address/GHhMGStTRu2y3CGsmkY82DjUMc3oX5p8ajEVnuMNpdLV?cluster=devnet) · [Spec](docs/SPEC.md) · [Issuer console](app/README.md) · [Guardian](guardian/README.md)
+
 The control plane for stablecoin and tokenized-asset issuers on Solana: no single key, human or AI, can mint, freeze or seize outside policy.
 
 Every stablecoin and tokenized asset is controlled by admin keys that can mint, freeze or seize at will, usually with no onchain delay or cap. That is what failed at Drift (~$285M, April 2026: pre-signed admin transactions against a multisig whose timelock had been removed), Resolv ($80M of unbacked USR minted with a compromised key, March 2026) and Paxos ($300T of PYUSD minted by mistake, October 2025).
