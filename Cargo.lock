@@ -129,25 +129,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "airlock"
-version = "0.1.0"
-dependencies = [
- "anchor-lang",
- "anchor-spl",
- "litesvm",
- "litesvm-token",
- "mock_vault",
- "solana-hash 3.1.0",
- "solana-instructions-sysvar",
- "solana-keypair",
- "solana-message",
- "solana-nonce",
- "solana-signer",
- "solana-system-interface 2.0.0",
- "solana-transaction",
-]
-
-[[package]]
 name = "allocator-api2"
 version = "0.2.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4333,6 +4314,25 @@ name = "version_check"
 version = "0.9.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
+
+[[package]]
+name = "vetowall"
+version = "0.1.0"
+dependencies = [
+ "anchor-lang",
+ "anchor-spl",
+ "litesvm",
+ "litesvm-token",
+ "mock_vault",
+ "solana-hash 3.1.0",
+ "solana-instructions-sysvar",
+ "solana-keypair",
+ "solana-message",
+ "solana-nonce",
+ "solana-signer",
+ "solana-system-interface 2.0.0",
+ "solana-transaction",
+]
 
 [[package]]
 name = "void"

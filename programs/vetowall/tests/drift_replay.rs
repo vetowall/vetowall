@@ -1,9 +1,9 @@
 //! Replays the April 2026 Drift admin takeover against `mock_vault`, once with
-//! a hot admin key and once with Airlock as the admin, and checks the limits
-//! on Airlock's guardian.
+//! a hot admin key and once with Vetowall as the admin, and checks the limits
+//! on Vetowall's guardian.
 
 use {
-    airlock::{error::ErrorCode as AirlockError, ActionClass, Config, Proposal, ProposalStatus, StoredMeta},
+    vetowall::{error::ErrorCode as VetowallError, ActionClass, Config, Proposal, ProposalStatus, StoredMeta},
     anchor_lang::{
         prelude::{Clock, Pubkey},
         solana_program::{
@@ -70,7 +70,7 @@ fn assert_err<T: std::fmt::Debug>(res: Result<T, FailedTransactionMetadata>, cod
     assert!(got.contains(&format!("Custom({code})")), "expected custom error {code}, got {got}");
 }
 
-fn code(e: AirlockError) -> u32 {
+fn code(e: VetowallError) -> u32 {
     u32::from(e)
 }
 
@@ -119,7 +119,7 @@ fn stored(ix: &Instruction) -> Vec<StoredMeta> {
 }
 
 fn policy_pda(config: &Pubkey, ix: &Instruction) -> Pubkey {
-    airlock::firewall::policy_address(config, &ix.program_id, &airlock::firewall::discriminator(&ix.data))
+    vetowall::firewall::policy_address(config, &ix.program_id, &vetowall::firewall::discriminator(&ix.data))
 }
 
 fn create_vault(env: &mut Env, creator: &Keypair) -> (Pubkey, Pubkey) {
@@ -143,11 +143,11 @@ fn create_vault(env: &mut Env, creator: &Keypair) -> (Pubkey, Pubkey) {
     (vault, reserve)
 }
 
-/// A guarded vault: admin is Airlock's authority PDA, with policies
+/// A guarded vault: admin is Vetowall's authority PDA, with policies
 /// registered and the config sealed.
 fn setup() -> Env {
     let mut svm = LiteSVM::new();
-    svm.add_program(airlock::id(), include_bytes!(concat!(env!("CARGO_TARGET_TMPDIR"), "/../deploy/airlock.so")))
+    svm.add_program(vetowall::id(), include_bytes!(concat!(env!("CARGO_TARGET_TMPDIR"), "/../deploy/vetowall.so")))
         .unwrap();
     svm.add_program(mock_vault::id(), include_bytes!(concat!(env!("CARGO_TARGET_TMPDIR"), "/../deploy/mock_vault.so")))
         .unwrap();
@@ -167,7 +167,7 @@ fn setup() -> Env {
     let config_kp = Keypair::new();
     let config = config_kp.pubkey();
     let authority =
-        Pubkey::find_program_address(&[airlock::AUTHORITY_SEED, config.as_ref()], &airlock::id()).0;
+        Pubkey::find_program_address(&[vetowall::AUTHORITY_SEED, config.as_ref()], &vetowall::id()).0;
     // The authority PDA pays rent when governance registers policies.
     svm.airdrop(&authority, 1_000_000_000).unwrap();
 
@@ -185,14 +185,14 @@ fn setup() -> Env {
     };
 
     let init = Instruction::new_with_bytes(
-        airlock::id(),
-        &airlock::instruction::Initialize {
+        vetowall::id(),
+        &vetowall::instruction::Initialize {
             proposer: env.proposer.pubkey(),
             guardian: env.guardian.pubkey(),
             delays: DELAYS,
         }
         .data(),
-        airlock::accounts::Initialize {
+        vetowall::accounts::Initialize {
             admin: env.payer.pubkey(),
             config,
             system_program: system_program::ID,
@@ -214,29 +214,29 @@ fn setup() -> Env {
         (mock_vault::instruction::Pause {}.data(), ActionClass::Safe),
     ];
     for (data, class) in policies {
-        let disc = airlock::firewall::discriminator(&data);
+        let disc = vetowall::firewall::discriminator(&data);
         let ix = register_ix(&env, env.payer.pubkey(), disc, class);
         tx!(env, [ix], [&env.payer]).unwrap();
     }
     let seal = Instruction::new_with_bytes(
-        airlock::id(),
-        &airlock::instruction::Seal {}.data(),
-        airlock::accounts::Seal { config, admin: env.payer.pubkey() }.to_account_metas(None),
+        vetowall::id(),
+        &vetowall::instruction::Seal {}.data(),
+        vetowall::accounts::Seal { config, admin: env.payer.pubkey() }.to_account_metas(None),
     );
     tx!(env, [seal], [&env.payer]).unwrap();
 
-    // Hand the vault to Airlock.
+    // Hand the vault to Vetowall.
     let handover = admin_ix(vault, creator.pubkey(), mock_vault::instruction::SetAdmin { new_admin: authority }.data());
     tx!(env, [handover], [&creator]).unwrap();
     env
 }
 
 fn register_ix(env: &Env, governor: Pubkey, disc: [u8; 8], class: ActionClass) -> Instruction {
-    let policy = airlock::firewall::policy_address(&env.config, &mock_vault::id(), &disc);
+    let policy = vetowall::firewall::policy_address(&env.config, &mock_vault::id(), &disc);
     Instruction::new_with_bytes(
-        airlock::id(),
-        &airlock::instruction::Register { target_program: mock_vault::id(), discriminator: disc, class }.data(),
-        airlock::accounts::Register {
+        vetowall::id(),
+        &vetowall::instruction::Register { target_program: mock_vault::id(), discriminator: disc, class }.data(),
+        vetowall::accounts::Register {
             config: env.config,
             governor,
             policy,
@@ -250,14 +250,14 @@ fn queue_ix(env: &Env, target: &Instruction) -> Instruction {
     let cfg: Config = load(&env.svm, &env.config);
     let proposal = proposal_pda(env, cfg.proposal_count);
     Instruction::new_with_bytes(
-        airlock::id(),
-        &airlock::instruction::Queue {
+        vetowall::id(),
+        &vetowall::instruction::Queue {
             target_program: target.program_id,
             accounts: stored(target),
             data: target.data.clone(),
         }
         .data(),
-        airlock::accounts::Queue {
+        vetowall::accounts::Queue {
             config: env.config,
             proposer: env.proposer.pubkey(),
             proposal,
@@ -271,8 +271,8 @@ fn queue_ix(env: &Env, target: &Instruction) -> Instruction {
 
 fn proposal_pda(env: &Env, id: u64) -> Pubkey {
     Pubkey::find_program_address(
-        &[airlock::PROPOSAL_SEED, env.config.as_ref(), &id.to_le_bytes()],
-        &airlock::id(),
+        &[vetowall::PROPOSAL_SEED, env.config.as_ref(), &id.to_le_bytes()],
+        &vetowall::id(),
     )
     .0
 }
@@ -294,27 +294,27 @@ fn remaining(target: &Instruction) -> Vec<AccountMeta> {
 }
 
 fn execute_ix(env: &Env, id: u64, target: &Instruction) -> Instruction {
-    let mut metas = airlock::accounts::Execute {
+    let mut metas = vetowall::accounts::Execute {
         config: env.config,
         proposal: proposal_pda(env, id),
         instructions: solana_instructions_sysvar_id(),
     }
     .to_account_metas(None);
     metas.extend(remaining(target));
-    Instruction::new_with_bytes(airlock::id(), &airlock::instruction::Execute {}.data(), metas)
+    Instruction::new_with_bytes(vetowall::id(), &vetowall::instruction::Execute {}.data(), metas)
 }
 
 fn veto_ix(env: &Env, id: u64, signer: Pubkey) -> Instruction {
     Instruction::new_with_bytes(
-        airlock::id(),
-        &airlock::instruction::Veto { reason: [7; 32] }.data(),
-        airlock::accounts::Veto { config: env.config, guardian: signer, proposal: proposal_pda(env, id) }
+        vetowall::id(),
+        &vetowall::instruction::Veto { reason: [7; 32] }.data(),
+        vetowall::accounts::Veto { config: env.config, guardian: signer, proposal: proposal_pda(env, id) }
             .to_account_metas(None),
     )
 }
 
 fn guardian_execute_ix(env: &Env, target: &Instruction) -> Instruction {
-    let mut metas = airlock::accounts::GuardianExecute {
+    let mut metas = vetowall::accounts::GuardianExecute {
         config: env.config,
         guardian: env.guardian.pubkey(),
         policy: policy_pda(&env.config, target),
@@ -323,8 +323,8 @@ fn guardian_execute_ix(env: &Env, target: &Instruction) -> Instruction {
     .to_account_metas(None);
     metas.extend(remaining(target));
     Instruction::new_with_bytes(
-        airlock::id(),
-        &airlock::instruction::GuardianExecute {
+        vetowall::id(),
+        &vetowall::instruction::GuardianExecute {
             target_program: target.program_id,
             accounts: stored(target),
             data: target.data.clone(),
@@ -465,7 +465,7 @@ fn presigned_durable_nonce_queue_is_refused() {
     let queue = queue_ix(&env, &takeover);
     let proposer = env.proposer.insecure_clone();
     let res = send_presigned(&mut env.svm, &[queue], &[&proposer], nonce, &proposer.pubkey(), durable);
-    assert_err(res, code(AirlockError::NonceTxForbidden));
+    assert_err(res, code(VetowallError::NonceTxForbidden));
 }
 
 #[test]
@@ -481,7 +481,7 @@ fn presigned_durable_nonce_execute_is_refused() {
     let (nonce, durable) = nonce_account(&mut env.svm, &executor, &executor.pubkey());
     let execute = execute_ix(&env, 0, &list);
     let res = send_presigned(&mut env.svm, &[execute], &[&executor], nonce, &executor.pubkey(), durable);
-    assert_err(res, code(AirlockError::NonceTxForbidden));
+    assert_err(res, code(VetowallError::NonceTxForbidden));
 }
 
 #[test]
@@ -500,13 +500,13 @@ fn each_class_waits_out_its_own_timelock() {
     assert_eq!(p1.class, ActionClass::Max, "unregistered instructions default to Max");
     assert_eq!(p1.eta - p1.queued_at, 7 * DAY);
 
-    assert_err(tx!(env, [execute_ix(&env, 0, &list)], [&env.payer]), code(AirlockError::TooEarly));
+    assert_err(tx!(env, [execute_ix(&env, 0, &list)], [&env.payer]), code(VetowallError::TooEarly));
     warp(&mut env.svm, 48 * HOUR);
     tx!(env, [execute_ix(&env, 0, &list)], [&env.payer]).unwrap();
     let vault: mock_vault::Vault = load(&env.svm, &env.vault);
     assert!(vault.market(&mint).is_some());
-    assert_err(tx!(env, [execute_ix(&env, 0, &list)], [&env.payer]), code(AirlockError::NotQueued));
-    assert_err(tx!(env, [execute_ix(&env, 1, &unpause)], [&env.payer]), code(AirlockError::TooEarly));
+    assert_err(tx!(env, [execute_ix(&env, 0, &list)], [&env.payer]), code(VetowallError::NotQueued));
+    assert_err(tx!(env, [execute_ix(&env, 1, &unpause)], [&env.payer]), code(VetowallError::TooEarly));
 }
 
 #[test]
@@ -519,13 +519,13 @@ fn guardian_veto_stops_the_drift_replay() {
     tx!(env, [queue_ix(&env, &raise)], [&env.proposer]).unwrap();
 
     let guardian = env.guardian.insecure_clone();
-    assert_err(tx!(env, [veto_ix(&env, 0, env.attacker.pubkey())], [&env.attacker.insecure_clone()]), code(AirlockError::NotGuardian));
+    assert_err(tx!(env, [veto_ix(&env, 0, env.attacker.pubkey())], [&env.attacker.insecure_clone()]), code(VetowallError::NotGuardian));
     tx!(env, [veto_ix(&env, 0, guardian.pubkey()), veto_ix(&env, 1, guardian.pubkey())], [&guardian]).unwrap();
     assert_eq!(load::<Proposal>(&env.svm, &proposal_pda(&env, 0)).status, ProposalStatus::Vetoed);
 
     warp(&mut env.svm, 48 * HOUR);
-    assert_err(tx!(env, [execute_ix(&env, 0, &list)], [&env.payer]), code(AirlockError::NotQueued));
-    assert_err(tx!(env, [execute_ix(&env, 1, &raise)], [&env.payer]), code(AirlockError::NotQueued));
+    assert_err(tx!(env, [execute_ix(&env, 0, &list)], [&env.payer]), code(VetowallError::NotQueued));
+    assert_err(tx!(env, [execute_ix(&env, 1, &raise)], [&env.payer]), code(VetowallError::NotQueued));
 
     let (vault, reserve) = (env.vault, env.reserve);
     assert_eq!(drain(&mut env, vault, reserve, mint, ata), 0);
@@ -541,9 +541,9 @@ fn guardian_can_pause_but_nothing_else() {
     assert!(load::<mock_vault::Vault>(&env.svm, &env.vault).paused);
 
     let unpause = admin_ix(env.vault, env.authority, mock_vault::instruction::Unpause {}.data());
-    assert_err(tx!(env, [guardian_execute_ix(&env, &unpause)], [&guardian]), code(AirlockError::NotSafeClass));
+    assert_err(tx!(env, [guardian_execute_ix(&env, &unpause)], [&guardian]), code(VetowallError::NotSafeClass));
     let raise = admin_ix(env.vault, env.authority, mock_vault::instruction::SetWithdrawLimit { withdraw_limit: u64::MAX }.data());
-    assert_err(tx!(env, [guardian_execute_ix(&env, &raise)], [&guardian]), code(AirlockError::NotSafeClass));
+    assert_err(tx!(env, [guardian_execute_ix(&env, &raise)], [&guardian]), code(VetowallError::NotSafeClass));
 }
 
 #[test]
@@ -551,19 +551,19 @@ fn config_changes_take_the_max_timelock_and_the_guardian_cannot_block_its_rotati
     let mut env = setup();
     let new_guardian = Pubkey::new_unique();
     let rotate = Instruction::new_with_bytes(
-        airlock::id(),
-        &airlock::instruction::SetGuardian { guardian: new_guardian }.data(),
-        airlock::accounts::Govern { config: env.config, governor: env.authority }.to_account_metas(None),
+        vetowall::id(),
+        &vetowall::instruction::SetGuardian { guardian: new_guardian }.data(),
+        vetowall::accounts::Govern { config: env.config, governor: env.authority }.to_account_metas(None),
     );
 
     // After sealing, the old admin and the guardian have no direct power.
     for signer in [env.payer.insecure_clone(), env.guardian.insecure_clone()] {
         let direct = Instruction::new_with_bytes(
-            airlock::id(),
-            &airlock::instruction::SetGuardian { guardian: signer.pubkey() }.data(),
-            airlock::accounts::Govern { config: env.config, governor: signer.pubkey() }.to_account_metas(None),
+            vetowall::id(),
+            &vetowall::instruction::SetGuardian { guardian: signer.pubkey() }.data(),
+            vetowall::accounts::Govern { config: env.config, governor: signer.pubkey() }.to_account_metas(None),
         );
-        assert_err(tx!(env, [direct], [&signer]), code(AirlockError::NotGovernor));
+        assert_err(tx!(env, [direct], [&signer]), code(VetowallError::NotGovernor));
     }
 
     tx!(env, [queue_ix(&env, &rotate)], [&env.proposer]).unwrap();
@@ -571,7 +571,7 @@ fn config_changes_take_the_max_timelock_and_the_guardian_cannot_block_its_rotati
     assert_eq!((p.class, p.eta - p.queued_at), (ActionClass::Max, 7 * DAY));
 
     let guardian = env.guardian.insecure_clone();
-    assert_err(tx!(env, [veto_ix(&env, 0, guardian.pubkey())], [&guardian]), code(AirlockError::GuardianCannotVetoGovernance));
+    assert_err(tx!(env, [veto_ix(&env, 0, guardian.pubkey())], [&guardian]), code(VetowallError::GuardianCannotVetoGovernance));
 
     warp(&mut env.svm, 7 * DAY);
     tx!(env, [execute_ix(&env, 0, &rotate)], [&env.payer]).unwrap();
@@ -585,15 +585,15 @@ fn only_the_proposer_queues_and_only_the_authority_signs() {
     let takeover = admin_ix(env.vault, env.authority, mock_vault::instruction::SetAdmin { new_admin: attacker.pubkey() }.data());
     let mut forged = queue_ix(&env, &takeover);
     forged.accounts[1] = AccountMeta::new(attacker.pubkey(), true);
-    assert_err(tx!(env, [forged], [&attacker]), code(AirlockError::NotProposer));
+    assert_err(tx!(env, [forged], [&attacker]), code(VetowallError::NotProposer));
 
     // A stored instruction may not ask for any signer besides the authority PDA.
     let foreign = admin_ix(env.vault, attacker.pubkey(), mock_vault::instruction::Pause {}.data());
-    assert_err(tx!(env, [queue_ix(&env, &foreign)], [&env.proposer]), code(AirlockError::ForeignSigner));
+    assert_err(tx!(env, [queue_ix(&env, &foreign)], [&env.proposer]), code(VetowallError::ForeignSigner));
 
     // Passing some other account as the policy can't downgrade the class.
     let mut wrong_policy = queue_ix(&env, &takeover);
     let pause = admin_ix(env.vault, env.authority, mock_vault::instruction::Pause {}.data());
     wrong_policy.accounts[3] = AccountMeta::new_readonly(policy_pda(&env.config, &pause), false);
-    assert_err(tx!(env, [wrong_policy], [&env.proposer]), code(AirlockError::BadPolicyAccount));
+    assert_err(tx!(env, [wrong_policy], [&env.proposer]), code(VetowallError::BadPolicyAccount));
 }

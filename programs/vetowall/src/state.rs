@@ -14,7 +14,7 @@ pub enum ActionClass {
     Params,
     /// Authority transfers and upgrades.
     Authority,
-    /// Anything unregistered, plus every change to Airlock's own config.
+    /// Anything unregistered, plus every change to Vetowall's own config.
     Max,
 }
 

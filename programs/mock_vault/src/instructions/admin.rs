@@ -7,7 +7,7 @@ use crate::{
 };
 
 /// Every admin instruction takes the same two accounts. For a vault guarded by
-/// Airlock, `admin` is Airlock's authority PDA, signing through `execute`.
+/// Vetowall, `admin` is Vetowall's authority PDA, signing through `execute`.
 #[derive(Accounts)]
 pub struct Admin<'info> {
     #[account(mut, has_one = admin @ ErrorCode::Unauthorized)]

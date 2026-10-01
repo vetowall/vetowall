@@ -20,7 +20,7 @@ use crate::{
 ///
 /// The runtime only accepts a durable-nonce transaction if its first top-level
 /// instruction is `AdvanceNonceAccount`. The Instructions sysvar always lists
-/// top-level instructions, even when Airlock is reached by CPI (from a Squads
+/// top-level instructions, even when Vetowall is reached by CPI (from a Squads
 /// vault transaction, say), so checking index 0 covers every route in. This is
 /// what stops a payload signed today from being executed days later, which is
 /// how the Drift admin takeover worked.
@@ -53,7 +53,7 @@ pub fn policy_address(config: &Pubkey, target_program: &Pubkey, disc: &[u8; 8]) 
 }
 
 /// Looks up the class of an instruction. Anything unregistered is `Max`, and
-/// so is every instruction that targets Airlock itself.
+/// so is every instruction that targets Vetowall itself.
 pub fn resolve_class(
     config: &Pubkey,
     target_program: &Pubkey,
@@ -73,7 +73,7 @@ pub fn resolve_class(
 }
 
 /// Bounds a stored instruction, and makes sure the authority PDA is the only
-/// signer it can ask for. Airlock can't produce any other signature at
+/// signer it can ask for. Vetowall can't produce any other signature at
 /// execute time, so another signer would only make the proposal unexecutable.
 pub fn validate_instruction(
     config: &Config,

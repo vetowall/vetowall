@@ -1,4 +1,4 @@
-//! Changes to Airlock's own config. Before `seal` the admin makes them
+//! Changes to Vetowall's own config. Before `seal` the admin makes them
 //! directly, to set the firewall up. After `seal` they only run through
 //! `queue` + `execute`, which always puts them in the `Max` class.
 

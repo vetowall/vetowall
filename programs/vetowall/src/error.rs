@@ -8,7 +8,7 @@ pub enum ErrorCode {
     NotProposer,
     #[msg("Signer is not the configured guardian")]
     NotGuardian,
-    #[msg("Signer can't change Airlock's config")]
+    #[msg("Signer can't change Vetowall's config")]
     NotGovernor,
     #[msg("Config must be sealed before proposals can be queued")]
     NotSealed,
@@ -22,13 +22,13 @@ pub enum ErrorCode {
     TooManyAccounts,
     #[msg("Instruction data is too large")]
     DataTooLarge,
-    #[msg("Only Airlock's authority PDA may sign a stored instruction")]
+    #[msg("Only Vetowall's authority PDA may sign a stored instruction")]
     ForeignSigner,
     #[msg("Policy account doesn't match the target instruction")]
     BadPolicyAccount,
-    #[msg("Airlock's own instructions can't be given a policy")]
+    #[msg("Vetowall's own instructions can't be given a policy")]
     SelfPolicy,
-    #[msg("The guardian can't veto changes to Airlock's own config")]
+    #[msg("The guardian can't veto changes to Vetowall's own config")]
     GuardianCannotVetoGovernance,
     #[msg("The guardian may only run instructions registered as Safe")]
     NotSafeClass,

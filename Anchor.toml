@@ -7,7 +7,7 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-airlock = "G8LSBa3y5XqY5fK4R6NTK84oPru3W3hsNzRwjunLWedr"
+vetowall = "G8LSBa3y5XqY5fK4R6NTK84oPru3W3hsNzRwjunLWedr"
 mock_vault = "46BaaWFuFK3T8akXjL2xFzcv6M5AWAKXFcuxdU3jfc3a"
 
 [provider]

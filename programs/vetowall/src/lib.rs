@@ -13,7 +13,7 @@ pub use state::*;
 declare_id!("G8LSBa3y5XqY5fK4R6NTK84oPru3W3hsNzRwjunLWedr");
 
 #[program]
-pub mod airlock {
+pub mod vetowall {
     use super::*;
 
     pub fn initialize(

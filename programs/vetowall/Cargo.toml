@@ -1,5 +1,5 @@
 [package]
-name = "airlock"
+name = "vetowall"
 version = "0.1.0"
 description = "Onchain firewall between a protocol multisig and its admin instructions"
 edition.workspace = true
@@ -7,7 +7,7 @@ rust-version.workspace = true
 
 [lib]
 crate-type = ["cdylib", "lib"]
-name = "airlock"
+name = "vetowall"
 
 [features]
 default = []
@@ -36,7 +36,7 @@ solana-hash = "3"
 litesvm-token = "0.10.0"
 mock_vault = { path = "../mock_vault", features = ["no-entrypoint"] }
 # mock_vault's token accounts need anchor-spl's IDL impls when `anchor build`
-# generates airlock's IDL with this crate in the dev graph.
+# generates vetowall's IDL with this crate in the dev graph.
 anchor-spl = { version = "1.2.0", default-features = false, features = ["token", "token_2022", "idl-build"] }
 
 
