@@ -5,7 +5,7 @@ use anchor_lang::prelude::*;
 
 use crate::{
     error::ErrorCode,
-    firewall::{forbid_durable_nonce, invoke_as_authority, resolve_class, validate_instruction},
+    firewall::{forbid_durable_nonce, invoke_as_authority, resolve_policy, validate_instruction},
     state::{ActionClass, Config, Proposal, ProposalStatus, StoredMeta},
 };
 
@@ -46,7 +46,9 @@ pub fn handle_veto(ctx: Context<Veto>, reason: [u8; 32]) -> Result<()> {
 pub struct GuardianExecute<'info> {
     pub config: Account<'info, Config>,
     pub guardian: Signer<'info>,
-    /// CHECK: checked in `resolve_class`.
+    /// CHECK: checked in `resolve_policy`.
+    pub target: UncheckedAccount<'info>,
+    /// CHECK: checked in `resolve_policy`.
     pub policy: UncheckedAccount<'info>,
     /// CHECK: address constraint.
     #[account(address = solana_instructions_sysvar::ID)]
@@ -54,6 +56,7 @@ pub struct GuardianExecute<'info> {
 }
 
 /// Runs a `Safe` instruction (e.g. `pause`) immediately, with no timelock.
+/// Policies with a limit are refused: the guardian never moves amounts.
 pub fn handle_guardian_execute(
     ctx: Context<GuardianExecute>,
     target_program: Pubkey,
@@ -69,8 +72,17 @@ pub fn handle_guardian_execute(
     );
     forbid_durable_nonce(&ctx.accounts.instructions)?;
     validate_instruction(config, &config_key, &accounts, &data)?;
-    let class = resolve_class(&config_key, &target_program, &data, &ctx.accounts.policy)?;
-    require!(class == ActionClass::Safe, ErrorCode::NotSafeClass);
+    let policy = resolve_policy(
+        &config_key,
+        &target_program,
+        &data,
+        &ctx.accounts.target,
+        &ctx.accounts.policy,
+    )?;
+    require!(
+        policy.is_some_and(|p| p.class == ActionClass::Safe && p.limit.is_none()),
+        ErrorCode::NotSafeClass
+    );
     invoke_as_authority(
         config,
         &config_key,

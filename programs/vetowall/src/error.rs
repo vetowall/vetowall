@@ -34,4 +34,24 @@ pub enum ErrorCode {
     NotSafeClass,
     #[msg("Delays must be non-negative and non-decreasing by class")]
     BadDelays,
+    #[msg("Signer is not the configured approver")]
+    NotApprover,
+    #[msg("Instruction isn't Safe and its policy has no limit; queue it instead")]
+    NotFastLane,
+    #[msg("Amount exceeds what is left of the policy's cap for this window")]
+    OverCap,
+    #[msg("Supply plus amount would exceed the attested reserves")]
+    OverReserves,
+    #[msg("Reserve attestation is older than its max age")]
+    StaleReserve,
+    #[msg("Instruction data is too short to hold the amount")]
+    BadAmount,
+    #[msg("Discriminator doesn't fit the target's disc_len")]
+    BadDiscriminator,
+    #[msg("Target already has the maximum number of wide tags")]
+    WideTagsFull,
+    #[msg("Reserve or mint account doesn't match the policy's limit")]
+    BadReserveAccount,
+    #[msg("Signer is not the reserve's attestor")]
+    NotAttestor,
 }

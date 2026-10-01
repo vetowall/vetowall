@@ -10,10 +10,10 @@ An issuer hands every Token-2022 authority it holds to Vetowall's **authority PD
 |---|---|---|
 | `execute_now` | proposer + approver (both sign) | Immediately, if the instruction's class is `Safe`, or its policy has a limit and the amount fits the current window's cap. Reserve bound always applies |
 | `queue` → `execute` | proposer + approver queue; anyone executes after `eta` | Everything else, after the class delay. Reserve bound is re-checked at execute |
-| `guardian_execute` | guardian | Instructions registered `Safe` only (e.g. pause). No limits path |
+| `guardian_execute` | guardian | Instructions registered `Safe` only (e.g. pause). No limits path: a policy with a `limit` is refused (`NotSafeClass`) |
 | `veto` | guardian | Any queued proposal not targeting Vetowall itself |
 
-All four paths refuse transactions whose first instruction is `AdvanceNonceAccount`. This is defense in depth, using the same pattern as Squads Nonce Guard and febo's p-never-nonce.
+All four paths, and `attest_reserve`, refuse transactions whose first instruction is `AdvanceNonceAccount`. This is defense in depth, using the same pattern as Squads Nonce Guard and febo's p-never-nonce.
 
 ## Accounts
 
@@ -51,14 +51,14 @@ Proposal ["proposal", config, id_le_u64]     (unchanged from v1, plus `amount: O
 | Instruction | Signer | Notes |
 |---|---|---|
 | `initialize(proposer, approver: Option<Pubkey>, guardian, delays)` | admin | As in v1, plus `approver` |
-| `register(target_program, discriminator, disc_len, class, limit: Option<Limit>)` | governor (admin before seal, authority PDA after) | Creates `Target` on first use; `disc_len` must match the existing `Target`. Registering a 2-byte discriminator on a `disc_len = 1` target adds its first byte to `wide_tags`. Refuses `target_program == vetowall` |
+| `register(target_program, discriminator, disc_len, class, limit: Option<Limit>)` | governor (admin before seal, authority PDA after) | Creates `Target` on first use; `disc_len` (1..=8) must match the existing `Target`. On a `disc_len = 1` target, a non-zero `discriminator[1]` makes it a 2-byte discriminator and adds `discriminator[0]` to `wide_tags`. Bytes past the discriminator's length must be zero (`BadDiscriminator`). Refuses `target_program == vetowall`. Re-registering keeps `used` / `window_start` |
 | `init_reserve(mint, attestor, max_age)` | governor | Creates `Reserve` |
-| `attest_reserve(amount)` | attestor | Sets `amount` and `updated_at = now` |
+| `attest_reserve(amount)` | attestor | Sets `amount` and `updated_at = now`. Takes the Instructions sysvar and refuses durable-nonce txs: a pre-signed attestation would look fresh whenever it landed |
 | `seal()` | admin | As in v1 |
 | `set_proposer` / `set_approver` / `set_guardian` / `set_delays` / `set_attestor` | governor | Always class `Max` once sealed |
 | `queue(target_program, accounts, data)` | proposer (+ approver if set) | As in v1 |
-| `execute()` | anyone | Re-checks the reserve bound if the policy has one |
-| `execute_now(target_program, accounts, data)` | proposer (+ approver if set) | Fast lane. Errors: `NotFastLane`, `OverCap`, `OverReserves`, `StaleReserve` |
+| `execute()` | anyone | Checks the reserve bound (against supply at execute time) if the policy has one. `queue` doesn't check it |
+| `execute_now(target_program, accounts, data)` | proposer (+ approver if set) | Fast lane. Errors: `NotFastLane`, `OverCap`, `OverReserves`, `StaleReserve`, `BadAmount`. A `Safe` policy skips the cap; the reserve bound still applies if it has a limit |
 | `veto(reason: [u8; 32])` | guardian | `reason` = SHA-256 of the guardian's written explanation |
 | `guardian_execute(target_program, accounts, data)` | guardian | `Safe` class only |
 
@@ -67,6 +67,14 @@ Proposal ["proposal", config, id_le_u64]     (unchanged from v1, plus `amount: O
 - If the `Target` doesn't exist, the class is `Max`.
 - If the `Policy` doesn't exist at the address derived from `Target.disc_len`, the class is `Max`.
 - Any other policy address fails with `BadPolicyAccount`.
+
+**Accounts** (full order in `idl/vetowall.json`): `queue` and `execute_now` take `proposer`, optional `approver` (pass the Vetowall program ID for none), `target`, `policy`. `execute` and `execute_now` also take an optional `reserve`, required when the policy's limit names one. `guardian_execute` takes `target`, `policy`. The stored instruction's accounts, in order, then its program, go in remaining accounts; `mint_index` indexes into them.
+
+**Cap window:** fixed, not sliding. It restarts at the first `execute_now` at or after `window_start + window`.
+
+**Reserve bound:** `Reserve` key must equal `limit.reserve`; the account at `mint_index` must match the stored meta and `reserve.mint`, and be owned by SPL Token or Token-2022 (`BadReserveAccount` otherwise). Staleness (`now - updated_at > max_age`) is checked before the amount. A new `Reserve` has `updated_at = 0`, so it is stale until first attested. One reserve per policy, so a policy's limit covers one mint.
+
+**Errors added beyond the ones named above:** `NotApprover`, `BadDiscriminator`, `WideTagsFull`, `BadReserveAccount`, `NotAttestor` (appended after v1's codes; see the IDL for numbers).
 
 **Amount parsing:** a little-endian u64 at `amount_offset`. Data that's too short fails with `BadAmount`.
 
@@ -84,8 +92,9 @@ Proposal ["proposal", config, id_le_u64]     (unchanged from v1, plus `amount: O
 | Pausable `Pause` (2-byte: extension tag + 1) | `Safe` | guardian may run it |
 | Pausable `Resume` (2-byte: extension tag + 2) | `Params` | none |
 
-Verify the Pausable extension tag and sub-tags against the `spl-token-2022-interface` crate in `~/.cargo/registry` before hard-coding them.
 | Anything else | `Max` | default |
+
+Pausable, checked against `spl-token-2022-interface` 2.1.0: `TokenInstruction::PausableExtension = 44`, sub-tags `Initialize = 0`, `Pause = 1`, `Resume = 2`. So `Pause` = `[44, 1]`, `Resume` = `[44, 2]`.
 
 ## Devnet demo config
 

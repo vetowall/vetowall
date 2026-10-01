@@ -19,19 +19,46 @@ pub mod vetowall {
     pub fn initialize(
         ctx: Context<Initialize>,
         proposer: Pubkey,
+        approver: Option<Pubkey>,
         guardian: Pubkey,
         delays: [i64; 4],
     ) -> Result<()> {
-        crate::instructions::initialize::handle_initialize(ctx, proposer, guardian, delays)
+        crate::instructions::initialize::handle_initialize(ctx, proposer, approver, guardian, delays)
     }
 
     pub fn register(
         ctx: Context<Register>,
         target_program: Pubkey,
         discriminator: [u8; 8],
+        disc_len: u8,
         class: ActionClass,
+        limit: Option<Limit>,
     ) -> Result<()> {
-        crate::instructions::governance::handle_register(ctx, target_program, discriminator, class)
+        crate::instructions::governance::handle_register(
+            ctx,
+            target_program,
+            discriminator,
+            disc_len,
+            class,
+            limit,
+        )
+    }
+
+    pub fn init_reserve(
+        ctx: Context<InitReserve>,
+        mint: Pubkey,
+        attestor: Pubkey,
+        max_age: i64,
+    ) -> Result<()> {
+        crate::instructions::reserve::handle_init_reserve(ctx, mint, attestor, max_age)
+    }
+
+    pub fn attest_reserve(ctx: Context<AttestReserve>, amount: u64) -> Result<()> {
+        crate::instructions::reserve::handle_attest_reserve(ctx, amount)
+    }
+
+    pub fn set_attestor(ctx: Context<SetAttestor>, attestor: Pubkey) -> Result<()> {
+        crate::instructions::reserve::handle_set_attestor(ctx, attestor)
     }
 
     pub fn seal(ctx: Context<Seal>) -> Result<()> {
@@ -40,6 +67,10 @@ pub mod vetowall {
 
     pub fn set_proposer(ctx: Context<Govern>, proposer: Pubkey) -> Result<()> {
         crate::instructions::governance::handle_set_proposer(ctx, proposer)
+    }
+
+    pub fn set_approver(ctx: Context<Govern>, approver: Option<Pubkey>) -> Result<()> {
+        crate::instructions::governance::handle_set_approver(ctx, approver)
     }
 
     pub fn set_guardian(ctx: Context<Govern>, guardian: Pubkey) -> Result<()> {
@@ -61,6 +92,15 @@ pub mod vetowall {
 
     pub fn execute(ctx: Context<Execute>) -> Result<()> {
         crate::instructions::execute::handle_execute(ctx)
+    }
+
+    pub fn execute_now(
+        ctx: Context<ExecuteNow>,
+        target_program: Pubkey,
+        accounts: Vec<StoredMeta>,
+        data: Vec<u8>,
+    ) -> Result<()> {
+        crate::instructions::execute_now::handle_execute_now(ctx, target_program, accounts, data)
     }
 
     pub fn veto(ctx: Context<Veto>, reason: [u8; 32]) -> Result<()> {

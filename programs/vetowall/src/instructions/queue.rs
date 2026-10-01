@@ -3,7 +3,7 @@ use anchor_lang::prelude::*;
 use crate::{
     constants::PROPOSAL_SEED,
     error::ErrorCode,
-    firewall::{forbid_durable_nonce, resolve_class, validate_instruction},
+    firewall::{class_of, forbid_durable_nonce, read_amount, resolve_policy, validate_instruction},
     state::{Config, Proposal, ProposalStatus, StoredMeta},
 };
 
@@ -13,6 +13,8 @@ pub struct Queue<'info> {
     pub config: Account<'info, Config>,
     #[account(mut)]
     pub proposer: Signer<'info>,
+    /// Required when the config names an approver.
+    pub approver: Option<Signer<'info>>,
     #[account(
         init,
         payer = proposer,
@@ -21,8 +23,11 @@ pub struct Queue<'info> {
         bump
     )]
     pub proposal: Account<'info, Proposal>,
-    /// CHECK: must be the policy PDA for (config, target, discriminator); it
-    /// may not exist yet, which means `Max`. Checked in `resolve_class`.
+    /// CHECK: the target PDA for (config, target program); it may not exist
+    /// yet, which means `Max`. Checked in `resolve_policy`.
+    pub target: UncheckedAccount<'info>,
+    /// CHECK: the policy PDA for the instruction's discriminator; it may not
+    /// exist yet, which means `Max`. Checked in `resolve_policy`.
     pub policy: UncheckedAccount<'info>,
     /// CHECK: address constraint.
     #[account(address = solana_instructions_sysvar::ID)]
@@ -44,14 +49,24 @@ pub fn handle_queue(
         config.proposer,
         ErrorCode::NotProposer
     );
+    config.require_approver(ctx.accounts.approver.as_ref())?;
     forbid_durable_nonce(&ctx.accounts.instructions)?;
     validate_instruction(config, &config_key, &accounts, &data)?;
-    let class = resolve_class(
+    let policy = resolve_policy(
         &config_key,
         &target_program,
         &data,
+        &ctx.accounts.target,
         &ctx.accounts.policy,
     )?;
+    let class = class_of(&policy);
+    // Recorded so the guardian and the console can see how much a queued
+    // mint is for without decoding the instruction. The reserve bound is
+    // checked at execute, against the supply at that time.
+    let amount = policy
+        .and_then(|p| p.limit)
+        .map(|limit| read_amount(&data, limit.amount_offset))
+        .transpose()?;
 
     let now = Clock::get()?.unix_timestamp;
     let id = config.proposal_count;
@@ -69,6 +84,7 @@ pub fn handle_queue(
     proposal.queued_at = now;
     proposal.eta = eta;
     proposal.status = ProposalStatus::Queued;
+    proposal.amount = amount;
 
     ctx.accounts.config.proposal_count = id + 1;
     msg!("queued proposal {} class {:?} eta {}", id, class, eta);

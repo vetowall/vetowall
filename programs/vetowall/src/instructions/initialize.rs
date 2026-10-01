@@ -17,6 +17,7 @@ pub struct Initialize<'info> {
 pub fn handle_initialize(
     ctx: Context<Initialize>,
     proposer: Pubkey,
+    approver: Option<Pubkey>,
     guardian: Pubkey,
     delays: [i64; 4],
 ) -> Result<()> {
@@ -28,6 +29,7 @@ pub fn handle_initialize(
     let config = &mut ctx.accounts.config;
     config.admin = ctx.accounts.admin.key();
     config.proposer = proposer;
+    config.approver = approver;
     config.guardian = guardian;
     config.delays = delays;
     config.authority_bump = authority_bump;

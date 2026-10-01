@@ -118,8 +118,15 @@ fn stored(ix: &Instruction) -> Vec<StoredMeta> {
         .collect()
 }
 
+/// mock_vault is an Anchor program: 8-byte discriminators, no wide tags.
+const DISC_LEN: u8 = 8;
+
 fn policy_pda(config: &Pubkey, ix: &Instruction) -> Pubkey {
-    vetowall::firewall::policy_address(config, &ix.program_id, &vetowall::firewall::discriminator(&ix.data))
+    vetowall::firewall::policy_address(config, &ix.program_id, &vetowall::firewall::discriminator(&ix.data, DISC_LEN, &[]))
+}
+
+fn target_pda(config: &Pubkey, ix: &Instruction) -> Pubkey {
+    vetowall::firewall::target_address(config, &ix.program_id)
 }
 
 fn create_vault(env: &mut Env, creator: &Keypair) -> (Pubkey, Pubkey) {
@@ -188,6 +195,7 @@ fn setup() -> Env {
         vetowall::id(),
         &vetowall::instruction::Initialize {
             proposer: env.proposer.pubkey(),
+            approver: None,
             guardian: env.guardian.pubkey(),
             delays: DELAYS,
         }
@@ -214,7 +222,7 @@ fn setup() -> Env {
         (mock_vault::instruction::Pause {}.data(), ActionClass::Safe),
     ];
     for (data, class) in policies {
-        let disc = vetowall::firewall::discriminator(&data);
+        let disc = vetowall::firewall::discriminator(&data, DISC_LEN, &[]);
         let ix = register_ix(&env, env.payer.pubkey(), disc, class);
         tx!(env, [ix], [&env.payer]).unwrap();
     }
@@ -235,10 +243,11 @@ fn register_ix(env: &Env, governor: Pubkey, disc: [u8; 8], class: ActionClass) -
     let policy = vetowall::firewall::policy_address(&env.config, &mock_vault::id(), &disc);
     Instruction::new_with_bytes(
         vetowall::id(),
-        &vetowall::instruction::Register { target_program: mock_vault::id(), discriminator: disc, class }.data(),
+        &vetowall::instruction::Register { target_program: mock_vault::id(), discriminator: disc, disc_len: DISC_LEN, class, limit: None }.data(),
         vetowall::accounts::Register {
             config: env.config,
             governor,
+            target: vetowall::firewall::target_address(&env.config, &mock_vault::id()),
             policy,
             system_program: system_program::ID,
         }
@@ -260,7 +269,9 @@ fn queue_ix(env: &Env, target: &Instruction) -> Instruction {
         vetowall::accounts::Queue {
             config: env.config,
             proposer: env.proposer.pubkey(),
+            approver: None,
             proposal,
+            target: target_pda(&env.config, target),
             policy: policy_pda(&env.config, target),
             instructions: solana_instructions_sysvar_id(),
             system_program: system_program::ID,
@@ -297,6 +308,9 @@ fn execute_ix(env: &Env, id: u64, target: &Instruction) -> Instruction {
     let mut metas = vetowall::accounts::Execute {
         config: env.config,
         proposal: proposal_pda(env, id),
+        target: target_pda(&env.config, target),
+        policy: policy_pda(&env.config, target),
+        reserve: None,
         instructions: solana_instructions_sysvar_id(),
     }
     .to_account_metas(None);
@@ -317,6 +331,7 @@ fn guardian_execute_ix(env: &Env, target: &Instruction) -> Instruction {
     let mut metas = vetowall::accounts::GuardianExecute {
         config: env.config,
         guardian: env.guardian.pubkey(),
+        target: target_pda(&env.config, target),
         policy: policy_pda(&env.config, target),
         instructions: solana_instructions_sysvar_id(),
     }
@@ -594,6 +609,6 @@ fn only_the_proposer_queues_and_only_the_authority_signs() {
     // Passing some other account as the policy can't downgrade the class.
     let mut wrong_policy = queue_ix(&env, &takeover);
     let pause = admin_ix(env.vault, env.authority, mock_vault::instruction::Pause {}.data());
-    wrong_policy.accounts[3] = AccountMeta::new_readonly(policy_pda(&env.config, &pause), false);
+    wrong_policy.accounts[5] = AccountMeta::new_readonly(policy_pda(&env.config, &pause), false);
     assert_err(tx!(env, [wrong_policy], [&env.proposer]), code(VetowallError::BadPolicyAccount));
 }
