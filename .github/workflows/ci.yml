@@ -1,0 +1,40 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  programs:
+    runs-on: ubuntu-latest
+    env:
+      AGAVE_VERSION: v4.3.0
+      ANCHOR_VERSION: 1.2.0
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.local/share/solana
+            ~/.cargo/registry
+            ~/.cargo/git
+            ~/.cache/solana
+            target
+          key: ${{ runner.os }}-agave-${{ env.AGAVE_VERSION }}-anchor-${{ env.ANCHOR_VERSION }}-${{ hashFiles('Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-agave-${{ env.AGAVE_VERSION }}-anchor-${{ env.ANCHOR_VERSION }}-
+
+      - name: Install Agave and Anchor
+        run: |
+          sh -c "$(curl -sSfL https://release.anza.xyz/${AGAVE_VERSION}/install)"
+          mkdir -p ~/.local/bin
+          curl -sSfL -o ~/.local/bin/anchor \
+            "https://github.com/solana-foundation/anchor/releases/download/v${ANCHOR_VERSION}/anchor-${ANCHOR_VERSION}-x86_64-unknown-linux-gnu"
+          chmod +x ~/.local/bin/anchor
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      # SBPF v0: Anchor 1.2 defaults to v3, which LiteSVM 0.10 can't load.
+      - run: anchor build --arch v0
+      - run: cargo test -p vetowall
