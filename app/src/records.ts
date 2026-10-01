@@ -8,7 +8,7 @@ export const TOKEN_2022_ID = 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
 
 const TOKEN_LABELS: Record<number, string> = {
   6: 'Change authority', 7: 'Mint', 8: 'Burn (permanent delegate)', 10: 'Freeze account',
-  11: 'Thaw account', 14: 'Mint', 15: 'Burn (permanent delegate)',
+  11: 'Thaw account', 14: 'Mint (checked)', 15: 'Burn, checked (permanent delegate)',
 };
 
 /** Plain-English label, affected account and amount of a routed instruction. */
