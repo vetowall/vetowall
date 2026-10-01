@@ -32,6 +32,8 @@ export interface Action {
   /** Why it was refused or vetoed, in plain words. */
   note?: string;
   tx?: string;
+  /** Position among the records one transaction carries (setup txs carry several). */
+  seq?: number;
 }
 
 export interface Deployment {

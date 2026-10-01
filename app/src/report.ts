@@ -74,7 +74,7 @@ export function reportRows(s: Snapshot): Row[] {
   return [...s.actions]
     .sort((a, b) => a.queuedAt - b.queuedAt)
     .map((a) => ({
-      change_id: a.id !== null ? `P-${a.id}` : `${a.path}:${a.tx?.slice(0, 8) ?? 'local'}`,
+      change_id: a.id !== null ? `P-${a.id}` : `${a.path}:${a.tx?.slice(0, 8) ?? 'local'}${a.seq ? `/${a.seq}` : ''}`,
       requested_utc: iso(a.queuedAt),
       action: a.action,
       subject: a.subject ?? d.mint,

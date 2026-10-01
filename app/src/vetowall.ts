@@ -269,7 +269,7 @@ function actionsOf(tx: VersionedTransactionResponse, sig: string, decimals: numb
     const r = e.data as DecodedRecord;
     const k = Object.keys(r.kind)[0];
     const a = recordToAction(r, sig, decimals, k === 'executedNow' || k === 'guardianExecuted' ? routed.shift() : undefined);
-    if (a) out.push(a);
+    if (a) out.push({ ...a, seq: out.length });
   }
   return out;
 }

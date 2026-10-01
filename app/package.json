@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "test": "node --test src/report.test.ts src/records.test.ts"
+    "test": "node --test src/report.test.ts src/records.test.ts",
+    "seed:devnet": "tsx scripts/seed-devnet.ts"
   },
   "dependencies": {
     "@anchor-lang/core": "^1.2.0",
@@ -24,6 +25,7 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.1",
+    "tsx": "^4.23.15",
     "typescript": "^5.9.3",
     "vite": "^8.3.1"
   }

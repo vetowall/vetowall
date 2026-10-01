@@ -67,7 +67,8 @@ test('proposal records defer to the Proposal account; setup records name the adm
   };
   assert.equal(recordToAction({ ...base, kind: { executed: {} }, proposalId: 3 }, 's', 6), null);
   const sealed = recordToAction({ ...base, kind: { sealed: {} } }, 's', 6)!;
-  const [row] = reportRows({ ...demoSnapshot, actions: [sealed] });
+  const [row] = reportRows({ ...demoSnapshot, actions: [{ ...sealed, seq: 8 }] });
+  assert.equal(row.change_id, 'governance:s/8'); // unique among the records of one setup tx
   assert.equal(row.action, 'Config sealed');
   assert.equal(row.risk_class, 'n/a');
   assert.match(row.key_custody, /^Admin key \w+ \(setup, before seal\)$/);
