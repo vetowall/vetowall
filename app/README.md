@@ -41,7 +41,7 @@ VITE_RPC_URL=http://127.0.0.1:8899 npm run seed:devnet  # or a local solana-test
 
 - creates or reuses role keys in `~/worldsfair/keys/devnet-demo/{proposer,approver,guardian,attestor}.json` (chmod 600, outside the repo) and tops each up with a little SOL;
 - launches a Token-2022 "vUSD" mint with every authority on the Vetowall PDA (the Launch page's transaction), delays 0/120/180/300 s, the issuer policy pack with a 5,000,000 vUSD/day cap, then seals and attests 10,000,000 vUSD;
-- leaves history: a 1,000,000 fast-lane mint, a refused 80,000,000 mint (`OverReserves`, sent without preflight so it lands), a queued 3,000,000 mint, and a queued SetAuthority that the guardian vetoes with a reason hash.
+- leaves history: a 1,000,000 fast-lane mint, a refused 80,000,000 mint (`OverReserves`, sent without preflight so it lands), a queued 4,500,000 mint (above the daily cap), and a queued SetAuthority that the guardian vetoes with a reason hash.
 
 It prints `VITE_CONFIG=<config>`, the mint, role keys and explorer links. Each run makes a new config and mint, so it is safe to re-run. It stops early if the cluster's program emits no `ChangeRecord` events (not yet upgraded).
 

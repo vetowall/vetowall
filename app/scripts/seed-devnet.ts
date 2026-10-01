@@ -28,7 +28,8 @@ const DAILY_CAP = vusd(5_000_000);
 const RESERVES = vusd(10_000_000);
 const FAST_MINT = vusd(1_000_000);
 const REFUSED_MINT = vusd(80_000_000);
-const QUEUED_MINT = vusd(3_000_000);
+// Above the 4,000,000 left in today's 5,000,000 cap, so the fast lane refuses it and it must wait out the timelock.
+const QUEUED_MINT = vusd(4_500_000);
 const KEY_DIR = join(homedir(), 'worldsfair', 'keys', 'devnet-demo');
 const ROLES = ['proposer', 'approver', 'guardian', 'attestor'] as const;
 /** Rent for two max-size Proposal accounts plus headroom; the payer pays every fee. */
@@ -129,7 +130,7 @@ async function main() {
   console.log(`  ✓ Refused 80,000,000 vUSD mint (OverReserves)  ${refused}`);
 
   // queueIx reads proposal_count, so these must run one after the other.
-  await step('Queue 3,000,000 vUSD mint (Params, 120s)', [await queueIx(roles, mintTo(QUEUED_MINT))], [payer, signer.proposer, signer.approver]);
+  await step('Queue 4,500,000 vUSD mint over the daily cap (Params, 120s)', [await queueIx(roles, mintTo(QUEUED_MINT))], [payer, signer.proposer, signer.approver]);
   const outsider = Keypair.generate().publicKey;
   const setAuth = createSetAuthorityInstruction(mint.publicKey, authority, AuthorityType.MintTokens, outsider, [], TOKEN_2022);
   await step('Queue SetAuthority to an outside wallet (Max, 300s)', [await queueIx(roles, setAuth)], [payer, signer.proposer, signer.approver]);
@@ -156,7 +157,7 @@ Veto reason      sha256 ${reasonHash.toString('hex')}
 Transactions
 ${log.map(([label, sig]) => `  ${label}\n    ${link('tx', sig)}`).join('\n')}
 
-Proposal #0 (3,000,000 vUSD) can be executed from the console's Operate page after ${DELAYS[1]}s.`);
+Proposal #0 (4,500,000 vUSD) can be executed from the console's Operate page after ${DELAYS[1]}s.`);
 }
 
 main().catch((e) => {
