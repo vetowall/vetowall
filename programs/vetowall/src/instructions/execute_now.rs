@@ -65,10 +65,8 @@ pub fn handle_execute_now(
         Some(limit) => {
             let amt = read_amount(&data, limit.amount_offset)?;
             amount = Some(amt);
-            if policy.class != ActionClass::Safe {
-                charge_cap(&mut policy, &limit, amt, Clock::get()?.unix_timestamp)?;
-                policy.try_serialize(&mut &mut ctx.accounts.policy.try_borrow_mut_data()?[..])?;
-            }
+            // Reserves first: a mint over both bounds is reported as
+            // unbacked, the more serious of the two.
             check_reserve(
                 &limit,
                 amt,
@@ -76,6 +74,10 @@ pub fn handle_execute_now(
                 ctx.remaining_accounts,
                 ctx.accounts.reserve.as_ref(),
             )?;
+            if policy.class != ActionClass::Safe {
+                charge_cap(&mut policy, &limit, amt, Clock::get()?.unix_timestamp)?;
+                policy.try_serialize(&mut &mut ctx.accounts.policy.try_borrow_mut_data()?[..])?;
+            }
         }
         None => require!(policy.class == ActionClass::Safe, ErrorCode::NotFastLane),
     }

@@ -63,7 +63,7 @@ Proposal fields are only ever appended. Proposals are allocated at max size and 
 | `set_proposer` / `set_approver` / `set_guardian` / `set_delays` / `set_attestor` | governor | Always class `Max` once sealed |
 | `queue(target_program, accounts, data)` | proposer (+ approver if set) | As in v1 |
 | `execute()` | anyone | Checks the reserve bound (against supply at execute time) if the policy has one. `queue` doesn't check it |
-| `execute_now(target_program, accounts, data)` | proposer (+ approver if set) | Fast lane. Errors: `NotFastLane`, `OverCap`, `OverReserves`, `StaleReserve`, `BadAmount`. A `Safe` policy skips the cap; the reserve bound still applies if it has a limit |
+| `execute_now(target_program, accounts, data)` | proposer (+ approver if set) | Fast lane. Errors: `NotFastLane`, `OverCap`, `OverReserves`, `StaleReserve`, `BadAmount`. A `Safe` policy skips the cap; the reserve bound still applies if it has a limit. The reserve bound is checked before the cap, so a mint over both fails with `OverReserves` |
 | `veto(reason: [u8; 32])` | guardian | `reason` = SHA-256 of the guardian's written explanation |
 | `guardian_execute(target_program, accounts, data)` | guardian | `Safe` class only |
 

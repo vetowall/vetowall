@@ -431,6 +431,8 @@ fn mint_above_attested_reserves_fails_on_both_paths() {
     // Existing supply counts: 400k fits, another 200k doesn't.
     mint_now(&mut env, 400_000 * USD).unwrap();
     assert_err(mint_now(&mut env, 200_000 * USD), VetowallError::OverReserves);
+    // Over both the cap and reserves: reported as unbacked.
+    assert_err(mint_now(&mut env, 2 * CAP), VetowallError::OverReserves);
 }
 
 #[test]
