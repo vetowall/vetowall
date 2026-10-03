@@ -64,6 +64,16 @@ VITE_RPC_URL=http://127.0.0.1:8899 npm run seed:devnet  # or a local solana-test
 
 It prints `VITE_CONFIG=<config>`, the mint, role keys and explorer links. Each run makes a new config and mint, so it is safe to re-run. It stops early if the cluster's program emits no `ChangeRecord` events (not yet upgraded).
 
+## Keeping the demo's reserves fresh
+
+Vetowall refuses every mint once the reserve attestation is older than its max age, which is 24 hours on the demo issuer. `scripts/attest.ts` re-affirms the attested figure when the attestation is at least half that age, and does nothing otherwise:
+
+```sh
+VITE_CONFIG=<config> ATTESTOR_KEYPAIR="$(cat attestor.json)" npm run attest
+```
+
+`.github/workflows/attest.yml` runs it every six hours with the repository secret `ATTESTOR_KEYPAIR`. It refuses to run against mainnet, refuses a key that isn't the reserve's attestor, and never prints the key. This stands in for the custodian or auditor feed an issuer would run in production; it reads no bank balance. The decisions are in `src/keeper.ts`, tested in `src/keeper.test.ts`.
+
 ## Keys
 
 - **Connect Phantom**: the wallet is admin, fee payer and proposer (maker). The approver (checker), guardian and attestor are demo keys.

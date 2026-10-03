@@ -210,6 +210,30 @@ export async function isDeployed() {
   return !!info?.executable;
 }
 
+/** A config's reserve attestation as stored onchain. `amount` is in the mint's base units; times are unix seconds. */
+export interface ReserveState {
+  mint: PublicKey;
+  attestor: PublicKey;
+  amount: bigint;
+  updatedAt: number;
+  maxAge: number;
+}
+
+/**
+ * Reads the first Reserve account that belongs to `config`, or null if it has none.
+ *
+ * This is the one read the attestation keeper needs. `loadSnapshot` finds the
+ * same account but then walks the whole transaction history, which is hundreds
+ * of RPC calls a scheduled job has no use for.
+ */
+export async function readReserve(config: PublicKey): Promise<ReserveState | null> {
+  const found = (await accounts.reserve.all([{ memcmp: { offset: 8, bytes: config.toBase58() } }]))[0];
+  if (!found) return null;
+  const r = found.account;
+  // The amount is a u64, which a JS number can't hold exactly; the times are i64 seconds, which it can for any real clock.
+  return { mint: r.mint, attestor: r.attestor, amount: BigInt(r.amount.toString()), updatedAt: Number(r.updatedAt), maxAge: Number(r.maxAge) };
+}
+
 const variant = (e: object) => Object.keys(e)[0];
 const hex = (b: number[]) => b.map((x) => x.toString(16).padStart(2, '0')).join('');
 

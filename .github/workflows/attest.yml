@@ -1,0 +1,48 @@
+name: attest
+
+# Keeps the live devnet demo issuer mintable. Vetowall refuses every mint once
+# the reserve attestation is older than its max age (24 hours on the demo), so
+# without a refresh the public console shows "stale" a day after seeding.
+#
+# app/scripts/attest.ts re-affirms the figure already onchain when the
+# attestation is at least half its max age old. Running every six hours means
+# a late or skipped run still leaves it under 24 hours. This stands in for an
+# issuer's custodian or auditor feed; it reads no bank balance.
+#
+# Needs the repository secret ATTESTOR_KEYPAIR (the demo attestor's devnet
+# keypair, JSON array form) and the variable VITE_CONFIG. GitHub pauses
+# scheduled workflows after 60 days without a commit; re-enable it from the
+# Actions tab if that happens.
+on:
+  schedule:
+    - cron: '17 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: attest
+  cancel-in-progress: false
+
+jobs:
+  attest:
+    runs-on: ubuntu-latest
+    # The run is one read and at most one transaction; anything longer is a hung RPC call.
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - run: npm ci --no-audit --no-fund
+      - run: npm run attest
+        env:
+          VITE_CONFIG: ${{ vars.VITE_CONFIG }}
+          VITE_RPC_URL: ${{ secrets.VITE_RPC_URL }}
+          ATTESTOR_KEYPAIR: ${{ secrets.ATTESTOR_KEYPAIR }}
