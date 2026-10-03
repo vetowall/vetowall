@@ -37,8 +37,10 @@ const DEPLOYMENT_KEY = 'vetowall.deployment';
 /** The shared devnet demo config; the mint is found from its Reserve account. */
 const DEMO_CONFIG: string | undefined = import.meta.env.VITE_CONFIG;
 
-/** A token launched from this browser wins over the shared demo config. */
+/** `?config=<pubkey>` wins (a shareable link to any issuer), then a token launched from this browser, then the shared demo config. */
 function savedDeployment(): { config: string; mint?: string } | null {
+  const linked = new URLSearchParams(location.search).get('config');
+  if (linked) return { config: linked };
   try {
     const saved = localStorage.getItem(DEPLOYMENT_KEY);
     if (saved) return JSON.parse(saved);
