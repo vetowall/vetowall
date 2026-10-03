@@ -8,7 +8,8 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "node --test src/report.test.ts src/records.test.ts",
-    "seed:devnet": "tsx scripts/seed-devnet.ts"
+    "seed:devnet": "tsx scripts/seed-devnet.ts",
+    "adopt": "tsx scripts/adopt.ts"
   },
   "dependencies": {
     "@anchor-lang/core": "^1.2.0",

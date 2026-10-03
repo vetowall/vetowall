@@ -28,7 +28,22 @@ Optional env (`.env.local` or repository variables for the Pages build):
 | `VITE_GUARDIAN_URL` | none | Guardian service base URL; falls back to seeded decisions |
 | `VITE_RPC_URL` | `https://api.devnet.solana.com` | Devnet RPC |
 
-A token launched from this browser is remembered in `localStorage` and takes precedence over `VITE_CONFIG`.
+A token launched from this browser is remembered in `localStorage` and takes precedence over `VITE_CONFIG`. A `?config=<pubkey>` link takes precedence over both, so any issuer's console can be shared as a URL.
+
+## Guard an existing mint
+
+`scripts/adopt.ts` puts a Token-2022 mint you already issued under Vetowall. It creates and seals a config with the issuer policy pack, then hands every authority your key holds (mint, freeze, permanent delegate, pause, metadata pointer, metadata update, close) to the Vetowall PDA.
+
+```sh
+export PROPOSER=<pubkey> APPROVER=<pubkey> GUARDIAN=<pubkey> ATTESTOR=<pubkey>
+npm run adopt -- <mint>          # prints the plan and sends nothing
+npm run adopt -- <mint> --yes    # config, policies, seal, then the handover
+```
+
+- `KEYPAIR` (default `~/.config/solana/id.json`) pays and must be the current holder of the authorities. Optional: `DAILY_CAP` (whole tokens, default 1,000,000), `DELAYS` (`Safe,Params,Authority,Max` in seconds, default `0,120,180,300`), `MAX_AGE`, `VITE_RPC_URL`.
+- The config is sealed before any authority moves. The handover is one-way: afterwards an authority only leaves Vetowall through a queued `SetAuthority` that waits out the `Max` delay.
+- It reports authorities held by another key (they stay god keys) and extensions it doesn't handle (transfer fee, transfer hook, confidential transfer and others), whose authorities you must move yourself.
+- It prints the config. Open `https://vetowall.github.io/vetowall/?config=<config>` to see the token in the console.
 
 ## Seeding the live devnet demo
 
