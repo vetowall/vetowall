@@ -8,7 +8,7 @@ import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import { airdrop, burner, connection, connectWallet, keypairSigner, type Signer } from '@/src/lib/chain';
 import type { Payload } from '@/src/lib/snapshot';
 import type { Snapshot } from '@/src/lib/model';
-import { SourceBadge, short, useTask } from './ui';
+import { SourceBadge, ThemeSwitch, short, useTask } from './ui';
 
 export interface Keys {
   mode: 'wallet' | 'demo';
@@ -150,6 +150,7 @@ export function ConsoleProvider({ initial, serverNow, children }: { initial: Pay
             </nav>
             <span className="top-source">
               <SourceBadge live={live} />
+              <ThemeSwitch />
             </span>
             <div className="session">
               {keys ? (

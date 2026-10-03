@@ -233,7 +233,14 @@ export default function Operate() {
               <dd>{fmtAmount(Math.max(0, reserveLeft))} {d.symbol}</dd>
               <dt>Last attested</dt>
               <dd>
-                {fmtTime(snap.reserve.updatedAt)} {stale && <Mark status="refused" />}
+                {fmtTime(snap.reserve.updatedAt)}{' '}
+                {/* "Refused" is an outcome of a transaction; an old attestation is stale, which is why mints get refused. */}
+                {stale && (
+                  <span className="mark mark-refused">
+                    <Icon name="clock" size={12} />
+                    Stale
+                  </span>
+                )}
               </dd>
               <dt>Max age</dt>
               <dd>{fmtDuration(snap.reserve.maxAge)}</dd>

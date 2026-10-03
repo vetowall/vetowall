@@ -19,12 +19,20 @@ export const metadata: Metadata = {
   },
 };
 
+/** Reads the saved theme and accepts only the two values we write; anything else leaves the OS preference in charge. */
+const THEME_BOOT = `try{var t=localStorage.getItem('vetowall.theme');if(t==='dark'||t==='light')document.documentElement.dataset.theme=t}catch(e){}`;
+
 export const viewport: Viewport = { width: 'device-width', initialScale: 1 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const initial = await getSnapshot();
   return (
-    <html lang="en" className={`${plex.variable} ${serif.variable}`}>
+    // The script below may set data-theme before React hydrates, so the attribute can differ from the server's HTML.
+    <html lang="en" className={`${plex.variable} ${serif.variable}`} suppressHydrationWarning>
+      <head>
+        {/* Applies a saved theme before first paint; see ThemeSwitch. A static string, so nothing user-controlled is injected. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT }} />
+      </head>
       <body>
         <ConsoleProvider initial={initial} serverNow={Math.floor(Date.now() / 1000)}>
           {children}

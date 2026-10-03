@@ -1,6 +1,6 @@
 'use client';
 // Small shared pieces: addresses, status marks, panels, figures, task status.
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { explorer } from '@/src/lib/explorer';
 import type { Action } from '@/src/lib/model';
 
@@ -78,6 +78,47 @@ export function Mark({ status }: { status: Action['status'] }) {
       <Icon name={m.icon} size={12} />
       {m.label}
     </span>
+  );
+}
+
+export const THEME_KEY = 'vetowall.theme';
+
+/**
+ * The light/dark switch in the header.
+ *
+ * We follow the operating system until the visitor flips the switch. After
+ * that their choice is kept in `localStorage` and written to
+ * `<html data-theme>`, which the token blocks in `globals.css` key on. The
+ * inline script in `app/layout.tsx` applies a saved choice before first
+ * paint, so a returning visitor never sees the other theme flash.
+ *
+ * The server can't know either input, so the first render always says "off"
+ * and the effect corrects it after hydration. Storage can throw (private
+ * windows, blocked site data); the switch then still works for this page view.
+ */
+export function ThemeSwitch() {
+  const [dark, setDark] = useState(false);
+  useEffect(() => {
+    const forced = document.documentElement.dataset.theme;
+    setDark(forced ? forced === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches);
+  }, []);
+  function flip() {
+    const next = !dark;
+    document.documentElement.dataset.theme = next ? 'dark' : 'light';
+    try {
+      localStorage.setItem(THEME_KEY, next ? 'dark' : 'light');
+    } catch {
+      /* this page view only */
+    }
+    setDark(next);
+  }
+  return (
+    <button type="button" role="switch" aria-checked={dark} className="switch" onClick={flip}>
+      <span className="switch-track" aria-hidden="true">
+        <span className="switch-knob" />
+      </span>
+      Dark
+    </button>
   );
 }
 
