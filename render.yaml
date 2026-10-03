@@ -1,0 +1,31 @@
+# Render blueprint for the guardian (render.com → New → Blueprint → this repo).
+# After the first deploy, add the guardian keypair as a Secret File named
+# guardian.json, and optionally ANTHROPIC_API_KEY.
+services:
+  - type: web
+    name: vetowall-guardian
+    runtime: node
+    # A free instance sleeps when idle, and a sleeping guardian vetoes nothing.
+    plan: starter
+    rootDir: guardian
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: CONFIG
+        value: BQodWY1t1CVVJHpGdR9UnDg3wY3gyTsBDne5y2hSfTgp
+      - key: GUARDIAN_KEYPAIR
+        value: /etc/secrets/guardian.json
+      - key: GUARDIAN_LOG
+        value: /var/data/decisions.jsonl
+      - key: RPC_URL
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+    # The log holds the text behind each onchain reason hash, so it must outlive restarts.
+    disk:
+      name: decisions
+      mountPath: /var/data
+      sizeGB: 1

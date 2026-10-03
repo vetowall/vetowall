@@ -39,6 +39,10 @@ npm run typecheck
 
 `--dry-run` doesn't need a keypair. Its log records have `"veto_tx": null`.
 
+## Host it
+
+[`render.yaml`](../render.yaml) at the repo root is a Render blueprint: **New → Blueprint**, pick this repository, set `RPC_URL`, then add the guardian keypair as a Secret File named `guardian.json`. It uses a paid always-on instance, because a free one sleeps when idle and a sleeping guardian vetoes nothing, and a 1 GB disk for the decision log. Point the console at it with `VITE_GUARDIAN_URL` (or `GUARDIAN_URL` for `web/`).
+
 ## Interfaces
 
 Each decision is one JSON line appended to `GUARDIAN_LOG`, which is never rewritten:
