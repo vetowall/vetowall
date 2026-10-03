@@ -12,7 +12,7 @@ Every stablecoin and tokenized asset is controlled by admin keys that can mint, 
 Vetowall is a Solana program that holds an issuer's Token-2022 authorities through its authority PDA. From then on:
 
 - **Every privileged instruction has a class and a timelock.** Each admin instruction is registered as `Safe`, `Params`, `Authority` or `Max`, and each class has its own delay. Unregistered instructions default to `Max`. Once the config is sealed, changing Vetowall's own settings is itself a `Max` action, so nobody can quietly remove the delays.
-- **Mints are bounded** (in progress, see [docs/SPEC.md](docs/SPEC.md)). A maker-checker fast lane runs routine mints immediately up to a daily cap. Anything above the cap waits out the timelock, and no path can mint above attested reserves.
+- **Mints are bounded** (see [docs/SPEC.md](docs/SPEC.md)). A maker-checker fast lane runs routine mints immediately up to a daily cap. Anything above the cap waits out the timelock, and no path can mint above attested reserves.
 - **The guardian can only stop things.** A guardian key can veto queued proposals and run instructions registered as `Safe` (such as pause). It can't mint, unpause or move funds, and it can't veto changes to Vetowall's own config, so it can't block its own rotation.
 - **Durable-nonce transactions are refused** on every path, as defense in depth. This uses the same Instructions-sysvar check as [Squads Nonce Guard](https://github.com/Squads-Protocol/nonce-guard) and [p-never-nonce](https://github.com/febo/pinocchio-never-nonce). On its own it would not have stopped Drift, because the attacker could execute pre-approved proposals with a fresh blockhash. The timelock and the veto are what stop that pattern.
 
@@ -41,6 +41,19 @@ Vetowall doesn't issue tokens or hold reserves. It sits between whatever signs (
 
 The demo is rebuilt with `npm run seed:devnet` in `app/` (see [app/README.md](app/README.md)).
 
+## Guard a mint you already issued
+
+If you hold the authorities of a Token-2022 mint on devnet, one script moves it under Vetowall: it creates and seals a config with the issuer policy pack, then hands the mint, freeze, permanent delegate, pause, metadata and close authorities to the Vetowall PDA.
+
+```sh
+cd app && npm ci
+export PROPOSER=<pubkey> APPROVER=<pubkey> GUARDIAN=<pubkey> ATTESTOR=<pubkey>
+npm run adopt -- <mint>          # prints the plan and sends nothing
+npm run adopt -- <mint> --yes
+```
+
+Then open `https://vetowall.github.io/vetowall/?config=<config>` to see it in the console. Details and limits are in [app/README.md](app/README.md#guard-an-existing-mint).
+
 ## Devnet
 
 | Program | Address |
@@ -65,7 +78,9 @@ Built with `anchor build --arch v0`. The current deploy is tagged `devnet-2026-1
 | `docs/SPEC.md` | The v2 spec shared by the program, the issuer console and the guardian |
 | `programs/mock_vault` | A small lending vault used to replay the Drift attack, with and without Vetowall |
 | `idl/` | Generated IDLs for both programs |
-| `docs/SPEC.md` | The v2 contract shared by the program, console and guardian |
+| `app/` | The issuer console served on GitHub Pages, the devnet seed script and the script that guards an existing mint |
+| `guardian/` | The offchain watcher that holds the veto key: rules decide, the AI only explains |
+| `web/` | The console rebuilt on Next.js, with the RPC key kept server-side (not deployed yet) |
 
 ## Build and test
 
