@@ -16,7 +16,7 @@ With no live deployment the console shows seeded demo data (badged "Demo data"),
 ```sh
 npm ci
 npm run dev      # http://localhost:5173
-npm test         # report export and record mapping (node:test)
+npm test         # report export, record mapping and adopt decisions (node:test)
 npm run build    # type-check + production build into dist/
 ```
 
@@ -38,11 +38,15 @@ A token launched from this browser is remembered in `localStorage` and takes pre
 export PROPOSER=<pubkey> APPROVER=<pubkey> GUARDIAN=<pubkey> ATTESTOR=<pubkey>
 npm run adopt -- <mint>          # prints the plan and sends nothing
 npm run adopt -- <mint> --yes    # config, policies, seal, then the handover
+npm run adopt -- <mint> --yes --partial   # accept that some authority stays outside
 ```
 
-- `KEYPAIR` (default `~/.config/solana/id.json`) pays and must be the current holder of the authorities. Optional: `DAILY_CAP` (whole tokens, default 1,000,000), `DELAYS` (`Safe,Params,Authority,Max` in seconds, default `0,120,180,300`), `MAX_AGE`, `VITE_RPC_URL`.
-- The config is sealed before any authority moves. The handover is one-way: afterwards an authority only leaves Vetowall through a queued `SetAuthority` that waits out the `Max` delay.
-- It reports authorities held by another key (they stay god keys) and extensions it doesn't handle (transfer fee, transfer hook, confidential transfer and others), whose authorities you must move yourself.
+- `KEYPAIR` (default `~/.config/solana/id.json`) pays and must be the current holder of the authorities. Optional: `DAILY_CAP` (whole tokens, default 1,000,000; 0 switches the fast lane off), `DELAYS` (`Safe,Params,Authority,Max` in seconds, default `0,120,180,300`), `MAX_AGE`, `VITE_RPC_URL`.
+- We seal the config before any authority moves, and all authorities move in one transaction. If any step fails, no authority has moved. The handover is one-way: afterwards an authority only leaves Vetowall through a queued `SetAuthority` that waits out the `Max` delay.
+- **Nothing is filled in.** A missing or malformed key, an empty or non-digit number, delays that decrease from Safe to Max, an unknown flag, or a cap that doesn't fit in a u64 is refused before anything is signed. The four roles must be four different keys: a proposer that is also the approver has no checker.
+- **A partial handover is refused.** If another key holds an authority, or the mint has an extension the script doesn't read (transfer fee, transfer hook, confidential transfer and others), a god key would remain. The script lists them and exits with status 1, in a dry run too. Pass `--partial` to accept that; the final line then says what is still outside Vetowall.
+- After sending, we read the mint back from chain and only report full coverage when every authority is on the PDA.
+- The decisions live in `src/adopt.ts` and are tested in `src/adopt.test.ts`; `scripts/adopt.ts` only does I/O.
 - It prints the config. Open `https://vetowall.github.io/vetowall/?config=<config>` to see the token in the console.
 
 ## Seeding the live devnet demo

@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "test": "node --test src/report.test.ts src/records.test.ts",
+    "test": "node --test src/report.test.ts src/records.test.ts src/adopt.test.ts",
     "seed:devnet": "tsx scripts/seed-devnet.ts",
     "adopt": "tsx scripts/adopt.ts"
   },
