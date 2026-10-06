@@ -122,9 +122,27 @@ test("any proposal within 7 days of a role change", () => {
   assert.equal(recentRoleChange(p, mint(1n), ctx({ roleChanges: [{ role: "proposer", at: NOW + 60 }] })), null);
 });
 
-test("evaluate skips Vetowall-targeted and non-queued proposals", () => {
+const register = (disc: number[], cls: string, limit: object | null): TargetIx => ({
+  program: "vetowall",
+  name: "register",
+  args: { target_program: TOKEN_2022_PROGRAM, discriminator: [...disc, 0, 0, 0, 0, 0, 0, 0, 0].slice(0, 8), disc_len: 1, class: cls, limit },
+});
+
+test("a queued register that makes minting Safe or drops the reserve bound is vetoed", () => {
+  const p = proposal({ targetProgram: VETOWALL, class: "Max" });
+  const bounded = { amount_offset: 1, cap: 1_000_000n * M, window: 86_400n, reserve: "rsv", mint_index: 0 };
+  assert.equal(evaluate(p, register([7], "Safe", null), ctx(), VETOWALL)[0].rule, "policy_weakening");
+  assert.equal(evaluate(p, register([7], "Params", { ...bounded, reserve: null }), ctx(), VETOWALL)[0].rule, "policy_weakening");
+  assert.equal(evaluate(p, register([44, 2], "Safe", null), ctx(), VETOWALL)[0].rule, "policy_weakening");
+  assert.equal(evaluate(p, register([6], "Safe", null), ctx(), VETOWALL)[0].rule, "policy_weakening");
+  // Raising a cap, or making Pause safe, is ordinary governance.
+  assert.deepEqual(evaluate(p, register([7], "Params", bounded), ctx(), VETOWALL), []);
+  assert.deepEqual(evaluate(p, register([44, 1], "Safe", null), ctx(), VETOWALL), []);
+});
+
+test("evaluate skips guardian rotation and non-queued proposals", () => {
   const c = ctx({ roleChanges: [{ role: "guardian", at: NOW - DAY }] });
-  assert.deepEqual(evaluate(proposal({ targetProgram: VETOWALL, class: "Max" }), mint(1n), c, VETOWALL), []);
+  assert.deepEqual(evaluate(proposal({ targetProgram: VETOWALL, class: "Max" }), { program: "vetowall", name: "set_guardian" }, c, VETOWALL), []);
   assert.deepEqual(evaluate(proposal({ status: "Executed", class: "Max" }), mint(1n), c, VETOWALL), []);
   assert.equal(evaluate(proposal(), mint(1n), c, VETOWALL)[0].rule, "recent_role_change");
 });

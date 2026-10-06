@@ -206,7 +206,7 @@ const AUTHORITY_TYPES = [
 ];
 
 export type TargetIx = {
-  program: "spl-token" | "token-2022" | "mock_vault" | "unknown";
+  program: "spl-token" | "token-2022" | "mock_vault" | "vetowall" | "unknown";
   name: string;
   /** Token amount in base units (MintTo, MintToChecked, Burn, BurnChecked). */
   amount?: bigint;
@@ -215,7 +215,7 @@ export type TargetIx = {
   mint?: string;
   authorityType?: string;
   newAuthority?: string | null;
-  /** Anchor instruction args (mock_vault), by IDL name. */
+  /** Anchor instruction args (mock_vault, vetowall), by IDL name. */
   args?: Record<string, any>;
   /** Accounts by IDL name (mock_vault). */
   named?: Record<string, string>;
@@ -248,13 +248,15 @@ export function decodeTargetIx(programId: string, data: Uint8Array, accounts: Me
       default: return { program, name: `Tag${b[0]}` };
     }
   }
-  if (programId === mockVaultIdl.address) {
-    const ix = mockVaultIdl.instructions.find((i) => b.subarray(0, 8).equals(Buffer.from(i.discriminator)));
-    if (!ix) return { program: "mock_vault", name: "unknown" };
-    const r = new Reader(b, typesOf(mockVaultIdl));
+  // Vetowall's own instructions are decoded too: a queued change to its config is a proposal like any other.
+  for (const [program, idl] of [["mock_vault", mockVaultIdl], ["vetowall", vetowallIdl]] as const) {
+    if (programId !== idl.address) continue;
+    const ix = idl.instructions.find((i) => b.subarray(0, 8).equals(Buffer.from(i.discriminator)));
+    if (!ix) return { program, name: "unknown" };
+    const r = new Reader(b, typesOf(idl));
     r.off = 8;
     const named = Object.fromEntries(ix.accounts.map((a, i) => [a.name, key(i)]).filter(([, k]) => k));
-    return { program: "mock_vault", name: ix.name, args: r.fields(ix.args), named };
+    return { program, name: ix.name, args: r.fields(ix.args), named };
   }
   return { program: "unknown", name: "unknown" };
 }

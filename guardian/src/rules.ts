@@ -2,7 +2,7 @@
 // clock, no LLM. If a rule returns a hit, the guardian vetoes; nothing else
 // can make it veto.
 
-import type { Proposal, TargetIx } from "./decode.ts";
+import { PAUSABLE_TAG, TOKEN_2022_PROGRAM, TOKEN_PROGRAM, type Proposal, type TargetIx } from "./decode.ts";
 
 export type Severity = "critical" | "high";
 export type Facts = Record<string, string | number | boolean | null>;
@@ -105,7 +105,9 @@ export function authorityChange(p: Proposal, ix: TargetIx, _ctx: Ctx): Hit | nul
       facts: { program: ix.program, target: ix.mint ?? null, authority_type: ix.authorityType ?? null, new_authority: ix.newAuthority ?? null },
     };
   }
-  if (p.class === "Max") {
+  // Every change to Vetowall's own config is `Max` by construction, so the class alone says nothing there;
+  // `policyWeakening` judges those by what they change.
+  if (p.class === "Max" && ix.program !== "vetowall") {
     return { rule: "max_class", severity: "high", facts: { program: p.targetProgram, instruction: ix.name, class: p.class } };
   }
   return null;
@@ -161,16 +163,41 @@ export function recentRoleChange(p: Proposal, _ix: TargetIx, ctx: Ctx): Hit | nu
   };
 }
 
-export const RULES = [mintUnbacked, mintSize, authorityChange, vaultRisk, recentRoleChange];
+/**
+ * A queued `register` that would take the brakes off a token instruction:
+ * a mint, burn, authority change or resume made `Safe` (no timelock, and the
+ * guardian key itself could then run it), or a mint policy without a reserve
+ * bound. With the proposer and approver compromised this is the quiet first
+ * step, weeks before any mint.
+ */
+export function policyWeakening(_p: Proposal, ix: TargetIx, _ctx: Ctx): Hit | null {
+  if (ix.program !== "vetowall" || ix.name !== "register" || !ix.args) return null;
+  const { target_program, discriminator: d, class: cls, limit } = ix.args;
+  if (target_program !== TOKEN_PROGRAM && target_program !== TOKEN_2022_PROGRAM) return null;
+  const mints = d[0] === 7 || d[0] === 14;
+  // SetAuthority, Burn, BurnChecked, Pausable.Resume.
+  const guarded = mints || d[0] === 6 || d[0] === 8 || d[0] === 15 || (d[0] === PAUSABLE_TAG && d[1] === 2);
+  if (!guarded) return null;
+  const unbounded = mints && !limit?.reserve;
+  if (cls !== "Safe" && !unbounded) return null;
+  return {
+    rule: "policy_weakening",
+    severity: "critical",
+    facts: { tag: d[0], sub_tag: d[1], new_class: cls, reserve_bound: Boolean(limit?.reserve), cap: limit ? String(limit.cap) : null },
+  };
+}
+
+export const RULES = [mintUnbacked, mintSize, authorityChange, vaultRisk, policyWeakening, recentRoleChange];
 const RANK: Record<Severity, number> = { critical: 0, high: 1 };
 
 /**
- * All hits for a queued proposal, most severe first. Proposals targeting
- * Vetowall itself return nothing: the program refuses to let the guardian veto
- * its own rotation.
+ * All hits for a queued proposal, most severe first. A queued `set_guardian`
+ * returns nothing: the program refuses to let the guardian veto its own
+ * rotation, so a veto would only fail.
  */
 export function evaluate(p: Proposal, ix: TargetIx, ctx: Ctx, vetowall: string): Hit[] {
-  if (p.status !== "Queued" || p.targetProgram === vetowall) return [];
+  if (p.status !== "Queued") return [];
+  if (p.targetProgram === vetowall && ix.name === "set_guardian") return [];
   return RULES.map((r) => r(p, ix, ctx))
     .filter((h): h is Hit => h !== null)
     .sort((a, b) => RANK[a.severity] - RANK[b.severity]);

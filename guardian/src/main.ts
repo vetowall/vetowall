@@ -230,8 +230,10 @@ createServer((req, res) => {
     void res.writeHead(code, { "content-type": "application/json" }).end(JSON.stringify(body));
   if (req.method === "GET" && path === "/decisions") return json(200, decisions);
   if (req.method === "GET" && path === "/health") {
-    return json(200, {
-      ok: Date.now() - lastPoll < POLL_MS * 3,
+    const ok = Date.now() - lastPoll < POLL_MS * 3;
+    // 503 when polling has stalled, so the host restarts it; a 200 with ok:false would never be acted on.
+    return json(ok ? 200 : 503, {
+      ok,
       dry_run: DRY_RUN,
       guardian: guardian?.publicKey.toBase58() ?? null,
       program: PROGRAM_ID.toBase58(),
