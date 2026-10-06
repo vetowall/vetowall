@@ -95,9 +95,11 @@ export interface SetupParams {
 }
 
 /** The issuer policy pack from docs/SPEC.md. SetAuthority and everything else stay `Max` by default. */
-const POLICY_PACK: { disc: number[]; class: ActionClass; limited?: boolean }[] = [
+const POLICY_PACK: { disc: number[]; class: ActionClass; limited?: boolean; queueOnly?: boolean }[] = [
   { disc: [7], class: 'Params', limited: true }, // MintTo
-  { disc: [14], class: 'Params', limited: true }, // MintToChecked
+  // Each policy counts its own cap, so giving both mint tags the daily cap would allow twice the cap a day.
+  // MintToChecked keeps the reserve bound but has a zero cap: it always goes through the timelock.
+  { disc: [14], class: 'Params', limited: true, queueOnly: true }, // MintToChecked
   { disc: [10], class: 'Params' }, // FreezeAccount
   { disc: [11], class: 'Params' }, // ThawAccount
   { disc: [8], class: 'Authority' }, // Burn (permanent delegate)
@@ -118,10 +120,10 @@ export async function setupIxs(p: SetupParams): Promise<TransactionInstruction[]
     .accountsStrict({ config: p.config, governor: p.admin, reserve, systemProgram: SystemProgram.programId })
     .instruction();
   const registers = await Promise.all(
-    POLICY_PACK.map(({ disc, class: c, limited }) => {
+    POLICY_PACK.map(({ disc, class: c, limited, queueOnly }) => {
       const d = discOf(Uint8Array.from(disc));
       const limit = limited
-        ? { amountOffset: 1, cap: new BN(p.dailyCap.toString()), window: new BN(86400), reserve, mintIndex: 0 }
+        ? { amountOffset: 1, cap: new BN(queueOnly ? 0 : p.dailyCap.toString()), window: new BN(86400), reserve, mintIndex: 0 }
         : null;
       return program.methods
         .register(TOKEN_2022, [...d], 1, classArg(c), limit)
