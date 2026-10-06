@@ -108,16 +108,24 @@ const POLICY_PACK: { disc: number[]; class: ActionClass; limited?: boolean; queu
   { disc: [44, 2], class: 'Params' }, // Pausable: Resume
 ];
 
+/**
+ * Setup instructions take the Instructions sysvar as their first remaining account, so the program can
+ * refuse one that was pre-signed against a durable nonce and held back until just before `seal`.
+ */
+const SETUP_SYSVAR = [{ pubkey: SYSVAR_IX, isSigner: false, isWritable: false }];
+
 /** Instruction groups for setup, each small enough for one transaction. */
 export async function setupIxs(p: SetupParams): Promise<TransactionInstruction[][]> {
   const reserve = pda.reserve(p.config, p.mint);
   const init = await program.methods
     .initialize(p.proposer, p.approver, p.guardian, p.delays.map((d) => new BN(d)))
     .accountsStrict({ admin: p.admin, config: p.config, systemProgram: SystemProgram.programId })
+    .remainingAccounts(SETUP_SYSVAR)
     .instruction();
   const initReserve = await program.methods
     .initReserve(p.mint, p.attestor, new BN(p.maxAge))
     .accountsStrict({ config: p.config, governor: p.admin, reserve, systemProgram: SystemProgram.programId })
+    .remainingAccounts(SETUP_SYSVAR)
     .instruction();
   const registers = await Promise.all(
     POLICY_PACK.map(({ disc, class: c, limited, queueOnly }) => {
@@ -128,10 +136,11 @@ export async function setupIxs(p: SetupParams): Promise<TransactionInstruction[]
       return program.methods
         .register(TOKEN_2022, [...d], 1, classArg(c), limit)
         .accountsStrict({ config: p.config, governor: p.admin, ...policyAccounts(p.config, TOKEN_2022, d), systemProgram: SystemProgram.programId })
+        .remainingAccounts(SETUP_SYSVAR)
         .instruction();
     }),
   );
-  const seal = await program.methods.seal().accountsStrict({ config: p.config, admin: p.admin }).instruction();
+  const seal = await program.methods.seal().accountsStrict({ config: p.config, admin: p.admin }).remainingAccounts(SETUP_SYSVAR).instruction();
   return [[init, initReserve], registers.slice(0, 4), [...registers.slice(4), seal]];
 }
 

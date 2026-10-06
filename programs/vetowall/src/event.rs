@@ -21,6 +21,8 @@ pub enum RecordKind {
     ApproverSet,
     GuardianSet,
     DelaysSet,
+    /// Appended last so older records keep their numbers.
+    Initialized,
 }
 
 /// Fields that don't apply to a kind are `None`, zero or the default key

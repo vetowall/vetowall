@@ -60,4 +60,6 @@ pub enum ErrorCode {
     Expired,
     #[msg("A limit's window and a reserve's max age must be positive")]
     BadLimit,
+    #[msg("Before seal, admin instructions need the Instructions sysvar as their first remaining account")]
+    NoInstructionsSysvar,
 }

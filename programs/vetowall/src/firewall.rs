@@ -32,6 +32,22 @@ pub fn forbid_durable_nonce(instructions_sysvar: &AccountInfo) -> Result<()> {
     Ok(())
 }
 
+/// Setup instructions, which the admin signs directly before `seal`, can't be
+/// pre-signed either. Otherwise a signed `register` or `set_guardian` held
+/// back on a durable nonce could land just before `seal` and be sealed in.
+/// After `seal` the governor is the authority PDA, which only signs inside
+/// `execute`, and that already ran this check on the outer transaction.
+///
+/// The sysvar comes in as the first remaining account so the account lists
+/// in the IDL don't change.
+pub fn forbid_presigned_setup(remaining: &[AccountInfo]) -> Result<()> {
+    let sysvar = remaining
+        .first()
+        .filter(|a| a.key() == solana_instructions_sysvar::ID)
+        .ok_or(ErrorCode::NoInstructionsSysvar)?;
+    forbid_durable_nonce(sysvar)
+}
+
 /// The policy key for an instruction: the first `disc_len` bytes of its data,
 /// or the first 2 when `disc_len == 1` and the first byte is a wide tag,
 /// zero-padded to 8.

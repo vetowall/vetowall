@@ -3,6 +3,7 @@ use anchor_lang::prelude::*;
 use crate::{
     constants::{AUTHORITY_SEED, MAX_ACCOUNTS, MAX_DATA, MAX_WIDE_TAGS},
     error::ErrorCode,
+    firewall::forbid_presigned_setup,
 };
 
 /// How dangerous an admin instruction is. Each class has its own timelock.
@@ -51,10 +52,15 @@ impl Config {
 
     /// Before sealing, the admin governs. After, only the authority PDA does,
     /// which means only a proposal that waited out the `Max` delay.
-    pub fn require_governor(&self, config: &Pubkey, signer: &Pubkey) -> Result<()> {
+    ///
+    /// `remaining` is the instruction's remaining accounts. Before sealing
+    /// the first of them must be the Instructions sysvar, so a pre-signed
+    /// setup instruction is refused (see `forbid_presigned_setup`).
+    pub fn require_governor(&self, config: &Pubkey, signer: &Pubkey, remaining: &[AccountInfo]) -> Result<()> {
         let governor = if self.sealed {
             self.authority(config)?
         } else {
+            forbid_presigned_setup(remaining)?;
             self.admin
         };
         require_keys_eq!(*signer, governor, ErrorCode::NotGovernor);

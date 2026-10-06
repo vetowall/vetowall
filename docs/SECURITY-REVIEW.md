@@ -20,10 +20,10 @@ The findings below are kept as written. This is what we did about each one.
 | L1 | Fixed. `register` refuses a non-positive window. Test: `a_limit_window_must_be_positive` |
 | L2 | Fixed. `set_attestor` resets `updated_at`. Test: `rotating_the_attestor_voids_the_last_attestation` |
 | L3 | Fixed. `init_reserve` refuses a non-positive `max_age` (same test) |
-| L4 | Not fixed. Documented here; the shipped policy pack is not affected |
+| L4 | Mitigated, not removed. The program still resolves a bare one-byte policy this way (see the `ponytail:` note in `firewall.rs`). The guardian's `policy_weakening` rule now vetoes a queued `Safe` registration for any Pausable tag other than Pause, including the bare tag. The shipped policy pack is not affected |
 | L5 | Fixed. `check_reserve` requires `reserve.config` to be this config |
-| L6 | Partly fixed. `Registered` now carries the limit's reserve in `subject`. `initialize` still emits no record |
-| L7 | Not fixed. Read the config and its policies back from chain after `seal` |
+| L6 | Fixed except for one field. `Registered` carries the limit's reserve in `subject`, and `initialize` emits an `Initialized` record. `AttestorSet` still doesn't name the reserve; the event has no spare field for it |
+| L7 | Fixed. Before seal, `initialize`, `seal` and every setter take the Instructions sysvar as their first remaining account and refuse a durable-nonce transaction. Test: `presigned_setup_is_refused` |
 
 The test gaps listed further down are still open, apart from the tests named above.
 

@@ -10,7 +10,7 @@ use {
             instruction::{AccountMeta, Instruction},
             system_program,
         },
-        AccountDeserialize, InstructionData, ToAccountMetas,
+        AccountDeserialize, Discriminator, InstructionData, ToAccountMetas,
     },
     litesvm::{types::FailedTransactionMetadata, LiteSVM},
     litesvm_token::{
@@ -46,9 +46,27 @@ struct Env {
     attacker: Keypair,
 }
 
+/// What a client does for setup: `initialize`, `seal` and the config and
+/// reserve setters take the Instructions sysvar as their first remaining
+/// account, so the program can refuse them in a durable-nonce transaction.
+fn with_sysvar(ix: &Instruction) -> Instruction {
+    use vetowall::instruction as vi;
+    let setup: [&[u8]; 9] = [
+        vi::Initialize::DISCRIMINATOR, vi::Seal::DISCRIMINATOR, vi::Register::DISCRIMINATOR,
+        vi::InitReserve::DISCRIMINATOR, vi::SetAttestor::DISCRIMINATOR, vi::SetProposer::DISCRIMINATOR,
+        vi::SetApprover::DISCRIMINATOR, vi::SetGuardian::DISCRIMINATOR, vi::SetDelays::DISCRIMINATOR,
+    ];
+    let mut ix = ix.clone();
+    if ix.program_id == vetowall::id() && setup.iter().any(|d| ix.data.starts_with(d)) {
+        ix.accounts.push(AccountMeta::new_readonly(solana_instructions_sysvar_id(), false));
+    }
+    ix
+}
+
 fn send(svm: &mut LiteSVM, ixs: &[Instruction], signers: &[&Keypair]) -> Result<(), FailedTransactionMetadata> {
     let blockhash = svm.latest_blockhash();
-    let msg = Message::new_with_blockhash(ixs, Some(&signers[0].pubkey()), &blockhash);
+    let ixs: Vec<Instruction> = ixs.iter().map(with_sysvar).collect();
+    let msg = Message::new_with_blockhash(&ixs, Some(&signers[0].pubkey()), &blockhash);
     let tx = VersionedTransaction::try_new(VersionedMessage::Legacy(msg), signers).unwrap();
     let res = svm.send_transaction(tx).map(|_| ());
     // Each test step lands in its own block so identical txs don't collide.
@@ -652,4 +670,26 @@ fn a_matured_proposal_expires_after_the_grace_period() {
     // One second later, the identical proposal that nobody executed is dead.
     warp(&mut env.svm, 1);
     assert_err(tx!(env, [execute_ix(&env, 1, &rotate)], [&env.payer]), code(VetowallError::Expired));
+}
+
+#[test]
+fn presigned_setup_is_refused() {
+    let mut env = setup();
+    let payer = env.payer.insecure_clone();
+    let config = Keypair::new();
+    let init = Instruction::new_with_bytes(
+        vetowall::id(),
+        &vetowall::instruction::Initialize { proposer: Pubkey::new_unique(), approver: None, guardian: Pubkey::new_unique(), delays: DELAYS }.data(),
+        vetowall::accounts::Initialize { admin: payer.pubkey(), config: config.pubkey(), system_program: system_program::ID }.to_account_metas(None),
+    );
+    // Without the sysvar the program can't tell, so it refuses outright.
+    let blockhash = env.svm.latest_blockhash();
+    let msg = Message::new_with_blockhash(&[init.clone()], Some(&payer.pubkey()), &blockhash);
+    let bare = VersionedTransaction::try_new(VersionedMessage::Legacy(msg), &[&payer, &config]).unwrap();
+    assert_err(env.svm.send_transaction(bare).map(|_| ()), code(VetowallError::NoInstructionsSysvar));
+
+    // A setup instruction signed today and held back on a durable nonce.
+    let (nonce, durable) = nonce_account(&mut env.svm, &payer, &payer.pubkey());
+    let res = send_presigned(&mut env.svm, &[with_sysvar(&init)], &[&payer, &config], nonce, &payer.pubkey(), durable);
+    assert_err(res, code(VetowallError::NonceTxForbidden));
 }

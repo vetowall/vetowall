@@ -1010,6 +1010,11 @@
       "code": 6028,
       "name": "BadLimit",
       "msg": "A limit's window and a reserve's max age must be positive"
+    },
+    {
+      "code": 6029,
+      "name": "NoInstructionsSysvar",
+      "msg": "Before seal, admin instructions need the Instructions sysvar as their first remaining account"
     }
   ],
   "types": [
@@ -1473,6 +1478,9 @@
           },
           {
             "name": "DelaysSet"
+          },
+          {
+            "name": "Initialized"
           }
         ]
       }

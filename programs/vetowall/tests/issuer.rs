@@ -60,9 +60,27 @@ struct Env {
 
 type Sent = Result<TransactionMetadata, FailedTransactionMetadata>;
 
+/// What a client does for setup: `initialize`, `seal` and the config and
+/// reserve setters take the Instructions sysvar as their first remaining
+/// account, so the program can refuse them in a durable-nonce transaction.
+fn with_sysvar(ix: &Instruction) -> Instruction {
+    use vetowall::instruction as vi;
+    let setup: [&[u8]; 9] = [
+        vi::Initialize::DISCRIMINATOR, vi::Seal::DISCRIMINATOR, vi::Register::DISCRIMINATOR,
+        vi::InitReserve::DISCRIMINATOR, vi::SetAttestor::DISCRIMINATOR, vi::SetProposer::DISCRIMINATOR,
+        vi::SetApprover::DISCRIMINATOR, vi::SetGuardian::DISCRIMINATOR, vi::SetDelays::DISCRIMINATOR,
+    ];
+    let mut ix = ix.clone();
+    if ix.program_id == vetowall::id() && setup.iter().any(|d| ix.data.starts_with(d)) {
+        ix.accounts.push(AccountMeta::new_readonly(solana_instructions_sysvar::ID, false));
+    }
+    ix
+}
+
 fn send(svm: &mut LiteSVM, ixs: &[Instruction], signers: &[&Keypair]) -> Sent {
     let blockhash = svm.latest_blockhash();
-    let msg = Message::new_with_blockhash(ixs, Some(&signers[0].pubkey()), &blockhash);
+    let ixs: Vec<Instruction> = ixs.iter().map(with_sysvar).collect();
+    let msg = Message::new_with_blockhash(&ixs, Some(&signers[0].pubkey()), &blockhash);
     let tx = VersionedTransaction::try_new(VersionedMessage::Legacy(msg), signers).unwrap();
     let res = svm.send_transaction(tx);
     svm.expire_blockhash();

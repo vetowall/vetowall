@@ -2,6 +2,8 @@ use anchor_lang::prelude::*;
 
 use crate::{
     constants::AUTHORITY_SEED,
+    event::{ChangeRecord, RecordKind},
+    firewall::forbid_presigned_setup,
     state::{validate_delays, Config},
 };
 
@@ -22,6 +24,7 @@ pub fn handle_initialize(
     delays: [i64; 4],
 ) -> Result<()> {
     validate_delays(&delays)?;
+    forbid_presigned_setup(ctx.remaining_accounts)?;
     let (_, authority_bump) = Pubkey::find_program_address(
         &[AUTHORITY_SEED, ctx.accounts.config.key().as_ref()],
         &crate::ID,
@@ -34,5 +37,13 @@ pub fn handle_initialize(
     config.delays = delays;
     config.authority_bump = authority_bump;
     // A failed check aborts the transaction, so the half-written account above never persists.
-    config.require_distinct_roles()
+    config.require_distinct_roles()?;
+    // The first record of every config: who was given which role. The admin
+    // is the actor, the proposer the subject; the guardian is in the account.
+    emit!(ChangeRecord {
+        approver,
+        subject: Some(proposer),
+        ..ChangeRecord::new(RecordKind::Initialized, config.key(), config.admin)?
+    });
+    Ok(())
 }

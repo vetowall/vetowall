@@ -8,6 +8,7 @@ use crate::{
     constants::{MAX_WIDE_TAGS, POLICY_SEED, TARGET_SEED},
     error::ErrorCode,
     event::{ChangeRecord, RecordKind},
+    firewall::forbid_presigned_setup,
     state::{validate_delays, ActionClass, Config, Limit, Policy, Target},
 };
 
@@ -20,7 +21,7 @@ pub struct Govern<'info> {
 
 pub fn handle_set_proposer(ctx: Context<Govern>, proposer: Pubkey) -> Result<()> {
     let config = &mut ctx.accounts.config;
-    config.require_governor(&config.key(), &ctx.accounts.governor.key())?;
+    config.require_governor(&config.key(), &ctx.accounts.governor.key(), ctx.remaining_accounts)?;
     config.proposer = proposer;
     config.require_distinct_roles()?;
     emit!(ChangeRecord {
@@ -32,7 +33,7 @@ pub fn handle_set_proposer(ctx: Context<Govern>, proposer: Pubkey) -> Result<()>
 
 pub fn handle_set_approver(ctx: Context<Govern>, approver: Option<Pubkey>) -> Result<()> {
     let config = &mut ctx.accounts.config;
-    config.require_governor(&config.key(), &ctx.accounts.governor.key())?;
+    config.require_governor(&config.key(), &ctx.accounts.governor.key(), ctx.remaining_accounts)?;
     config.approver = approver;
     config.require_distinct_roles()?;
     emit!(ChangeRecord {
@@ -44,7 +45,7 @@ pub fn handle_set_approver(ctx: Context<Govern>, approver: Option<Pubkey>) -> Re
 
 pub fn handle_set_guardian(ctx: Context<Govern>, guardian: Pubkey) -> Result<()> {
     let config = &mut ctx.accounts.config;
-    config.require_governor(&config.key(), &ctx.accounts.governor.key())?;
+    config.require_governor(&config.key(), &ctx.accounts.governor.key(), ctx.remaining_accounts)?;
     config.guardian = guardian;
     config.require_distinct_roles()?;
     emit!(ChangeRecord {
@@ -57,7 +58,7 @@ pub fn handle_set_guardian(ctx: Context<Govern>, guardian: Pubkey) -> Result<()>
 pub fn handle_set_delays(ctx: Context<Govern>, delays: [i64; 4]) -> Result<()> {
     validate_delays(&delays)?;
     let config = &mut ctx.accounts.config;
-    config.require_governor(&config.key(), &ctx.accounts.governor.key())?;
+    config.require_governor(&config.key(), &ctx.accounts.governor.key(), ctx.remaining_accounts)?;
     config.delays = delays;
     emit!(ChangeRecord::new(RecordKind::DelaysSet, config.key(), ctx.accounts.governor.key())?);
     Ok(())
@@ -72,6 +73,7 @@ pub struct Seal<'info> {
 
 pub fn handle_seal(ctx: Context<Seal>) -> Result<()> {
     require!(!ctx.accounts.config.sealed, ErrorCode::AlreadySealed);
+    forbid_presigned_setup(ctx.remaining_accounts)?;
     ctx.accounts.config.sealed = true;
     emit!(ChangeRecord::new(RecordKind::Sealed, ctx.accounts.config.key(), ctx.accounts.admin.key())?);
     Ok(())
@@ -119,7 +121,7 @@ pub fn handle_register(
 ) -> Result<()> {
     require_keys_neq!(target_program, crate::ID, ErrorCode::SelfPolicy);
     let config = &ctx.accounts.config;
-    config.require_governor(&config.key(), &ctx.accounts.governor.key())?;
+    config.require_governor(&config.key(), &ctx.accounts.governor.key(), ctx.remaining_accounts)?;
     require!((1..=8).contains(&disc_len), ErrorCode::BadDiscriminator);
     // A zero or negative window would reset `used` on every call, which
     // turns a daily cap into a per-call cap.

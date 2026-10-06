@@ -55,6 +55,7 @@ const toClass = (c: object | null): ActionClass | undefined => {
 };
 
 const GOVERNANCE: Record<string, (r: DecodedRecord) => string> = {
+  initialized: () => 'Config created',
   reserveInitialized: () => 'Reserve account created',
   attestorSet: () => 'Attestor changed',
   registered: (r) => `Policy registered: ${describe(r.targetProgram.toString(), r.discriminator, [], 0).action}`,

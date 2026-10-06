@@ -135,6 +135,7 @@ test("a queued register that makes minting Safe or drops the reserve bound is ve
   assert.equal(evaluate(p, register([7], "Params", { ...bounded, reserve: null }), ctx(), VETOWALL)[0].rule, "policy_weakening");
   assert.equal(evaluate(p, register([44, 2], "Safe", null), ctx(), VETOWALL)[0].rule, "policy_weakening");
   assert.equal(evaluate(p, register([6], "Safe", null), ctx(), VETOWALL)[0].rule, "policy_weakening");
+  assert.equal(evaluate(p, register([44], "Safe", null), ctx(), VETOWALL)[0].rule, "policy_weakening");
   // Raising a cap, or making Pause safe, is ordinary governance.
   assert.deepEqual(evaluate(p, register([7], "Params", bounded), ctx(), VETOWALL), []);
   assert.deepEqual(evaluate(p, register([44, 1], "Safe", null), ctx(), VETOWALL), []);

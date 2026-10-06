@@ -79,7 +79,7 @@ Proposal fields are only ever appended. Proposals are allocated at max size and 
 
 **Reserve bound:** `Reserve` key must equal `limit.reserve`; the account at `mint_index` must match the stored meta and `reserve.mint`, and be owned by SPL Token or Token-2022 (`BadReserveAccount` otherwise). Staleness (`now - updated_at > max_age`) is checked before the amount. A new `Reserve` has `updated_at = 0`, so it is stale until first attested. One reserve per policy, so a policy's limit covers one mint.
 
-**Errors added beyond the ones named above:** `NotApprover`, `BadDiscriminator`, `WideTagsFull`, `BadReserveAccount`, `NotAttestor`, `SameRole`, `Expired`, `BadLimit` (appended after v1's codes; see the IDL for numbers).
+**Errors added beyond the ones named above:** `NotApprover`, `BadDiscriminator`, `WideTagsFull`, `BadReserveAccount`, `NotAttestor`, `SameRole`, `Expired`, `BadLimit`, `NoInstructionsSysvar` (appended after v1's codes; see the IDL for numbers).
 
 **Role separation.** `initialize` and the three role setters fail with `SameRole` if one key would hold two of proposer, approver and guardian. `init_reserve` and `set_attestor` fail with `SameRole` if the attestor is the proposer or the approver; the guardian may attest, because it can't mint. A missing approver is still allowed (single-signer mode). The check compares addresses only: it can't tell whether two keys belong to one person, and it isn't re-run against existing reserves when the proposer or approver later changes (that change is a `Max` proposal, visible for the whole delay).
 
@@ -163,4 +163,6 @@ See [SECURITY-REVIEW.md](SECURITY-REVIEW.md) for the findings behind these.
 - **Attestor rotation.** `set_attestor` sets the reserve's `updated_at` to 0, so the reserve is stale until the new attestor reports.
 - **Reserve ownership.** A limit's reserve must belong to the same config.
 - **Records.** A `Registered` record carries the limit's reserve in `subject` (`None` when the policy has no reserve bound).
+- **Setup can't be pre-signed.** Before `seal`, `initialize`, `seal`, `register`, `init_reserve` and the `set_*` instructions need the Instructions sysvar as their first remaining account, and fail with `NonceTxForbidden` in a durable-nonce transaction (`NoInstructionsSysvar` if the account is missing). After `seal` they only run inside `execute`, which makes the same check.
+- **First record.** `initialize` emits `Initialized` (actor = admin, subject = proposer, approver = approver).
 - **Policy pack.** `MintToChecked` is registered with a zero cap, because each policy counts its own cap.

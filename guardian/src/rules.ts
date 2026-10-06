@@ -175,8 +175,9 @@ export function policyWeakening(_p: Proposal, ix: TargetIx, _ctx: Ctx): Hit | nu
   const { target_program, discriminator: d, class: cls, limit } = ix.args;
   if (target_program !== TOKEN_PROGRAM && target_program !== TOKEN_2022_PROGRAM) return null;
   const mints = d[0] === 7 || d[0] === 14;
-  // SetAuthority, Burn, BurnChecked, Pausable.Resume.
-  const guarded = mints || d[0] === 6 || d[0] === 8 || d[0] === 15 || (d[0] === PAUSABLE_TAG && d[1] === 2);
+  // SetAuthority, Burn, BurnChecked, and every Pausable policy except Pause itself. That includes the bare
+  // one-byte tag, which matches Resume too until a two-byte sibling is registered.
+  const guarded = mints || d[0] === 6 || d[0] === 8 || d[0] === 15 || (d[0] === PAUSABLE_TAG && d[1] !== 1);
   if (!guarded) return null;
   const unbounded = mints && !limit?.reserve;
   if (cls !== "Safe" && !unbounded) return null;

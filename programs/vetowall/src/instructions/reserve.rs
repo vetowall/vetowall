@@ -38,7 +38,7 @@ pub fn handle_init_reserve(
     max_age: i64,
 ) -> Result<()> {
     let config = &ctx.accounts.config;
-    config.require_governor(&config.key(), &ctx.accounts.governor.key())?;
+    config.require_governor(&config.key(), &ctx.accounts.governor.key(), ctx.remaining_accounts)?;
     config.require_independent_attestor(&attestor)?;
     // There is no setter for `max_age`, so a bad value here would be
     // permanent: never stale, or always stale.
@@ -65,7 +65,7 @@ pub struct SetAttestor<'info> {
 
 pub fn handle_set_attestor(ctx: Context<SetAttestor>, attestor: Pubkey) -> Result<()> {
     let config = &ctx.accounts.config;
-    config.require_governor(&config.key(), &ctx.accounts.governor.key())?;
+    config.require_governor(&config.key(), &ctx.accounts.governor.key(), ctx.remaining_accounts)?;
     config.require_independent_attestor(&attestor)?;
     let reserve = &mut ctx.accounts.reserve;
     reserve.attestor = attestor;
