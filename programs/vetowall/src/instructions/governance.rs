@@ -121,6 +121,9 @@ pub fn handle_register(
     let config = &ctx.accounts.config;
     config.require_governor(&config.key(), &ctx.accounts.governor.key())?;
     require!((1..=8).contains(&disc_len), ErrorCode::BadDiscriminator);
+    // A zero or negative window would reset `used` on every call, which
+    // turns a daily cap into a per-call cap.
+    require!(limit.is_none_or(|l| l.window > 0), ErrorCode::BadLimit);
 
     let target = &mut ctx.accounts.target;
     if target.config == Pubkey::default() {
@@ -160,6 +163,9 @@ pub fn handle_register(
         discriminator,
         amount: limit.map(|l| l.cap),
         class: Some(class),
+        // So a re-registration that drops the reserve bound is visible in
+        // the record, not just in the account.
+        subject: limit.and_then(|l| l.reserve),
         ..ChangeRecord::new(RecordKind::Registered, config.key(), ctx.accounts.governor.key())?
     });
     Ok(())

@@ -70,6 +70,7 @@ pub fn handle_execute_now(
             check_reserve(
                 &limit,
                 amt,
+                &config_key,
                 &accounts,
                 ctx.remaining_accounts,
                 ctx.accounts.reserve.as_ref(),

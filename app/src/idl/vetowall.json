@@ -934,7 +934,7 @@
     {
       "code": 6013,
       "name": "GuardianCannotVetoGovernance",
-      "msg": "The guardian can't veto changes to Vetowall's own config"
+      "msg": "The guardian can't veto its own rotation"
     },
     {
       "code": 6014,
@@ -1000,6 +1000,16 @@
       "code": 6026,
       "name": "SameRole",
       "msg": "Proposer, approver, guardian and attestor must be different keys"
+    },
+    {
+      "code": 6027,
+      "name": "Expired",
+      "msg": "Proposal wasn't executed within the grace period after its timelock; queue it again"
+    },
+    {
+      "code": 6028,
+      "name": "BadLimit",
+      "msg": "A limit's window and a reserve's max age must be positive"
     }
   ],
   "types": [

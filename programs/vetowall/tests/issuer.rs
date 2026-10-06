@@ -725,3 +725,58 @@ fn the_attestor_cannot_be_a_signer_of_mints() {
     let r: vetowall::Reserve = load(&env.svm, &reserve);
     assert_eq!(r.attestor, outsider);
 }
+
+#[test]
+fn rotating_the_attestor_voids_the_last_attestation() {
+    let mut env = setup();
+    let [p, a, g] = std::array::from_fn(|_| Pubkey::new_unique());
+    let (res, config) = fresh_config(&mut env, p, Some(a), g);
+    res.unwrap();
+    let admin = env.admin.insecure_clone();
+    let attestor = env.attestor.insecure_clone();
+    let mint = env.mint;
+    let reserve = Pubkey::find_program_address(&[vetowall::RESERVE_SEED, config.as_ref(), mint.as_ref()], &vetowall::id()).0;
+    let init_reserve = |max_age: i64| {
+        Instruction::new_with_bytes(
+            vetowall::id(),
+            &vetowall::instruction::InitReserve { mint, attestor: attestor.pubkey(), max_age }.data(),
+            vetowall::accounts::InitReserve { config, governor: admin.pubkey(), reserve, system_program: system_program::ID }
+                .to_account_metas(None),
+        )
+    };
+    // max_age has no setter, so a value that never or always goes stale is refused up front.
+    assert_err(tx!(env, [init_reserve(0)], [&admin]), VetowallError::BadLimit);
+    assert_err(tx!(env, [init_reserve(-1)], [&admin]), VetowallError::BadLimit);
+    tx!(env, [init_reserve(DAY)], [&admin]).unwrap();
+
+    // A compromised attestor reports a figure that would allow any mint.
+    env.reserve = reserve;
+    tx!(env, [attest_ix(&env, attestor.pubkey(), u64::MAX)], [&attestor]).unwrap();
+    assert_ne!(load::<vetowall::Reserve>(&env.svm, &reserve).updated_at, 0);
+
+    let rotate = Instruction::new_with_bytes(
+        vetowall::id(),
+        &vetowall::instruction::SetAttestor { attestor: Pubkey::new_unique() }.data(),
+        vetowall::accounts::SetAttestor { config, governor: admin.pubkey(), reserve }.to_account_metas(None),
+    );
+    tx!(env, [rotate], [&admin]).unwrap();
+    // Unattested again: stale until the new attestor reports.
+    assert_eq!(load::<vetowall::Reserve>(&env.svm, &reserve).updated_at, 0);
+}
+
+#[test]
+fn a_limit_window_must_be_positive() {
+    let mut env = setup();
+    let [p, g] = std::array::from_fn(|_| Pubkey::new_unique());
+    let (res, config) = fresh_config(&mut env, p, None, g);
+    res.unwrap();
+    env.config = config;
+    let admin = env.admin.insecure_clone();
+    // A zero window would refill the cap on every call.
+    for window in [0, -DAY] {
+        let limit = Limit { amount_offset: 1, cap: CAP, window, reserve: None, mint_index: 0 };
+        assert_err(tx!(env, [register_ix(&env, &[MINT_TO], ActionClass::Params, Some(limit))], [&admin]), VetowallError::BadLimit);
+    }
+    let limit = Limit { amount_offset: 1, cap: CAP, window: DAY, reserve: None, mint_index: 0 };
+    tx!(env, [register_ix(&env, &[MINT_TO], ActionClass::Params, Some(limit))], [&admin]).unwrap();
+}

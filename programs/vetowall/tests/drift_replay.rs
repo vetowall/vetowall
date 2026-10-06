@@ -612,3 +612,44 @@ fn only_the_proposer_queues_and_only_the_authority_signs() {
     wrong_policy.accounts[5] = AccountMeta::new_readonly(policy_pda(&env.config, &pause), false);
     assert_err(tx!(env, [wrong_policy], [&env.proposer]), code(VetowallError::BadPolicyAccount));
 }
+
+#[test]
+fn guardian_can_veto_config_changes_other_than_its_own_rotation() {
+    let mut env = setup();
+    let attacker = env.attacker.pubkey();
+    // With the proposer compromised, the first move is to take over the config itself.
+    let takeover = Instruction::new_with_bytes(
+        vetowall::id(),
+        &vetowall::instruction::SetProposer { proposer: attacker }.data(),
+        vetowall::accounts::Govern { config: env.config, governor: env.authority }.to_account_metas(None),
+    );
+    tx!(env, [queue_ix(&env, &takeover)], [&env.proposer]).unwrap();
+
+    let guardian = env.guardian.insecure_clone();
+    tx!(env, [veto_ix(&env, 0, guardian.pubkey())], [&guardian]).unwrap();
+    warp(&mut env.svm, 7 * DAY);
+    assert_err(tx!(env, [execute_ix(&env, 0, &takeover)], [&env.payer]), code(VetowallError::NotQueued));
+    assert_ne!(load::<Config>(&env.svm, &env.config).proposer, attacker);
+}
+
+#[test]
+fn a_matured_proposal_expires_after_the_grace_period() {
+    let mut env = setup();
+    let rotate = Instruction::new_with_bytes(
+        vetowall::id(),
+        &vetowall::instruction::SetGuardian { guardian: Pubkey::new_unique() }.data(),
+        vetowall::accounts::Govern { config: env.config, governor: env.authority }.to_account_metas(None),
+    );
+    let old_guardian = env.guardian.pubkey();
+    tx!(env, [queue_ix(&env, &rotate)], [&env.proposer]).unwrap();
+    tx!(env, [queue_ix(&env, &rotate)], [&env.proposer]).unwrap();
+
+    // The last second of the grace period still works.
+    warp(&mut env.svm, 7 * DAY + vetowall::GRACE);
+    tx!(env, [execute_ix(&env, 0, &rotate)], [&env.payer]).unwrap();
+    assert_ne!(load::<Config>(&env.svm, &env.config).guardian, old_guardian);
+
+    // One second later, the identical proposal that nobody executed is dead.
+    warp(&mut env.svm, 1);
+    assert_err(tx!(env, [execute_ix(&env, 1, &rotate)], [&env.payer]), code(VetowallError::Expired));
+}

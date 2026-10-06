@@ -1,6 +1,7 @@
 use anchor_lang::prelude::*;
 
 use crate::{
+    constants::GRACE,
     error::ErrorCode,
     event::{ChangeRecord, RecordKind},
     firewall::{check_reserve, forbid_durable_nonce, invoke_as_authority, read_amount, resolve_policy},
@@ -35,6 +36,7 @@ pub fn handle_execute(ctx: Context<Execute>) -> Result<()> {
     );
     let now = Clock::get()?.unix_timestamp;
     require!(now >= proposal.eta, ErrorCode::TooEarly);
+    require!(now <= proposal.eta.saturating_add(GRACE), ErrorCode::Expired);
     forbid_durable_nonce(&ctx.accounts.instructions)?;
 
     // The timelock is about intent; the reserve bound is about the supply
@@ -51,6 +53,7 @@ pub fn handle_execute(ctx: Context<Execute>) -> Result<()> {
         check_reserve(
             &limit,
             amount,
+            &config_key,
             &proposal.accounts,
             ctx.remaining_accounts,
             ctx.accounts.reserve.as_ref(),

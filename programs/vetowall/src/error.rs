@@ -28,7 +28,7 @@ pub enum ErrorCode {
     BadPolicyAccount,
     #[msg("Vetowall's own instructions can't be given a policy")]
     SelfPolicy,
-    #[msg("The guardian can't veto changes to Vetowall's own config")]
+    #[msg("The guardian can't veto its own rotation")]
     GuardianCannotVetoGovernance,
     #[msg("The guardian may only run instructions registered as Safe")]
     NotSafeClass,
@@ -56,4 +56,8 @@ pub enum ErrorCode {
     NotAttestor,
     #[msg("Proposer, approver, guardian and attestor must be different keys")]
     SameRole,
+    #[msg("Proposal wasn't executed within the grace period after its timelock; queue it again")]
+    Expired,
+    #[msg("A limit's window and a reserve's max age must be positive")]
+    BadLimit,
 }

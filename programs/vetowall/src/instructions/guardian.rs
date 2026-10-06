@@ -32,11 +32,13 @@ pub fn handle_veto(ctx: Context<Veto>, reason: [u8; 32]) -> Result<()> {
         ErrorCode::NotQueued
     );
     // Otherwise a compromised guardian could block its own rotation forever.
-    require_keys_neq!(
-        proposal.target_program,
-        crate::ID,
-        ErrorCode::GuardianCannotVetoGovernance
-    );
+    // Only the rotation is exempt. Every other change to Vetowall's config
+    // can be vetoed: a compromised proposer and approver would otherwise
+    // queue `register(MintTo, Safe, no limit)` and wait out the delay with
+    // nobody able to stop it.
+    let rotates_guardian = proposal.target_program == crate::ID
+        && proposal.discriminator == crate::instruction::SetGuardian::DISCRIMINATOR;
+    require!(!rotates_guardian, ErrorCode::GuardianCannotVetoGovernance);
     proposal.status = ProposalStatus::Vetoed;
     proposal.veto_reason = reason;
     msg!("vetoed proposal {}", proposal.id);

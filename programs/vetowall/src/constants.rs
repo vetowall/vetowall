@@ -31,6 +31,12 @@ pub const TOKEN_2022_PROGRAM_ID: Pubkey = pubkey!("TokenzQdBNbLqP5VEhdkAS6EPFLC1
 pub const MAX_ACCOUNTS: usize = 16;
 pub const MAX_DATA: usize = 1024;
 
+/// How long after its `eta` a proposal can still be executed. Without this a
+/// forgotten proposal stays live forever, and anyone can execute it months
+/// later, when nobody remembers approving it. Two weeks matches the grace
+/// period Compound's timelock uses.
+pub const GRACE: i64 = 14 * 24 * 60 * 60;
+
 /// `SystemInstruction::AdvanceNonceAccount`, as the little-endian u32 the
 /// system program uses for its instruction tag.
 pub const ADVANCE_NONCE_TAG: [u8; 4] = 4u32.to_le_bytes();

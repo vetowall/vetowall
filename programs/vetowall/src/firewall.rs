@@ -142,6 +142,7 @@ pub fn charge_cap(policy: &mut Policy, limit: &Limit, amount: u64, now: i64) -> 
 pub fn check_reserve(
     limit: &Limit,
     amount: u64,
+    config: &Pubkey,
     metas: &[StoredMeta],
     instruction_accounts: &[AccountInfo],
     reserve: Option<&Account<Reserve>>,
@@ -151,6 +152,9 @@ pub fn check_reserve(
     };
     let reserve = reserve.ok_or(ErrorCode::BadReserveAccount)?;
     require_keys_eq!(reserve.key(), expected, ErrorCode::BadReserveAccount);
+    // A limit could otherwise name another config's reserve for the same
+    // mint, attested by a key this config never chose.
+    require_keys_eq!(reserve.config, *config, ErrorCode::BadReserveAccount);
 
     let i = usize::from(limit.mint_index);
     let (Some(meta), Some(mint)) = (metas.get(i), instruction_accounts.get(i)) else {

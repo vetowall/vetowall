@@ -11,7 +11,7 @@ An issuer hands every Token-2022 authority it holds to Vetowall's **authority PD
 | `execute_now` | proposer + approver (both sign) | Immediately, if the instruction's class is `Safe`, or its policy has a limit and the amount fits the current window's cap. Reserve bound always applies |
 | `queue` → `execute` | proposer + approver queue; anyone executes after `eta` | Everything else, after the class delay. Reserve bound is re-checked at execute |
 | `guardian_execute` | guardian | Instructions registered `Safe` only (e.g. pause). No limits path: a policy with a `limit` is refused (`NotSafeClass`) |
-| `veto` | guardian | Any queued proposal not targeting Vetowall itself |
+| `veto` | guardian | Any queued proposal except `set_guardian` |
 
 All four paths, and `attest_reserve`, refuse transactions whose first instruction is `AdvanceNonceAccount`. This is defense in depth, using the same pattern as Squads Nonce Guard and febo's p-never-nonce.
 
@@ -79,7 +79,7 @@ Proposal fields are only ever appended. Proposals are allocated at max size and 
 
 **Reserve bound:** `Reserve` key must equal `limit.reserve`; the account at `mint_index` must match the stored meta and `reserve.mint`, and be owned by SPL Token or Token-2022 (`BadReserveAccount` otherwise). Staleness (`now - updated_at > max_age`) is checked before the amount. A new `Reserve` has `updated_at = 0`, so it is stale until first attested. One reserve per policy, so a policy's limit covers one mint.
 
-**Errors added beyond the ones named above:** `NotApprover`, `BadDiscriminator`, `WideTagsFull`, `BadReserveAccount`, `NotAttestor`, `SameRole` (appended after v1's codes; see the IDL for numbers).
+**Errors added beyond the ones named above:** `NotApprover`, `BadDiscriminator`, `WideTagsFull`, `BadReserveAccount`, `NotAttestor`, `SameRole`, `Expired`, `BadLimit` (appended after v1's codes; see the IDL for numbers).
 
 **Role separation.** `initialize` and the three role setters fail with `SameRole` if one key would hold two of proposer, approver and guardian. `init_reserve` and `set_attestor` fail with `SameRole` if the attestor is the proposer or the approver; the guardian may attest, because it can't mint. A missing approver is still allowed (single-signer mode). The check compares addresses only: it can't tell whether two keys belong to one person, and it isn't re-run against existing reserves when the proposer or approver later changes (that change is a `Max` proposal, visible for the whole delay).
 
@@ -152,3 +152,15 @@ Pausable, checked against `spl-token-2022-interface` 2.1.0: `TokenInstruction::P
 - **Deterministic rules decide**; the LLM only writes the explanation.
 - On a hit it sends `veto(sha256(explanation))` and appends a JSONL record: `{ts, proposal, id, rule, explanation, reason_hash, veto_tx}`.
 - Serves `GET /decisions` (JSON array) for the console.
+
+## Hardening after the self-review (2026-10-06)
+
+See [SECURITY-REVIEW.md](SECURITY-REVIEW.md) for the findings behind these.
+
+- **Expiry.** `execute` fails with `Expired` once `GRACE` (14 days) has passed since the proposal's `eta`. Queue it again to start a new timelock.
+- **Veto scope.** The guardian can veto any queued proposal except `set_guardian`. Before, every proposal targeting Vetowall was exempt.
+- **Limits.** `register` fails with `BadLimit` if a limit's `window` isn't positive. `init_reserve` fails with `BadLimit` if `max_age` isn't positive.
+- **Attestor rotation.** `set_attestor` sets the reserve's `updated_at` to 0, so the reserve is stale until the new attestor reports.
+- **Reserve ownership.** A limit's reserve must belong to the same config.
+- **Records.** A `Registered` record carries the limit's reserve in `subject` (`None` when the policy has no reserve bound).
+- **Policy pack.** `MintToChecked` is registered with a zero cap, because each policy counts its own cap.

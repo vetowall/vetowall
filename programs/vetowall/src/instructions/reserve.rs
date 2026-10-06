@@ -40,6 +40,9 @@ pub fn handle_init_reserve(
     let config = &ctx.accounts.config;
     config.require_governor(&config.key(), &ctx.accounts.governor.key())?;
     config.require_independent_attestor(&attestor)?;
+    // There is no setter for `max_age`, so a bad value here would be
+    // permanent: never stale, or always stale.
+    require!(max_age > 0, ErrorCode::BadLimit);
     let reserve = &mut ctx.accounts.reserve;
     reserve.config = config.key();
     reserve.mint = mint;
@@ -64,7 +67,12 @@ pub fn handle_set_attestor(ctx: Context<SetAttestor>, attestor: Pubkey) -> Resul
     let config = &ctx.accounts.config;
     config.require_governor(&config.key(), &ctx.accounts.governor.key())?;
     config.require_independent_attestor(&attestor)?;
-    ctx.accounts.reserve.attestor = attestor;
+    let reserve = &mut ctx.accounts.reserve;
+    reserve.attestor = attestor;
+    // An attestor is usually rotated because its key is suspect, so its last
+    // figure can't be trusted either. The reserve is stale until the new
+    // attestor reports.
+    reserve.updated_at = 0;
     emit!(ChangeRecord {
         subject: Some(attestor),
         ..ChangeRecord::new(RecordKind::AttestorSet, config.key(), ctx.accounts.governor.key())?

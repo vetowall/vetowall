@@ -3,7 +3,7 @@
 [![ci](https://github.com/vetowall/vetowall/actions/workflows/ci.yml/badge.svg)](https://github.com/vetowall/vetowall/actions/workflows/ci.yml)
 [![pages](https://github.com/vetowall/vetowall/actions/workflows/pages.yml/badge.svg)](https://github.com/vetowall/vetowall/actions/workflows/pages.yml)
 
-**[Live demo](https://vetowall.github.io/vetowall/)** · [Program on devnet](https://explorer.solana.com/address/G8LSBa3y5XqY5fK4R6NTK84oPru3W3hsNzRwjunLWedr?cluster=devnet) · [Live vUSD mint](https://explorer.solana.com/address/GHhMGStTRu2y3CGsmkY82DjUMc3oX5p8ajEVnuMNpdLV?cluster=devnet) · [Spec](docs/SPEC.md) · [Issuer console](app/README.md) · [Guardian](guardian/README.md)
+**[Live demo](https://vetowall.github.io/vetowall/)** · [Program on devnet](https://explorer.solana.com/address/G8LSBa3y5XqY5fK4R6NTK84oPru3W3hsNzRwjunLWedr?cluster=devnet) · [Live vUSD mint](https://explorer.solana.com/address/GHhMGStTRu2y3CGsmkY82DjUMc3oX5p8ajEVnuMNpdLV?cluster=devnet) · [Spec](docs/SPEC.md) · [Security self-review](docs/SECURITY-REVIEW.md) · [Issuer console](app/README.md) · [Guardian](guardian/README.md)
 
 The control plane for stablecoin and tokenized-asset issuers on Solana: no single key, human or AI, can mint, freeze or seize outside policy.
 
@@ -13,7 +13,7 @@ Vetowall is a Solana program that holds an issuer's Token-2022 authorities throu
 
 - **Every privileged instruction has a class and a timelock.** Each admin instruction is registered as `Safe`, `Params`, `Authority` or `Max`, and each class has its own delay. Unregistered instructions default to `Max`. Once the config is sealed, changing Vetowall's own settings is itself a `Max` action, so nobody can quietly remove the delays.
 - **Mints are bounded** (see [docs/SPEC.md](docs/SPEC.md)). A maker-checker fast lane runs routine mints immediately up to a daily cap. Anything above the cap waits out the timelock, and no path can mint above attested reserves.
-- **The guardian can only stop things.** A guardian key can veto queued proposals and run instructions registered as `Safe` (such as pause). It can't mint, unpause or move funds, and it can't veto changes to Vetowall's own config, so it can't block its own rotation.
+- **The guardian can only stop things.** A guardian key can veto queued proposals and run instructions registered as `Safe` (such as pause). It can't mint, unpause or move funds, and it can't veto its own rotation.
 - **Durable-nonce transactions are refused** on every path, as defense in depth. This uses the same Instructions-sysvar check as [Squads Nonce Guard](https://github.com/Squads-Protocol/nonce-guard) and [p-never-nonce](https://github.com/febo/pinocchio-never-nonce). On its own it would not have stopped Drift, because the attacker could execute pre-approved proposals with a fresh blockhash. The timelock and the veto are what stop that pattern.
 
 Vetowall doesn't issue tokens or hold reserves. It sits between whatever signs (a Squads multisig, a single key, an issuance provider's API) and the asset, and works alongside them.
@@ -105,6 +105,8 @@ The generated IDLs are committed in `idl/` for the console and the guardian. `do
 | `guardian_can_pause_but_nothing_else` | The guardian can pause instantly, but can't unpause or change limits |
 | `config_changes_take_the_max_timelock_and_the_guardian_cannot_block_its_rotation` | Rotating the guardian takes 7 days and the guardian can't veto it |
 | `only_the_proposer_queues_and_only_the_authority_signs` | Forged proposers, foreign signers and swapped policy accounts are rejected |
+| `guardian_can_veto_config_changes_other_than_its_own_rotation` | A queued takeover of the proposer role is vetoed and can never execute |
+| `a_matured_proposal_expires_after_the_grace_period` | A proposal nobody executed within 14 days of its timelock is dead |
 
 `programs/vetowall/tests/issuer.rs` runs a stablecoin issuer on a real Token-2022 mint (with the Pausable extension) whose mint, freeze and pause authorities are Vetowall's PDA:
 
@@ -122,6 +124,8 @@ The generated IDLs are committed in `idl/` for the console and the guardian. `do
 | `a_config_cannot_be_created_with_one_key_in_two_roles` | `initialize` fails with `SameRole` when proposer, approver and guardian aren't three different keys |
 | `a_role_cannot_be_changed_to_a_key_that_holds_another` | The role setters refuse the same collisions and leave the config unchanged |
 | `the_attestor_cannot_be_a_signer_of_mints` | The proposer or approver can't also attest reserves; the guardian can, because it can't mint |
+| `rotating_the_attestor_voids_the_last_attestation` | A rotated attestor's last figure stops counting; a reserve can't be created with a max age that never or always goes stale |
+| `a_limit_window_must_be_positive` | A zero or negative cap window is refused, because it would refill the cap on every call |
 
 ## License
 
