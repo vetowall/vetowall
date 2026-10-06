@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import { burner, connection, connectWallet, keypairSigner, type Signer } from './chain';
+import baked from './baked.json';
 import { demoSnapshot } from './demo';
 import type { Snapshot } from './model';
 import { isDeployed, loadSnapshot } from './vetowall';
@@ -63,10 +64,15 @@ const burners = (): Omit<Keys, 'mode' | 'operator'> => ({
 
 export default function App() {
   const [page, setPage] = useState<Page>(pageFromHash);
-  const [snap, setSnap] = useState<Snapshot>(demoSnapshot);
   const [programUp, setProgramUp] = useState(false);
   const [keys, setKeys] = useState<Keys | null>(null);
   const [deployment, setDeploymentState] = useState(savedDeployment);
+  // The first paint uses the snapshot baked in at build time (scripts/snapshot.ts) when it is for the issuer
+  // in view. The first refresh replaces it, or falls back to demo data if the chain can't be reached.
+  const [snap, setSnap] = useState<Snapshot>(() => {
+    const b = baked as Snapshot | null;
+    return b && b.deployment.config === deployment?.config ? b : demoSnapshot;
+  });
   const [sol, setSol] = useState<number | null>(null);
   const task = useTask();
 

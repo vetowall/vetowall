@@ -7,6 +7,9 @@ on:
   push:
     branches: [main]
     paths: ['app/**', '.github/workflows/pages.yml']
+  # Rebuilds the baked snapshot a few times a day so the first paint is recent.
+  schedule:
+    - cron: '23 */6 * * *'
   workflow_dispatch:
 
 permissions:
@@ -33,14 +36,19 @@ jobs:
           cache-dependency-path: app/package-lock.json
       - run: npm ci --no-audit --no-fund
       - run: npm test
+      # The keyed RPC URL is used here, in Node, to read the demo issuer once. It is not passed to the build
+      # below, so it never reaches the public bundle: the browser uses the public devnet endpoint.
+      - run: npm run snapshot
+        env:
+          VITE_CONFIG: ${{ vars.VITE_CONFIG }}
+          VITE_RPC_URL: ${{ secrets.VITE_RPC_URL || vars.VITE_RPC_URL }}
       - run: npm run build
         env:
-          # Optional repository variables (VITE_RPC_URL may be a secret, e.g. a keyed Helius URL;
-          # it still ships in the public bundle, so restrict the key to this domain at the provider).
-          # Without them the console shows seeded demo data.
+          # Without VITE_CONFIG the console shows seeded demo data.
           VITE_CONFIG: ${{ vars.VITE_CONFIG }}
           VITE_GUARDIAN_URL: ${{ vars.VITE_GUARDIAN_URL }}
-          VITE_RPC_URL: ${{ secrets.VITE_RPC_URL || vars.VITE_RPC_URL }}
+      # A keyed RPC URL in the bundle would be public. Fail the deploy if one ever gets back in.
+      - run: "! grep -rlE 'api-key=|helius' dist"
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
