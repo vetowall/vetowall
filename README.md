@@ -54,6 +54,18 @@ npm run adopt -- <mint> --yes
 
 Then open `https://vetowall.github.io/vetowall/?config=<config>` to see it in the console. Details and limits are in [app/README.md](app/README.md#guard-an-existing-mint).
 
+## Works with a Squads vault
+
+Squads decides who can sign. Vetowall decides what a signature is allowed to do, and when. `npm run squads` in `app/` sets up a 2-of-3 Squads v4 multisig whose vault is the approver of a Vetowall config, then shows three things on devnet:
+
+| What | Result | Transaction |
+|---|---|---|
+| A 250,000 mint inside the cap, approved by 2 of 3 members | Lands: Squads → Vetowall `execute_now` → Token-2022 `MintTo` | [`4pcaB6Kb…`](https://explorer.solana.com/tx/4pcaB6KbQdi8RCYFjuucSe8yqAp2RDeSFkCT2a4EKPpzSV2icJCw4FxXadxi6r5t2G6STRsfwzJs9RLnVe8gb32e?cluster=devnet) |
+| The same mint from the proposer alone | Refused: `NotApprover` | [`3ctXntk9…`](https://explorer.solana.com/tx/3ctXntk9K8UB6E912UyExkWRV9zaHpuJng5bno7rkqzsDndzCN92vszWpm2rVoHN4Y5wVoHbbefXAVsBFL3BrSFA?cluster=devnet) |
+| A 2,000,000 mint over the cap, fully approved by the vault | Refused: `OverCap`. It has to be queued and wait out the timelock | [`5QaqDPvk…`](https://explorer.solana.com/tx/5QaqDPvktn7pUgYo9hQzLGXgGqrXZb9cy2pHdasK2DfP1ZGPHyqsvQuRc8jszuX8ErofhNcWuffffHyX9pFFuJmr?cluster=devnet) |
+
+No wallet migration and no program change: the vault signs through a normal vault transaction. Addresses and limits are in [app/README.md](app/README.md).
+
 ## Devnet
 
 | Program | Address |
@@ -61,7 +73,7 @@ Then open `https://vetowall.github.io/vetowall/?config=<config>` to see it in th
 | `vetowall` | [`G8LSBa3y5XqY5fK4R6NTK84oPru3W3hsNzRwjunLWedr`](https://explorer.solana.com/address/G8LSBa3y5XqY5fK4R6NTK84oPru3W3hsNzRwjunLWedr?cluster=devnet) |
 | `mock_vault` | [`46BaaWFuFK3T8akXjL2xFzcv6M5AWAKXFcuxdU3jfc3a`](https://explorer.solana.com/address/46BaaWFuFK3T8akXjL2xFzcv6M5AWAKXFcuxdU3jfc3a?cluster=devnet) |
 
-Built with `anchor build --arch v0`. The current deploy is tagged `devnet-2026-10-01b` (slot 506197254). The devnet demo config uses short delays (Safe 0s, Params 120s, Authority 180s, Max 300s) so the flow fits in a demo. The tests check the real delays: 48h, 72h and 7 days.
+Built with `anchor build --arch v0`. The current deploy is tagged `devnet-2026-10-06` (slot 508084092). The devnet demo config uses short delays (Safe 0s, Params 120s, Authority 180s, Max 300s) so the flow fits in a demo. The tests check the real delays: 48h, 72h and 7 days.
 
 ## Prior work and credits
 
@@ -80,7 +92,7 @@ Built with `anchor build --arch v0`. The current deploy is tagged `devnet-2026-1
 | `idl/` | Generated IDLs for both programs |
 | `app/` | The issuer console served on GitHub Pages, the devnet seed script and the script that guards an existing mint |
 | `guardian/` | The offchain watcher that holds the veto key: rules decide, the AI only explains |
-| `web/` | The console rebuilt on Next.js, with the RPC key kept server-side (not deployed yet) |
+| `web/` | The console rebuilt on Next.js, with the RPC key kept server-side (deploy steps in its README) |
 
 ## Build and test
 
