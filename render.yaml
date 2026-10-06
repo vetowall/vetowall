@@ -9,8 +9,7 @@ services:
     name: vetowall-guardian
     runtime: node
     # A free instance sleeps when idle, and a sleeping guardian vetoes nothing.
-    # It also can't mount the disk below. This is the smallest paid instance
-    # (0.5 CPU, 512 MB), named by the plan ID in Render's blueprint reference.
+    # It also can't mount the disk below. Starter is the smallest paid instance.
     plan: starter
     rootDir: guardian
     buildCommand: npm ci
