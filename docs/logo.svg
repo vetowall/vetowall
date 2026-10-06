@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Vetowall">
+  <rect width="512" height="512" rx="112" fill="#0e1116"/>
+  <!-- A wall of three courses; the V is the gap a proposal has to pass through. -->
+  <g fill="#e8ecf1">
+    <path d="M96 136h116l44 96 44-96h116v56H336l-80 176-80-176H96z"/>
+  </g>
+  <rect x="96" y="392" width="320" height="24" rx="12" fill="#ff5a4d"/>
+</svg>
