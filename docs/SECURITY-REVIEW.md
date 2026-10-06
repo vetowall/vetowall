@@ -14,7 +14,7 @@ The findings below are kept as written. This is what we did about each one.
 
 | Finding | Status |
 |---|---|
-| M1 | Fixed in the policy pack: `MintToChecked` is registered with a zero cap, so only `MintTo` has a fast lane. Configs created before this (including the live devnet demo) still have both caps until they re-register. A shared per-mint counter in the program is not done |
+| M1 | Fixed in the policy pack: `MintToChecked` is registered with a zero cap, so only `MintTo` has a fast lane. The live devnet demo was re-registered through its own `Max` timelock ([queued](https://explorer.solana.com/tx/41R2ioa6rqHvsqTbGS8Pwcyep64N8HScKUQ19238W5T3VmZhzNNY3Z9Xd85LNxLMTTobn2XBYedpNWwdrabBdCFM?cluster=devnet), [executed](https://explorer.solana.com/tx/4CUd26Q54zGd9DeniML2em9ch1RUgNCaa4itGevdzt1EyQvYhLHF33HAEPqTpf1xK92E4uNw3NvvzWbNJkznPpdh?cluster=devnet)). Any other config created before this keeps both caps until it does the same. A shared per-mint counter in the program is not done |
 | M2 | Fixed. A proposal expires `GRACE` (14 days) after its `eta`. Test: `a_matured_proposal_expires_after_the_grace_period` |
 | M3 | Narrowed. The guardian can now veto every change to Vetowall's config except its own rotation. Test: `guardian_can_veto_config_changes_other_than_its_own_rotation`. What remains by design: `set_guardian` can't be vetoed, so a compromised proposer and approver can replace the guardian after the `Max` delay. Vetowall gives a public `Max`-delay warning against that, not prevention |
 | L1 | Fixed. `register` refuses a non-positive window. Test: `a_limit_window_must_be_positive` |
