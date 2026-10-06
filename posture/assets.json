@@ -1,0 +1,206 @@
+[
+  {
+    "symbol": "USDC",
+    "category": "stablecoin",
+    "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+    "source": "https://api.coingecko.com/api/v3/coins/usd-coin"
+  },
+  {
+    "symbol": "USDT",
+    "category": "stablecoin",
+    "mint": "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+    "source": "https://api.coingecko.com/api/v3/coins/tether"
+  },
+  {
+    "symbol": "USD1",
+    "category": "stablecoin",
+    "mint": "USD1ttGY1N17NEEHLmELoaybftRBUSErhqYiQzvEmuB",
+    "source": "https://stablecoins.llama.fi/stablecoin/262"
+  },
+  {
+    "symbol": "USDGO",
+    "category": "stablecoin",
+    "mint": "72puLt71H93Z9CzHuBRTwFpL4TG3WZUhnoCC7p8gxigu",
+    "source": "https://stablecoins.llama.fi/stablecoin/347"
+  },
+  {
+    "symbol": "PYUSD",
+    "category": "stablecoin",
+    "mint": "2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo",
+    "source": "https://api.coingecko.com/api/v3/coins/paypal-usd"
+  },
+  {
+    "symbol": "USDG",
+    "category": "stablecoin",
+    "mint": "2u1tszSeqZ3qBWF3uNGPFc8TzMk2tdiwknnRMWGWjGWH",
+    "source": "https://stablecoins.llama.fi/stablecoin/286"
+  },
+  {
+    "symbol": "USDe",
+    "category": "stablecoin",
+    "mint": "DEkqHyPN7GMRJ5cArtQFAWefqbZb33Hyf6s5iCwjEonT",
+    "source": "https://api.coingecko.com/api/v3/coins/ethena-usde"
+  },
+  {
+    "symbol": "SOFID",
+    "category": "stablecoin",
+    "mint": "APhcqtzE73es3KAGiVksZFMLGwJDiAey5qZKUrQHEHfS",
+    "source": "https://stablecoins.llama.fi/stablecoin/430"
+  },
+  {
+    "symbol": "USX",
+    "category": "stablecoin",
+    "mint": "6FrrzDk5mQARGc1TDYoyVnSyRdds1t4PbtohCD6p3tgG",
+    "source": "https://stablecoins.llama.fi/stablecoin/310"
+  },
+  {
+    "symbol": "CASH",
+    "category": "stablecoin",
+    "mint": "CASHx9KJUStyftLFWGvEVf59SGeG9sh5FfcnZMVPCASH",
+    "source": "https://stablecoins.llama.fi/stablecoin/316"
+  },
+  {
+    "symbol": "MOVEUSD",
+    "category": "stablecoin",
+    "mint": "3AdhVEX6k85yNivHVXDEiY3WyP2WgFQTUZCahGaeC2qm",
+    "source": "https://stablecoins.llama.fi/stablecoin/389"
+  },
+  {
+    "symbol": "OUSD",
+    "category": "stablecoin",
+    "mint": "ousd2mJsPEckLHcSCDxyKD7NDGARZcfLbDZkKiatYHB",
+    "source": "https://stablecoins.llama.fi/stablecoin/443"
+  },
+  {
+    "symbol": "EURC",
+    "category": "stablecoin",
+    "mint": "HzwqbKZw8HxMN6bF2yFZNrht3c2iXXzpKcFu7uBEDKtr",
+    "source": "https://api.coingecko.com/api/v3/coins/euro-coin"
+  },
+  {
+    "symbol": "JUPUSD",
+    "category": "stablecoin",
+    "mint": "JuprjznTrTSp2UFa3ZBUFgwdAmtZCq4MQCwysN55USD",
+    "source": "https://stablecoins.llama.fi/stablecoin/335"
+  },
+  {
+    "symbol": "USDTB",
+    "category": "stablecoin",
+    "mint": "8yXrtJ54jZtE84xEBzTESKuegjcAkAuDrdAhRd8i8n3T",
+    "source": "https://stablecoins.llama.fi/stablecoin/221"
+  },
+  {
+    "symbol": "HYUSD",
+    "category": "stablecoin",
+    "mint": "5YMkXAYccHSGnHn9nob9xEvv6Pvka9DZWH7nTbotTu9E",
+    "source": "https://stablecoins.llama.fi/stablecoin/302"
+  },
+  {
+    "symbol": "USDPT",
+    "category": "stablecoin",
+    "mint": "HVWf8JmLoHs99Lw8Psf3fyqAtA4crWxCPkrmSdNjhNH3",
+    "source": "https://stablecoins.llama.fi/stablecoin/386"
+  },
+  {
+    "symbol": "SBC",
+    "category": "stablecoin",
+    "mint": "DBAzBUXaLj1qANCseUPZz4sp9F8d2sc78C4vKjhbTGMA",
+    "source": "https://stablecoins.llama.fi/stablecoin/324"
+  },
+  {
+    "symbol": "USDU",
+    "category": "stablecoin",
+    "mint": "9ckR7pPPvyPadACDTzLwK2ZAEeUJ3qGSnzPs8bVaHrSy",
+    "source": "https://api.coingecko.com/api/v3/coins/usdu"
+  },
+  {
+    "symbol": "BUIDL",
+    "category": "rwa",
+    "mint": "GyWgeqpy5GueU2YbkE8xqUeVEokCMMCEeUrfbtMw6phr",
+    "source": "https://stablecoins.llama.fi/stablecoin/173"
+  },
+  {
+    "symbol": "USDY",
+    "category": "rwa",
+    "mint": "A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6",
+    "source": "https://api.coingecko.com/api/v3/coins/ondo-us-dollar-yield"
+  },
+  {
+    "symbol": "USTB",
+    "category": "rwa",
+    "mint": "CCz3SGVziFeLYk2xfEstkiqJfYkjaSWb2GCABYsVcjo2",
+    "source": "https://api.coingecko.com/api/v3/coins/superstate-short-duration-us-government-securities-fund-ustb"
+  },
+  {
+    "symbol": "BENJI",
+    "category": "rwa",
+    "mint": "5Tu84fKBpe9vfXeotjvfvWdWbAjy3hqsExvuHgFqFxA1",
+    "source": "https://api.coingecko.com/api/v3/coins/franklin-templeton-benji"
+  },
+  {
+    "symbol": "JAAA",
+    "category": "rwa",
+    "mint": "AAAJXeGjpKu7W3X4QTSU4pm1Wbj4G2LPcdg7A6xJLLyG",
+    "source": "https://api.coingecko.com/api/v3/coins/janus-henderson-anemoy-aaa-clo-fund"
+  },
+  {
+    "symbol": "XAUt0",
+    "category": "rwa",
+    "mint": "AymATz4TCL9sWNEEV9Kvyz45CHVhDZ6kUgjTJPzLpU9P",
+    "source": "https://api.coingecko.com/api/v3/coins/tether-gold-tokens"
+  },
+  {
+    "symbol": "XAUM",
+    "category": "rwa",
+    "mint": "5aLhp9VnUEKcsdtkfsf2DUgpJfomx7GmYVny24dHUZoB",
+    "source": "https://api.coingecko.com/api/v3/coins/matrixdock-gold"
+  },
+  {
+    "symbol": "TSLAx",
+    "category": "stock",
+    "mint": "XsDoVfqeBukxuZHWhdvWHBhgEHjGNst4MLodqsJHzoB",
+    "source": "https://api.coingecko.com/api/v3/coins/tesla-xstock"
+  },
+  {
+    "symbol": "NVDAx",
+    "category": "stock",
+    "mint": "Xsc9qvGR1efVDFGLrVsmkzv3qi45LTBjeUKSPmx9qEh",
+    "source": "https://api.coingecko.com/api/v3/coins/nvidia-xstock"
+  },
+  {
+    "symbol": "CRCLx",
+    "category": "stock",
+    "mint": "XsueG8BtpquVJX9LVLLEGuViXUungE6WmK5YZ3p3bd1",
+    "source": "https://api.coingecko.com/api/v3/coins/circle-xstock"
+  },
+  {
+    "symbol": "SPYx",
+    "category": "stock",
+    "mint": "XsoCS1TfEyfFhfvj8EtZ528L3CaKBDBRqRapnBbDF2W",
+    "source": "https://api.coingecko.com/api/v3/coins/sp500-xstock"
+  },
+  {
+    "symbol": "TSLAon",
+    "category": "stock",
+    "mint": "KeGv7bsfR4MheC1CkmnAVceoApjrkvBhHYjWb67ondo",
+    "source": "https://api.coingecko.com/api/v3/coins/tesla-ondo-tokenized-stock"
+  },
+  {
+    "symbol": "NVDAon",
+    "category": "stock",
+    "mint": "gEGtLTPNQ7jcg25zTetkbmF7teoDLcrfTnQfmn2ondo",
+    "source": "https://api.coingecko.com/api/v3/coins/nvidia-ondo-tokenized-stock"
+  },
+  {
+    "symbol": "CRCLon",
+    "category": "stock",
+    "mint": "6xHEyem9hmkGtVq6XGCiQUGpPsHBaoYuYdFNZa5ondo",
+    "source": "https://api.coingecko.com/api/v3/coins/circle-internet-group-ondo-tokenized-stock"
+  },
+  {
+    "symbol": "SPYon",
+    "category": "stock",
+    "mint": "k18WJUULWheRkSpSquYGdNNmtuE2Vbw1hpuUi92ondo",
+    "source": "https://api.coingecko.com/api/v3/coins/spdr-s-p-500-etf-ondo-tokenized-etf"
+  }
+]

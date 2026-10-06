@@ -1,0 +1,4254 @@
+{
+  "scannedAt": "2026-10-06T12:10:16.074Z",
+  "slot": 453895666,
+  "blockTime": 1791288100,
+  "rpcHost": "api.mainnet-beta.solana.com",
+  "assets": [
+    {
+      "symbol": "USDC",
+      "category": "stablecoin",
+      "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "source": "https://api.coingecko.com/api/v3/coins/usd-coin",
+      "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "decimals": 6,
+      "supplyRaw": "7789533889629126",
+      "supply": "7,789,533,889",
+      "extensions": [],
+      "facts": {},
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "BJE5MMbqXjVwjAF7oxwPYXnTXDyspzZyt4vwenNw5ruG",
+          "classification": {
+            "kind": "spl-multisig",
+            "m": 2,
+            "n": 4,
+            "signers": [
+              "42XHrxUX5skic589HER817BWiJ5xvhJurrFVKjYCPwnb",
+              "BwdZnHHaC7Ho7xAAirLqWVLa9m7iWMkUN7PiZknActzy",
+              "Cf4s35LcAf9YC7wpdXTSxFg3i3GrvSYMavCVVefw3jd",
+              "HvhFE75zWkXvL7gAyjvatQcNrPA99ttFEz78kAgPF31v"
+            ]
+          },
+          "signers": [
+            {
+              "address": "42XHrxUX5skic589HER817BWiJ5xvhJurrFVKjYCPwnb",
+              "classification": {
+                "kind": "system-key",
+                "funded": true
+              }
+            },
+            {
+              "address": "BwdZnHHaC7Ho7xAAirLqWVLa9m7iWMkUN7PiZknActzy",
+              "classification": {
+                "kind": "system-key",
+                "funded": true
+              }
+            },
+            {
+              "address": "Cf4s35LcAf9YC7wpdXTSxFg3i3GrvSYMavCVVefw3jd",
+              "classification": {
+                "kind": "system-key",
+                "funded": true
+              }
+            },
+            {
+              "address": "HvhFE75zWkXvL7gAyjvatQcNrPA99ttFEz78kAgPF31v",
+              "classification": {
+                "kind": "system-key",
+                "funded": true
+              }
+            }
+          ],
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: the token program executes as soon as m members sign"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "freeze",
+          "address": "7dGbd2QZcCKcTndnHcTL8q7SMVXAkp688NTQYwrRCrar",
+          "classification": {
+            "kind": "spl-multisig",
+            "m": 2,
+            "n": 4,
+            "signers": [
+              "Af4XfMtaHRR68pfHFoDGVP7nKmywrAuDQWjhHpbbtFjM",
+              "8xZVZQV3yb1kqzwX5Zdte4yuFncWcEn6A1GjjF7oL1M5",
+              "FAAQopHzHu7WG4QAij7w9QVjAp33dQDfK73AGhKhpbFk",
+              "5nbc9tTyc2Kw9rynSfB4mhGMhRtbAE8juucm4TEkzDy5"
+            ]
+          },
+          "signers": [
+            {
+              "address": "Af4XfMtaHRR68pfHFoDGVP7nKmywrAuDQWjhHpbbtFjM",
+              "classification": {
+                "kind": "system-key",
+                "funded": true
+              }
+            },
+            {
+              "address": "8xZVZQV3yb1kqzwX5Zdte4yuFncWcEn6A1GjjF7oL1M5",
+              "classification": {
+                "kind": "system-key",
+                "funded": true
+              }
+            },
+            {
+              "address": "FAAQopHzHu7WG4QAij7w9QVjAp33dQDfK73AGhKhpbFk",
+              "classification": {
+                "kind": "system-key",
+                "funded": true
+              }
+            },
+            {
+              "address": "5nbc9tTyc2Kw9rynSfB4mhGMhRtbAE8juucm4TEkzDy5",
+              "classification": {
+                "kind": "system-key",
+                "funded": true
+              }
+            }
+          ],
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: the token program executes as soon as m members sign"
+          },
+          "keysAloneSuffice": true
+        }
+      ]
+    },
+    {
+      "symbol": "USDT",
+      "category": "stablecoin",
+      "mint": "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+      "source": "https://api.coingecko.com/api/v3/coins/tether",
+      "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "decimals": 6,
+      "supplyRaw": "3839903299525323",
+      "supply": "3,839,903,299",
+      "extensions": [],
+      "facts": {},
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "Q6XprfkF8RQQKoQVG33xT88H7wi8Uk1B1CC7YAs69Gi",
+          "classification": {
+            "kind": "spl-multisig",
+            "m": 2,
+            "n": 3,
+            "signers": [
+              "66YZZejVBupBnMwSEqTaCkAMwPacpPzP41GSEst55Kgz",
+              "yo4bccTt3FTnMguy2D3NCox8tG1CuHYRfxAdQoiJ7Th",
+              "A3znyaRYUvi7GbQv1pp9CqqiVo7anddU9rPKFH55V28R"
+            ]
+          },
+          "signers": [
+            {
+              "address": "66YZZejVBupBnMwSEqTaCkAMwPacpPzP41GSEst55Kgz",
+              "classification": {
+                "kind": "system-key",
+                "funded": true
+              }
+            },
+            {
+              "address": "yo4bccTt3FTnMguy2D3NCox8tG1CuHYRfxAdQoiJ7Th",
+              "classification": {
+                "kind": "system-key",
+                "funded": true
+              }
+            },
+            {
+              "address": "A3znyaRYUvi7GbQv1pp9CqqiVo7anddU9rPKFH55V28R",
+              "classification": {
+                "kind": "system-key",
+                "funded": true
+              }
+            }
+          ],
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: the token program executes as soon as m members sign"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "freeze",
+          "address": "Q6XprfkF8RQQKoQVG33xT88H7wi8Uk1B1CC7YAs69Gi",
+          "classification": {
+            "kind": "spl-multisig",
+            "m": 2,
+            "n": 3,
+            "signers": [
+              "66YZZejVBupBnMwSEqTaCkAMwPacpPzP41GSEst55Kgz",
+              "yo4bccTt3FTnMguy2D3NCox8tG1CuHYRfxAdQoiJ7Th",
+              "A3znyaRYUvi7GbQv1pp9CqqiVo7anddU9rPKFH55V28R"
+            ]
+          },
+          "signers": [
+            {
+              "address": "66YZZejVBupBnMwSEqTaCkAMwPacpPzP41GSEst55Kgz",
+              "classification": {
+                "kind": "system-key",
+                "funded": true
+              }
+            },
+            {
+              "address": "yo4bccTt3FTnMguy2D3NCox8tG1CuHYRfxAdQoiJ7Th",
+              "classification": {
+                "kind": "system-key",
+                "funded": true
+              }
+            },
+            {
+              "address": "A3znyaRYUvi7GbQv1pp9CqqiVo7anddU9rPKFH55V28R",
+              "classification": {
+                "kind": "system-key",
+                "funded": true
+              }
+            }
+          ],
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: the token program executes as soon as m members sign"
+          },
+          "keysAloneSuffice": true
+        }
+      ]
+    },
+    {
+      "symbol": "USD1",
+      "category": "stablecoin",
+      "mint": "USD1ttGY1N17NEEHLmELoaybftRBUSErhqYiQzvEmuB",
+      "source": "https://stablecoins.llama.fi/stablecoin/262",
+      "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "decimals": 6,
+      "supplyRaw": "1399638572356734",
+      "supply": "1,399,638,572",
+      "extensions": [],
+      "facts": {},
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "BQh68x9D7TDqgJUXiJX1BsD1eR7kkV978owqwBEftpwK",
+          "classification": {
+            "kind": "spl-multisig",
+            "m": 1,
+            "n": 4,
+            "signers": [
+              "76pV3FfBso49rV8bn5L3CUhrxKyiGvH7AeawNnY211t5",
+              "AU33LXZPnMaf7kH7Q9RB28c3dTKMatrXQzyDwE1nywdQ",
+              "4Lo5Xpfq5fG9Z9XFFo3FxaFej18zEMfHBABaV8teAACw",
+              "3AvSTaoGi8iminHj9QBjpGtHybjvTMgRwQSniJo3pFV3"
+            ]
+          },
+          "signers": [
+            {
+              "address": "76pV3FfBso49rV8bn5L3CUhrxKyiGvH7AeawNnY211t5",
+              "classification": {
+                "kind": "pda-unresolved",
+                "accountOwner": null
+              }
+            },
+            {
+              "address": "AU33LXZPnMaf7kH7Q9RB28c3dTKMatrXQzyDwE1nywdQ",
+              "classification": {
+                "kind": "pda-unresolved",
+                "accountOwner": "11111111111111111111111111111111"
+              }
+            },
+            {
+              "address": "4Lo5Xpfq5fG9Z9XFFo3FxaFej18zEMfHBABaV8teAACw",
+              "classification": {
+                "kind": "system-key",
+                "funded": true
+              }
+            },
+            {
+              "address": "3AvSTaoGi8iminHj9QBjpGtHybjvTMgRwQSniJo3pFV3",
+              "classification": {
+                "kind": "system-key",
+                "funded": true
+              }
+            }
+          ],
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: the token program executes as soon as m members sign"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "freeze",
+          "address": "84ssq8Ud2WRzxVCuEmPa9xLPBUt4odmB8wuE8svZkh71",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        }
+      ]
+    },
+    {
+      "symbol": "USDGO",
+      "category": "stablecoin",
+      "mint": "72puLt71H93Z9CzHuBRTwFpL4TG3WZUhnoCC7p8gxigu",
+      "source": "https://stablecoins.llama.fi/stablecoin/347",
+      "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "decimals": 6,
+      "supplyRaw": "1305623292970000",
+      "supply": "1,305,623,292",
+      "extensions": [
+        "metadataPointer",
+        "permanentDelegate",
+        "transferFeeConfig",
+        "confidentialTransferFeeConfig",
+        "confidentialTransferMint",
+        "transferHook",
+        "mintCloseAuthority",
+        "pausableConfig",
+        "defaultAccountState",
+        "tokenMetadata"
+      ],
+      "facts": {
+        "transferHookProgram": null,
+        "paused": false,
+        "defaultAccountState": "initialized"
+      },
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "C2QJ4HKLWzWRNprAmKoyd6YqXouVHFZuLKujdqtF4ZDt",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "freeze",
+          "address": "FiV6goxf5fYfw9y7XwuG8bVAG6bqTb1sR1rrLomjkXa3",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "metadataPointer.authority",
+          "address": "8N2NFYQ5VMaoDGMAcUbfzdeJqvok6LQs2E9BxDK6mMAE",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "permanentDelegate.delegate",
+          "address": "C2QJ4HKLWzWRNprAmKoyd6YqXouVHFZuLKujdqtF4ZDt",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "transferFeeConfig.transferFeeConfigAuthority",
+          "address": "8N2NFYQ5VMaoDGMAcUbfzdeJqvok6LQs2E9BxDK6mMAE",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "transferFeeConfig.withdrawWithheldAuthority",
+          "address": "3WNoR4qjdBehtB6aa6fgz6qX2eceo5UiioV2niFfw26w",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "confidentialTransferFeeConfig.authority",
+          "address": "8N2NFYQ5VMaoDGMAcUbfzdeJqvok6LQs2E9BxDK6mMAE",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "confidentialTransferMint.authority",
+          "address": "8N2NFYQ5VMaoDGMAcUbfzdeJqvok6LQs2E9BxDK6mMAE",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "transferHook.authority",
+          "address": "8N2NFYQ5VMaoDGMAcUbfzdeJqvok6LQs2E9BxDK6mMAE",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "mintCloseAuthority.closeAuthority",
+          "address": "8N2NFYQ5VMaoDGMAcUbfzdeJqvok6LQs2E9BxDK6mMAE",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "pausableConfig.authority",
+          "address": "fEnXbNWPAkmhVK1nL1H2sQVdkF3y4eh8CuqnCsnDXqx",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "tokenMetadata.updateAuthority",
+          "address": "8N2NFYQ5VMaoDGMAcUbfzdeJqvok6LQs2E9BxDK6mMAE",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        }
+      ]
+    },
+    {
+      "symbol": "PYUSD",
+      "category": "stablecoin",
+      "mint": "2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo",
+      "source": "https://api.coingecko.com/api/v3/coins/paypal-usd",
+      "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "decimals": 6,
+      "supplyRaw": "700819874739173",
+      "supply": "700,819,874",
+      "extensions": [
+        "mintCloseAuthority",
+        "permanentDelegate",
+        "transferFeeConfig",
+        "confidentialTransferMint",
+        "confidentialTransferFeeConfig",
+        "transferHook",
+        "metadataPointer",
+        "tokenMetadata"
+      ],
+      "facts": {
+        "transferHookProgram": null
+      },
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "8Jornc27vtAYPkwDzsZVgLQchAYyC8nD7aCNPCDV8Qk2",
+          "classification": {
+            "kind": "spl-multisig",
+            "m": 1,
+            "n": 4,
+            "signers": [
+              "2apBGMsS6ti9RyF5TwQTDswXBWskiJP2LD4cUEDqYJjk",
+              "3QaqDJS5angcPhW1HsMbB74vJbzWNcy1r5bwtATUro7d",
+              "BfWsvypxRvQ4KUhyJ2gLeFEkhRx3LgfkVahXMj6Kz3LN",
+              "AuVW19qwit2bxZqcspGZLsbq2ZiqosvryTNXE8UZSeGh"
+            ]
+          },
+          "signers": [
+            {
+              "address": "2apBGMsS6ti9RyF5TwQTDswXBWskiJP2LD4cUEDqYJjk",
+              "classification": {
+                "kind": "system-key",
+                "funded": true
+              }
+            },
+            {
+              "address": "3QaqDJS5angcPhW1HsMbB74vJbzWNcy1r5bwtATUro7d",
+              "classification": {
+                "kind": "program-pda",
+                "ownerProgram": "G1SRHec1Mig66xKJ169kmmVRy4WX81VLKCUfdExThQdo"
+              }
+            },
+            {
+              "address": "BfWsvypxRvQ4KUhyJ2gLeFEkhRx3LgfkVahXMj6Kz3LN",
+              "classification": {
+                "kind": "program-pda",
+                "ownerProgram": "G1SRHec1Mig66xKJ169kmmVRy4WX81VLKCUfdExThQdo"
+              }
+            },
+            {
+              "address": "AuVW19qwit2bxZqcspGZLsbq2ZiqosvryTNXE8UZSeGh",
+              "classification": {
+                "kind": "program-pda",
+                "ownerProgram": "paxosVkYuJBKUQoZGAidRA47Qt4uidqG5fAt5kmr1nR"
+              }
+            }
+          ],
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: the token program executes as soon as m members sign"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "freeze",
+          "address": "2apBGMsS6ti9RyF5TwQTDswXBWskiJP2LD4cUEDqYJjk",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "mintCloseAuthority.closeAuthority",
+          "address": "2apBGMsS6ti9RyF5TwQTDswXBWskiJP2LD4cUEDqYJjk",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "permanentDelegate.delegate",
+          "address": "2apBGMsS6ti9RyF5TwQTDswXBWskiJP2LD4cUEDqYJjk",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "transferFeeConfig.transferFeeConfigAuthority",
+          "address": "2apBGMsS6ti9RyF5TwQTDswXBWskiJP2LD4cUEDqYJjk",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "transferFeeConfig.withdrawWithheldAuthority",
+          "address": "2apBGMsS6ti9RyF5TwQTDswXBWskiJP2LD4cUEDqYJjk",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "confidentialTransferMint.authority",
+          "address": "2apBGMsS6ti9RyF5TwQTDswXBWskiJP2LD4cUEDqYJjk",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "confidentialTransferFeeConfig.authority",
+          "address": "2apBGMsS6ti9RyF5TwQTDswXBWskiJP2LD4cUEDqYJjk",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "transferHook.authority",
+          "address": "2apBGMsS6ti9RyF5TwQTDswXBWskiJP2LD4cUEDqYJjk",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "metadataPointer.authority",
+          "address": "2apBGMsS6ti9RyF5TwQTDswXBWskiJP2LD4cUEDqYJjk",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "tokenMetadata.updateAuthority",
+          "address": "2apBGMsS6ti9RyF5TwQTDswXBWskiJP2LD4cUEDqYJjk",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        }
+      ]
+    },
+    {
+      "symbol": "USDG",
+      "category": "stablecoin",
+      "mint": "2u1tszSeqZ3qBWF3uNGPFc8TzMk2tdiwknnRMWGWjGWH",
+      "source": "https://stablecoins.llama.fi/stablecoin/286",
+      "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "decimals": 6,
+      "supplyRaw": "624123454833322",
+      "supply": "624,123,454",
+      "extensions": [
+        "mintCloseAuthority",
+        "permanentDelegate",
+        "transferFeeConfig",
+        "confidentialTransferMint",
+        "confidentialTransferFeeConfig",
+        "transferHook",
+        "metadataPointer",
+        "tokenMetadata"
+      ],
+      "facts": {
+        "transferHookProgram": null
+      },
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "3YJL8sesK3ooPpJddypvFUhCvnvaQ1oF8This4J3bhxR",
+          "classification": {
+            "kind": "spl-multisig",
+            "m": 1,
+            "n": 4,
+            "signers": [
+              "2apBGMsS6ti9RyF5TwQTDswXBWskiJP2LD4cUEDqYJjk",
+              "GdJywa1Mye4fA7ST5WuJw2eEsxbPPgNc7AsCT8D6Hngg",
+              "CzSG2jccXqr19Xcbr7E1yCPs4nbQj3ggsZtK7BGwe56L",
+              "75sq4xbQ1snnWKmwZ9sDZjzaLxgiZedPcegXwCCQ2bnp"
+            ]
+          },
+          "signers": [
+            {
+              "address": "2apBGMsS6ti9RyF5TwQTDswXBWskiJP2LD4cUEDqYJjk",
+              "classification": {
+                "kind": "system-key",
+                "funded": true
+              }
+            },
+            {
+              "address": "GdJywa1Mye4fA7ST5WuJw2eEsxbPPgNc7AsCT8D6Hngg",
+              "classification": {
+                "kind": "program-pda",
+                "ownerProgram": "G1SRHec1Mig66xKJ169kmmVRy4WX81VLKCUfdExThQdo"
+              }
+            },
+            {
+              "address": "CzSG2jccXqr19Xcbr7E1yCPs4nbQj3ggsZtK7BGwe56L",
+              "classification": {
+                "kind": "program-pda",
+                "ownerProgram": "G1SRHec1Mig66xKJ169kmmVRy4WX81VLKCUfdExThQdo"
+              }
+            },
+            {
+              "address": "75sq4xbQ1snnWKmwZ9sDZjzaLxgiZedPcegXwCCQ2bnp",
+              "classification": {
+                "kind": "program-pda",
+                "ownerProgram": "paxosVkYuJBKUQoZGAidRA47Qt4uidqG5fAt5kmr1nR"
+              }
+            }
+          ],
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: the token program executes as soon as m members sign"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "freeze",
+          "address": "2apBGMsS6ti9RyF5TwQTDswXBWskiJP2LD4cUEDqYJjk",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "mintCloseAuthority.closeAuthority",
+          "address": "2apBGMsS6ti9RyF5TwQTDswXBWskiJP2LD4cUEDqYJjk",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "permanentDelegate.delegate",
+          "address": "2apBGMsS6ti9RyF5TwQTDswXBWskiJP2LD4cUEDqYJjk",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "transferFeeConfig.transferFeeConfigAuthority",
+          "address": "2apBGMsS6ti9RyF5TwQTDswXBWskiJP2LD4cUEDqYJjk",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "transferFeeConfig.withdrawWithheldAuthority",
+          "address": "2apBGMsS6ti9RyF5TwQTDswXBWskiJP2LD4cUEDqYJjk",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "confidentialTransferMint.authority",
+          "address": "2apBGMsS6ti9RyF5TwQTDswXBWskiJP2LD4cUEDqYJjk",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "confidentialTransferFeeConfig.authority",
+          "address": "2apBGMsS6ti9RyF5TwQTDswXBWskiJP2LD4cUEDqYJjk",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "transferHook.authority",
+          "address": "2apBGMsS6ti9RyF5TwQTDswXBWskiJP2LD4cUEDqYJjk",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "metadataPointer.authority",
+          "address": "2apBGMsS6ti9RyF5TwQTDswXBWskiJP2LD4cUEDqYJjk",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "tokenMetadata.updateAuthority",
+          "address": "2apBGMsS6ti9RyF5TwQTDswXBWskiJP2LD4cUEDqYJjk",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        }
+      ]
+    },
+    {
+      "symbol": "USDe",
+      "category": "stablecoin",
+      "mint": "DEkqHyPN7GMRJ5cArtQFAWefqbZb33Hyf6s5iCwjEonT",
+      "source": "https://api.coingecko.com/api/v3/coins/ethena-usde",
+      "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "decimals": 9,
+      "supplyRaw": "514634633075472485",
+      "supply": "514,634,633",
+      "extensions": [],
+      "facts": {},
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "4x3oQtX4MhjTKGBeXDZbtTSLZ9cUWo5waN2UChAuthtS",
+          "classification": {
+            "kind": "program-pda",
+            "ownerProgram": "9S6fwN8gZsr3ikUH38QWPDbLzyJTYcQd5GtrEWzoS2y9"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "freeze",
+          "address": null,
+          "classification": {
+            "kind": "none"
+          },
+          "delay": null,
+          "keysAloneSuffice": false
+        }
+      ]
+    },
+    {
+      "symbol": "SOFID",
+      "category": "stablecoin",
+      "mint": "APhcqtzE73es3KAGiVksZFMLGwJDiAey5qZKUrQHEHfS",
+      "source": "https://stablecoins.llama.fi/stablecoin/430",
+      "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "decimals": 6,
+      "supplyRaw": "235099517950000",
+      "supply": "235,099,517",
+      "extensions": [
+        "mintCloseAuthority",
+        "permanentDelegate",
+        "defaultAccountState",
+        "transferFeeConfig",
+        "confidentialTransferMint",
+        "confidentialTransferFeeConfig",
+        "transferHook",
+        "scaledUiAmountConfig",
+        "metadataPointer",
+        "pausableConfig",
+        "tokenMetadata"
+      ],
+      "facts": {
+        "defaultAccountState": "initialized",
+        "transferHookProgram": null,
+        "uiAmountMultiplier": "1",
+        "paused": false
+      },
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "ApCJFZLJa6ZKW5i599AQcsJbRuePvX9f8hLNzC6zq81t",
+          "classification": {
+            "kind": "spl-multisig",
+            "m": 1,
+            "n": 2,
+            "signers": [
+              "96D8v5kpP1ZyN5cmwVVVTKsYpUdACe1WcEAFtpMaeqwh",
+              "By1mEVWv9ELECbaFTAA5XZKwFSGF8AUXBCHB2QmaZtde"
+            ]
+          },
+          "signers": [
+            {
+              "address": "96D8v5kpP1ZyN5cmwVVVTKsYpUdACe1WcEAFtpMaeqwh",
+              "classification": {
+                "kind": "system-key",
+                "funded": false
+              }
+            },
+            {
+              "address": "By1mEVWv9ELECbaFTAA5XZKwFSGF8AUXBCHB2QmaZtde",
+              "classification": {
+                "kind": "system-key",
+                "funded": true
+              }
+            }
+          ],
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: the token program executes as soon as m members sign"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "freeze",
+          "address": "AJ7yvciE9bn1m1hrFBtKB1fS3K5eYfJwUoNk3nZDp1XS",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "mintCloseAuthority.closeAuthority",
+          "address": "BB67z1U8YfHFPwrDzzTiAYPNUiU86oiATYAyYnE5Xqkq",
+          "classification": {
+            "kind": "system-key",
+            "funded": false
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "permanentDelegate.delegate",
+          "address": "BB67z1U8YfHFPwrDzzTiAYPNUiU86oiATYAyYnE5Xqkq",
+          "classification": {
+            "kind": "system-key",
+            "funded": false
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "transferFeeConfig.transferFeeConfigAuthority",
+          "address": "BB67z1U8YfHFPwrDzzTiAYPNUiU86oiATYAyYnE5Xqkq",
+          "classification": {
+            "kind": "system-key",
+            "funded": false
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "transferFeeConfig.withdrawWithheldAuthority",
+          "address": "BB67z1U8YfHFPwrDzzTiAYPNUiU86oiATYAyYnE5Xqkq",
+          "classification": {
+            "kind": "system-key",
+            "funded": false
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "confidentialTransferMint.authority",
+          "address": "BB67z1U8YfHFPwrDzzTiAYPNUiU86oiATYAyYnE5Xqkq",
+          "classification": {
+            "kind": "system-key",
+            "funded": false
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "confidentialTransferFeeConfig.authority",
+          "address": "BB67z1U8YfHFPwrDzzTiAYPNUiU86oiATYAyYnE5Xqkq",
+          "classification": {
+            "kind": "system-key",
+            "funded": false
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "transferHook.authority",
+          "address": "BB67z1U8YfHFPwrDzzTiAYPNUiU86oiATYAyYnE5Xqkq",
+          "classification": {
+            "kind": "system-key",
+            "funded": false
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "scaledUiAmountConfig.authority",
+          "address": "BB67z1U8YfHFPwrDzzTiAYPNUiU86oiATYAyYnE5Xqkq",
+          "classification": {
+            "kind": "system-key",
+            "funded": false
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "metadataPointer.authority",
+          "address": "BB67z1U8YfHFPwrDzzTiAYPNUiU86oiATYAyYnE5Xqkq",
+          "classification": {
+            "kind": "system-key",
+            "funded": false
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "pausableConfig.authority",
+          "address": "BB67z1U8YfHFPwrDzzTiAYPNUiU86oiATYAyYnE5Xqkq",
+          "classification": {
+            "kind": "system-key",
+            "funded": false
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "tokenMetadata.updateAuthority",
+          "address": "BB67z1U8YfHFPwrDzzTiAYPNUiU86oiATYAyYnE5Xqkq",
+          "classification": {
+            "kind": "system-key",
+            "funded": false
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        }
+      ]
+    },
+    {
+      "symbol": "USX",
+      "category": "stablecoin",
+      "mint": "6FrrzDk5mQARGc1TDYoyVnSyRdds1t4PbtohCD6p3tgG",
+      "source": "https://stablecoins.llama.fi/stablecoin/310",
+      "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "decimals": 6,
+      "supplyRaw": "212002810777804",
+      "supply": "212,002,810",
+      "extensions": [],
+      "facts": {},
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "Ze3CQhTMi6KMU3nWZQUegA2JpeFd2eMx1Y2Gswqnto4",
+          "classification": {
+            "kind": "program-pda",
+            "ownerProgram": "USXyiSTsPEWz55pSK7sZoUL79ntoVGQbaTDT57tH6bx"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "freeze",
+          "address": "Ze3CQhTMi6KMU3nWZQUegA2JpeFd2eMx1Y2Gswqnto4",
+          "classification": {
+            "kind": "program-pda",
+            "ownerProgram": "USXyiSTsPEWz55pSK7sZoUL79ntoVGQbaTDT57tH6bx"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        }
+      ]
+    },
+    {
+      "symbol": "CASH",
+      "category": "stablecoin",
+      "mint": "CASHx9KJUStyftLFWGvEVf59SGeG9sh5FfcnZMVPCASH",
+      "source": "https://stablecoins.llama.fi/stablecoin/316",
+      "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "decimals": 6,
+      "supplyRaw": "127605405768617",
+      "supply": "127,605,405",
+      "extensions": [
+        "mintCloseAuthority",
+        "permanentDelegate",
+        "defaultAccountState",
+        "confidentialTransferMint",
+        "transferHook",
+        "metadataPointer",
+        "tokenMetadata"
+      ],
+      "facts": {
+        "defaultAccountState": "initialized",
+        "transferHookProgram": null
+      },
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "HJT2TXrhbWta2ax7V86vcnmX7ZmAVzua4v2yrGwchXB7",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "freeze",
+          "address": "AyCP3oW19DHZKvx8oU6mvseW2qn7XfmQ5STrXPa6prY5",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "mintCloseAuthority.closeAuthority",
+          "address": "E7JdFMP5AqdndJKstZV2mHdekLwAQbNWRHMpoozyB3qw",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "permanentDelegate.delegate",
+          "address": "E7JdFMP5AqdndJKstZV2mHdekLwAQbNWRHMpoozyB3qw",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "confidentialTransferMint.authority",
+          "address": "E7JdFMP5AqdndJKstZV2mHdekLwAQbNWRHMpoozyB3qw",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "transferHook.authority",
+          "address": "3etmwgxP4Lt2LLEyYpN2f9oKKi1onGy5XHRSP4BRq2vb",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "metadataPointer.authority",
+          "address": "3etmwgxP4Lt2LLEyYpN2f9oKKi1onGy5XHRSP4BRq2vb",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "tokenMetadata.updateAuthority",
+          "address": "3etmwgxP4Lt2LLEyYpN2f9oKKi1onGy5XHRSP4BRq2vb",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        }
+      ]
+    },
+    {
+      "symbol": "MOVEUSD",
+      "category": "stablecoin",
+      "mint": "3AdhVEX6k85yNivHVXDEiY3WyP2WgFQTUZCahGaeC2qm",
+      "source": "https://stablecoins.llama.fi/stablecoin/389",
+      "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "decimals": 6,
+      "supplyRaw": "119212745020139",
+      "supply": "119,212,745",
+      "extensions": [],
+      "facts": {},
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "3AdhVEX6k85yNivHVXDEiY3WyP2WgFQTUZCahGaeC2qm",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "freeze",
+          "address": "3AdhVEX6k85yNivHVXDEiY3WyP2WgFQTUZCahGaeC2qm",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        }
+      ]
+    },
+    {
+      "symbol": "OUSD",
+      "category": "stablecoin",
+      "mint": "ousd2mJsPEckLHcSCDxyKD7NDGARZcfLbDZkKiatYHB",
+      "source": "https://stablecoins.llama.fi/stablecoin/443",
+      "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "decimals": 6,
+      "supplyRaw": "69511215770000",
+      "supply": "69,511,215",
+      "extensions": [
+        "mintCloseAuthority",
+        "permanentDelegate",
+        "defaultAccountState",
+        "confidentialTransferMint",
+        "transferHook",
+        "metadataPointer",
+        "pausableConfig",
+        "tokenMetadata"
+      ],
+      "facts": {
+        "defaultAccountState": "initialized",
+        "transferHookProgram": null,
+        "paused": false
+      },
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "EBArgZpd8iv7QRgUFhCasaHxck5oujhHNCkonoa1kEKA",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "freeze",
+          "address": "H2UbwLLJAen1W2z6oRCYqZCFo6BidkU4QFDw2eWxL9W4",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "mintCloseAuthority.closeAuthority",
+          "address": "E7JdFMP5AqdndJKstZV2mHdekLwAQbNWRHMpoozyB3qw",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "permanentDelegate.delegate",
+          "address": "Aj2gxCSQ7A7eTnUL2VnyT3KQa79AcZi5x15rPRSnw6RA",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "confidentialTransferMint.authority",
+          "address": "E7JdFMP5AqdndJKstZV2mHdekLwAQbNWRHMpoozyB3qw",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "transferHook.authority",
+          "address": "E7JdFMP5AqdndJKstZV2mHdekLwAQbNWRHMpoozyB3qw",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "metadataPointer.authority",
+          "address": "E7JdFMP5AqdndJKstZV2mHdekLwAQbNWRHMpoozyB3qw",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "pausableConfig.authority",
+          "address": "E7JdFMP5AqdndJKstZV2mHdekLwAQbNWRHMpoozyB3qw",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "tokenMetadata.updateAuthority",
+          "address": "E7JdFMP5AqdndJKstZV2mHdekLwAQbNWRHMpoozyB3qw",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        }
+      ]
+    },
+    {
+      "symbol": "EURC",
+      "category": "stablecoin",
+      "mint": "HzwqbKZw8HxMN6bF2yFZNrht3c2iXXzpKcFu7uBEDKtr",
+      "source": "https://api.coingecko.com/api/v3/coins/euro-coin",
+      "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "decimals": 6,
+      "supplyRaw": "105019198405467",
+      "supply": "105,019,198",
+      "extensions": [],
+      "facts": {},
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "Hy9168u7b2Toujh8SJKtKK8DWbyaBbXPzxm337R4o4XY",
+          "classification": {
+            "kind": "spl-multisig",
+            "m": 2,
+            "n": 4,
+            "signers": [
+              "72sDZqwuLudQU4U3osKjLFymnZ9CXQy7cJg8eJsBbe1W",
+              "9a6NCvgcU2FQL2sQzKFG9Yn3Jd5Lke7L8b7BjjZTkKMm",
+              "6AMkWisfJsN32ppCidNmYULECxRUaLhsNyoiYSbAhPD8",
+              "CDntn7Ptn8fv68K3VeHFrGSJY6T2fdbtxEh4quuQmz27"
+            ]
+          },
+          "signers": [
+            {
+              "address": "72sDZqwuLudQU4U3osKjLFymnZ9CXQy7cJg8eJsBbe1W",
+              "classification": {
+                "kind": "system-key",
+                "funded": true
+              }
+            },
+            {
+              "address": "9a6NCvgcU2FQL2sQzKFG9Yn3Jd5Lke7L8b7BjjZTkKMm",
+              "classification": {
+                "kind": "system-key",
+                "funded": true
+              }
+            },
+            {
+              "address": "6AMkWisfJsN32ppCidNmYULECxRUaLhsNyoiYSbAhPD8",
+              "classification": {
+                "kind": "system-key",
+                "funded": true
+              }
+            },
+            {
+              "address": "CDntn7Ptn8fv68K3VeHFrGSJY6T2fdbtxEh4quuQmz27",
+              "classification": {
+                "kind": "system-key",
+                "funded": true
+              }
+            }
+          ],
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: the token program executes as soon as m members sign"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "freeze",
+          "address": "6FF2CPcL6fat16QVJH6W27DeBcX7TSqbwY3a5wtyVJLC",
+          "classification": {
+            "kind": "spl-multisig",
+            "m": 2,
+            "n": 4,
+            "signers": [
+              "Hp5ga8bXGTfhT8QEHowNvaau3FjLMMw1uvyxpPm3b6hg",
+              "8N6kiUXUrgyNT9CtJdcTEkQmndWJrie3sqU5wgiD7PWz",
+              "9CoJqaLmkHrTQbgVfNY2WN3UoVyw8E149U2FktrxTQvh",
+              "9k1FrM9QHiuYvatpZ7g5yLve5EZQ7dcjJ4FRGGumhvkv"
+            ]
+          },
+          "signers": [
+            {
+              "address": "Hp5ga8bXGTfhT8QEHowNvaau3FjLMMw1uvyxpPm3b6hg",
+              "classification": {
+                "kind": "system-key",
+                "funded": true
+              }
+            },
+            {
+              "address": "8N6kiUXUrgyNT9CtJdcTEkQmndWJrie3sqU5wgiD7PWz",
+              "classification": {
+                "kind": "system-key",
+                "funded": true
+              }
+            },
+            {
+              "address": "9CoJqaLmkHrTQbgVfNY2WN3UoVyw8E149U2FktrxTQvh",
+              "classification": {
+                "kind": "system-key",
+                "funded": true
+              }
+            },
+            {
+              "address": "9k1FrM9QHiuYvatpZ7g5yLve5EZQ7dcjJ4FRGGumhvkv",
+              "classification": {
+                "kind": "system-key",
+                "funded": true
+              }
+            }
+          ],
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: the token program executes as soon as m members sign"
+          },
+          "keysAloneSuffice": true
+        }
+      ]
+    },
+    {
+      "symbol": "JUPUSD",
+      "category": "stablecoin",
+      "mint": "JuprjznTrTSp2UFa3ZBUFgwdAmtZCq4MQCwysN55USD",
+      "source": "https://stablecoins.llama.fi/stablecoin/335",
+      "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "decimals": 6,
+      "supplyRaw": "48611547636232",
+      "supply": "48,611,547",
+      "extensions": [],
+      "facts": {},
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "CkzLnD9r4d4ZZofsgNVo2VNunxDmte5YJ4vfAgMfBZNA",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "freeze",
+          "address": "CkzLnD9r4d4ZZofsgNVo2VNunxDmte5YJ4vfAgMfBZNA",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        }
+      ]
+    },
+    {
+      "symbol": "USDTB",
+      "category": "stablecoin",
+      "mint": "8yXrtJ54jZtE84xEBzTESKuegjcAkAuDrdAhRd8i8n3T",
+      "source": "https://stablecoins.llama.fi/stablecoin/221",
+      "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "decimals": 6,
+      "supplyRaw": "44961203220000",
+      "supply": "44,961,203",
+      "extensions": [
+        "metadataPointer",
+        "permanentDelegate",
+        "transferFeeConfig",
+        "confidentialTransferFeeConfig",
+        "confidentialTransferMint",
+        "transferHook",
+        "mintCloseAuthority",
+        "pausableConfig",
+        "defaultAccountState",
+        "tokenMetadata"
+      ],
+      "facts": {
+        "transferHookProgram": null,
+        "paused": false,
+        "defaultAccountState": "initialized"
+      },
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "C2QJ4HKLWzWRNprAmKoyd6YqXouVHFZuLKujdqtF4ZDt",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "freeze",
+          "address": "FiV6goxf5fYfw9y7XwuG8bVAG6bqTb1sR1rrLomjkXa3",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "metadataPointer.authority",
+          "address": "8N2NFYQ5VMaoDGMAcUbfzdeJqvok6LQs2E9BxDK6mMAE",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "permanentDelegate.delegate",
+          "address": "C2QJ4HKLWzWRNprAmKoyd6YqXouVHFZuLKujdqtF4ZDt",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "transferFeeConfig.transferFeeConfigAuthority",
+          "address": "8N2NFYQ5VMaoDGMAcUbfzdeJqvok6LQs2E9BxDK6mMAE",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "transferFeeConfig.withdrawWithheldAuthority",
+          "address": "3WNoR4qjdBehtB6aa6fgz6qX2eceo5UiioV2niFfw26w",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "confidentialTransferFeeConfig.authority",
+          "address": "8N2NFYQ5VMaoDGMAcUbfzdeJqvok6LQs2E9BxDK6mMAE",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "confidentialTransferMint.authority",
+          "address": "8N2NFYQ5VMaoDGMAcUbfzdeJqvok6LQs2E9BxDK6mMAE",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "transferHook.authority",
+          "address": "8N2NFYQ5VMaoDGMAcUbfzdeJqvok6LQs2E9BxDK6mMAE",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "mintCloseAuthority.closeAuthority",
+          "address": "8N2NFYQ5VMaoDGMAcUbfzdeJqvok6LQs2E9BxDK6mMAE",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "pausableConfig.authority",
+          "address": "fEnXbNWPAkmhVK1nL1H2sQVdkF3y4eh8CuqnCsnDXqx",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "tokenMetadata.updateAuthority",
+          "address": "8N2NFYQ5VMaoDGMAcUbfzdeJqvok6LQs2E9BxDK6mMAE",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        }
+      ]
+    },
+    {
+      "symbol": "HYUSD",
+      "category": "stablecoin",
+      "mint": "5YMkXAYccHSGnHn9nob9xEvv6Pvka9DZWH7nTbotTu9E",
+      "source": "https://stablecoins.llama.fi/stablecoin/302",
+      "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "decimals": 6,
+      "supplyRaw": "26140266454797",
+      "supply": "26,140,266",
+      "extensions": [],
+      "facts": {},
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "CfuSViqf6wvUKEprLhtuCsSanvfAsMbDmkAW92FP95qe",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "freeze",
+          "address": null,
+          "classification": {
+            "kind": "none"
+          },
+          "delay": null,
+          "keysAloneSuffice": false
+        }
+      ]
+    },
+    {
+      "symbol": "USDPT",
+      "category": "stablecoin",
+      "mint": "HVWf8JmLoHs99Lw8Psf3fyqAtA4crWxCPkrmSdNjhNH3",
+      "source": "https://stablecoins.llama.fi/stablecoin/386",
+      "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "decimals": 6,
+      "supplyRaw": "17676723756497",
+      "supply": "17,676,723",
+      "extensions": [
+        "metadataPointer",
+        "permanentDelegate",
+        "transferFeeConfig",
+        "confidentialTransferFeeConfig",
+        "confidentialTransferMint",
+        "transferHook",
+        "mintCloseAuthority",
+        "pausableConfig",
+        "defaultAccountState",
+        "tokenMetadata"
+      ],
+      "facts": {
+        "transferHookProgram": null,
+        "paused": false,
+        "defaultAccountState": "initialized"
+      },
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "C2QJ4HKLWzWRNprAmKoyd6YqXouVHFZuLKujdqtF4ZDt",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "freeze",
+          "address": "FiV6goxf5fYfw9y7XwuG8bVAG6bqTb1sR1rrLomjkXa3",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "metadataPointer.authority",
+          "address": "8N2NFYQ5VMaoDGMAcUbfzdeJqvok6LQs2E9BxDK6mMAE",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "permanentDelegate.delegate",
+          "address": "C2QJ4HKLWzWRNprAmKoyd6YqXouVHFZuLKujdqtF4ZDt",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "transferFeeConfig.transferFeeConfigAuthority",
+          "address": "8N2NFYQ5VMaoDGMAcUbfzdeJqvok6LQs2E9BxDK6mMAE",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "transferFeeConfig.withdrawWithheldAuthority",
+          "address": "3WNoR4qjdBehtB6aa6fgz6qX2eceo5UiioV2niFfw26w",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "confidentialTransferFeeConfig.authority",
+          "address": "8N2NFYQ5VMaoDGMAcUbfzdeJqvok6LQs2E9BxDK6mMAE",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "confidentialTransferMint.authority",
+          "address": "8N2NFYQ5VMaoDGMAcUbfzdeJqvok6LQs2E9BxDK6mMAE",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "transferHook.authority",
+          "address": "8N2NFYQ5VMaoDGMAcUbfzdeJqvok6LQs2E9BxDK6mMAE",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "mintCloseAuthority.closeAuthority",
+          "address": "8N2NFYQ5VMaoDGMAcUbfzdeJqvok6LQs2E9BxDK6mMAE",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "pausableConfig.authority",
+          "address": "fEnXbNWPAkmhVK1nL1H2sQVdkF3y4eh8CuqnCsnDXqx",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "tokenMetadata.updateAuthority",
+          "address": "8N2NFYQ5VMaoDGMAcUbfzdeJqvok6LQs2E9BxDK6mMAE",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        }
+      ]
+    },
+    {
+      "symbol": "SBC",
+      "category": "stablecoin",
+      "mint": "DBAzBUXaLj1qANCseUPZz4sp9F8d2sc78C4vKjhbTGMA",
+      "source": "https://stablecoins.llama.fi/stablecoin/324",
+      "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "decimals": 9,
+      "supplyRaw": "13794459439940774",
+      "supply": "13,794,459",
+      "extensions": [],
+      "facts": {},
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "8Dn2V6HX6gTwkCid2MUiv3mXvMkTcyxQeqTychdBRBSj",
+          "classification": {
+            "kind": "spl-multisig",
+            "m": 1,
+            "n": 2,
+            "signers": [
+              "EmJvvf2DK1oXaLg7k3cYpGUQcswYd2rtMZMkz3J1bPAL",
+              "3mdd4X7wJjWmhF99jfTNGmSr39EXSAXcdEiS47GejduH"
+            ]
+          },
+          "signers": [
+            {
+              "address": "EmJvvf2DK1oXaLg7k3cYpGUQcswYd2rtMZMkz3J1bPAL",
+              "classification": {
+                "kind": "program-pda",
+                "ownerProgram": "FBLPCK5w3wxpfxsdZfBcRfQCSXcC9x2cmocYHb5K6EZc"
+              }
+            },
+            {
+              "address": "3mdd4X7wJjWmhF99jfTNGmSr39EXSAXcdEiS47GejduH",
+              "classification": {
+                "kind": "system-key",
+                "funded": true
+              }
+            }
+          ],
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: the token program executes as soon as m members sign"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "freeze",
+          "address": "3mdd4X7wJjWmhF99jfTNGmSr39EXSAXcdEiS47GejduH",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        }
+      ]
+    },
+    {
+      "symbol": "USDU",
+      "category": "stablecoin",
+      "mint": "9ckR7pPPvyPadACDTzLwK2ZAEeUJ3qGSnzPs8bVaHrSy",
+      "source": "https://api.coingecko.com/api/v3/coins/usdu",
+      "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "decimals": 6,
+      "supplyRaw": "12435533494111",
+      "supply": "12,435,533",
+      "extensions": [
+        "metadataPointer",
+        "tokenMetadata"
+      ],
+      "facts": {},
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "9ckR7pPPvyPadACDTzLwK2ZAEeUJ3qGSnzPs8bVaHrSy",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "freeze",
+          "address": null,
+          "classification": {
+            "kind": "none"
+          },
+          "delay": null,
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "metadataPointer.authority",
+          "address": "9ckR7pPPvyPadACDTzLwK2ZAEeUJ3qGSnzPs8bVaHrSy",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "tokenMetadata.updateAuthority",
+          "address": "9ckR7pPPvyPadACDTzLwK2ZAEeUJ3qGSnzPs8bVaHrSy",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        }
+      ]
+    },
+    {
+      "symbol": "BUIDL",
+      "category": "rwa",
+      "mint": "GyWgeqpy5GueU2YbkE8xqUeVEokCMMCEeUrfbtMw6phr",
+      "source": "https://stablecoins.llama.fi/stablecoin/173",
+      "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "decimals": 6,
+      "supplyRaw": "967875477090000",
+      "supply": "967,875,477",
+      "extensions": [
+        "metadataPointer",
+        "mintCloseAuthority",
+        "transferHook",
+        "permanentDelegate",
+        "tokenMetadata"
+      ],
+      "facts": {
+        "transferHookProgram": "FsE8mCJyvgMzqJbfHbJQm3iuf3cRZC6n2vZi1Q8rQCy2"
+      },
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "APm3MWbXfMMKAWgsDVnxcAGbLjvRxubPu1A8a5SA2kbJ",
+          "classification": {
+            "kind": "program-pda",
+            "ownerProgram": "7tXjmbkZVY3Gmg9kDBebcNXT1yC5pyoxxXVLwdbv9tvP"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "freeze",
+          "address": "APm3MWbXfMMKAWgsDVnxcAGbLjvRxubPu1A8a5SA2kbJ",
+          "classification": {
+            "kind": "program-pda",
+            "ownerProgram": "7tXjmbkZVY3Gmg9kDBebcNXT1yC5pyoxxXVLwdbv9tvP"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "metadataPointer.authority",
+          "address": "APm3MWbXfMMKAWgsDVnxcAGbLjvRxubPu1A8a5SA2kbJ",
+          "classification": {
+            "kind": "program-pda",
+            "ownerProgram": "7tXjmbkZVY3Gmg9kDBebcNXT1yC5pyoxxXVLwdbv9tvP"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "mintCloseAuthority.closeAuthority",
+          "address": "APm3MWbXfMMKAWgsDVnxcAGbLjvRxubPu1A8a5SA2kbJ",
+          "classification": {
+            "kind": "program-pda",
+            "ownerProgram": "7tXjmbkZVY3Gmg9kDBebcNXT1yC5pyoxxXVLwdbv9tvP"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "transferHook.authority",
+          "address": "APm3MWbXfMMKAWgsDVnxcAGbLjvRxubPu1A8a5SA2kbJ",
+          "classification": {
+            "kind": "program-pda",
+            "ownerProgram": "7tXjmbkZVY3Gmg9kDBebcNXT1yC5pyoxxXVLwdbv9tvP"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "permanentDelegate.delegate",
+          "address": "APm3MWbXfMMKAWgsDVnxcAGbLjvRxubPu1A8a5SA2kbJ",
+          "classification": {
+            "kind": "program-pda",
+            "ownerProgram": "7tXjmbkZVY3Gmg9kDBebcNXT1yC5pyoxxXVLwdbv9tvP"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "tokenMetadata.updateAuthority",
+          "address": "APm3MWbXfMMKAWgsDVnxcAGbLjvRxubPu1A8a5SA2kbJ",
+          "classification": {
+            "kind": "program-pda",
+            "ownerProgram": "7tXjmbkZVY3Gmg9kDBebcNXT1yC5pyoxxXVLwdbv9tvP"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        }
+      ]
+    },
+    {
+      "symbol": "USDY",
+      "category": "rwa",
+      "mint": "A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6",
+      "source": "https://api.coingecko.com/api/v3/coins/ondo-us-dollar-yield",
+      "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "decimals": 6,
+      "supplyRaw": "156471407358073",
+      "supply": "156,471,407",
+      "extensions": [],
+      "facts": {},
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "8n2uiRUd1A9NN78PKESkJe6k6zMqtKCZh3MrK1j9qkB1",
+          "classification": {
+            "kind": "spl-multisig",
+            "m": 1,
+            "n": 2,
+            "signers": [
+              "7YNReenG6AXgVUfmSizt6hoVXrznS4zDdgCj1UTLJ2S3",
+              "BB7W8gZouRNRGyr8Djx8zyoRcgckrDXkKiMjNMtPwaAQ"
+            ]
+          },
+          "signers": [
+            {
+              "address": "7YNReenG6AXgVUfmSizt6hoVXrznS4zDdgCj1UTLJ2S3",
+              "classification": {
+                "kind": "program-pda",
+                "ownerProgram": "BGJQtQSPxa2nR9BodnjYb3Pbgft7nX5heQk3dr3uaFUB"
+              }
+            },
+            {
+              "address": "BB7W8gZouRNRGyr8Djx8zyoRcgckrDXkKiMjNMtPwaAQ",
+              "classification": {
+                "kind": "pda-unresolved",
+                "accountOwner": "11111111111111111111111111111111"
+              }
+            }
+          ],
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: the token program executes as soon as m members sign"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "freeze",
+          "address": "51QVCuHfL1FeNjd8BDeffCKhCcAYoULnVB3yjNhShiuK",
+          "classification": {
+            "kind": "squads-v4-vault",
+            "multisig": "CDCCa8yPj9eyE57ZT4NJ1pbNdeFCcJEoTyy4UjNbC3pF",
+            "configAuthority": null,
+            "threshold": 3,
+            "members": 8,
+            "timeLockSeconds": 0,
+            "vaultIndex": 0
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: Squads v4 time_lock is 0"
+          },
+          "keysAloneSuffice": false
+        }
+      ]
+    },
+    {
+      "symbol": "USTB",
+      "category": "rwa",
+      "mint": "CCz3SGVziFeLYk2xfEstkiqJfYkjaSWb2GCABYsVcjo2",
+      "source": "https://api.coingecko.com/api/v3/coins/superstate-short-duration-us-government-securities-fund-ustb",
+      "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "decimals": 6,
+      "supplyRaw": "174210361163",
+      "supply": "174,210",
+      "extensions": [
+        "defaultAccountState",
+        "permanentDelegate",
+        "metadataPointer",
+        "scaledUiAmountConfig",
+        "tokenMetadata"
+      ],
+      "facts": {
+        "defaultAccountState": "frozen",
+        "uiAmountMultiplier": "1"
+      },
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "EfkJFKtVcpo8sgQGWLoaYcutxNdmqed81wdCcpn7egdz",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "freeze",
+          "address": "2Yq4T3mPNfjtEyTxSbRjRKqLf1pwbTasuCQrWe6QpM7x",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "permanentDelegate.delegate",
+          "address": "2Yq4T3mPNfjtEyTxSbRjRKqLf1pwbTasuCQrWe6QpM7x",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "metadataPointer.authority",
+          "address": "EfkJFKtVcpo8sgQGWLoaYcutxNdmqed81wdCcpn7egdz",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "scaledUiAmountConfig.authority",
+          "address": "EfkJFKtVcpo8sgQGWLoaYcutxNdmqed81wdCcpn7egdz",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "tokenMetadata.updateAuthority",
+          "address": "EfkJFKtVcpo8sgQGWLoaYcutxNdmqed81wdCcpn7egdz",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        }
+      ]
+    },
+    {
+      "symbol": "BENJI",
+      "category": "rwa",
+      "mint": "5Tu84fKBpe9vfXeotjvfvWdWbAjy3hqsExvuHgFqFxA1",
+      "source": "https://api.coingecko.com/api/v3/coins/franklin-templeton-benji",
+      "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "decimals": 9,
+      "supplyRaw": "409658899853176",
+      "supply": "409,658",
+      "extensions": [
+        "metadataPointer",
+        "transferHook",
+        "permanentDelegate",
+        "tokenMetadata"
+      ],
+      "facts": {
+        "transferHookProgram": "huk3EPrNreTdUUjVKVkGSGKF1WC4P9BiUKBkn2kFWnP"
+      },
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "5Tu84fKBpe9vfXeotjvfvWdWbAjy3hqsExvuHgFqFxA1",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "freeze",
+          "address": "5Tu84fKBpe9vfXeotjvfvWdWbAjy3hqsExvuHgFqFxA1",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "metadataPointer.authority",
+          "address": "5Tu84fKBpe9vfXeotjvfvWdWbAjy3hqsExvuHgFqFxA1",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "transferHook.authority",
+          "address": "5Tu84fKBpe9vfXeotjvfvWdWbAjy3hqsExvuHgFqFxA1",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "permanentDelegate.delegate",
+          "address": "5Tu84fKBpe9vfXeotjvfvWdWbAjy3hqsExvuHgFqFxA1",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "tokenMetadata.updateAuthority",
+          "address": "5Tu84fKBpe9vfXeotjvfvWdWbAjy3hqsExvuHgFqFxA1",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        }
+      ]
+    },
+    {
+      "symbol": "JAAA",
+      "category": "rwa",
+      "mint": "AAAJXeGjpKu7W3X4QTSU4pm1Wbj4G2LPcdg7A6xJLLyG",
+      "source": "https://api.coingecko.com/api/v3/coins/janus-henderson-anemoy-aaa-clo-fund",
+      "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "decimals": 6,
+      "supplyRaw": "78659094622326",
+      "supply": "78,659,094",
+      "extensions": [
+        "permanentDelegate",
+        "defaultAccountState",
+        "metadataPointer",
+        "tokenMetadata"
+      ],
+      "facts": {
+        "defaultAccountState": "frozen"
+      },
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "BUo4FKP1hSAZ1zcNGzJHTS1V9zcQM8fzUFpYj1NboRK4",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "freeze",
+          "address": "BUo4FKP1hSAZ1zcNGzJHTS1V9zcQM8fzUFpYj1NboRK4",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "permanentDelegate.delegate",
+          "address": "BUo4FKP1hSAZ1zcNGzJHTS1V9zcQM8fzUFpYj1NboRK4",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "metadataPointer.authority",
+          "address": "Eg37TXi7ojfPT4kQPFUu6umtvz3cCN2Xif5TgQKDd68C",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "tokenMetadata.updateAuthority",
+          "address": "3JiU6sJt94WcD6r7EFTUnJo6By9DJ9WJxovRGfY9oseb",
+          "classification": {
+            "kind": "squads-v4-vault",
+            "multisig": "F8uKD1uQ4o2NVizM8VfNvBMNoL18WXXbhTjKqfzvBTSX",
+            "configAuthority": null,
+            "threshold": 2,
+            "members": 8,
+            "timeLockSeconds": 0,
+            "vaultIndex": 0
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: Squads v4 time_lock is 0"
+          },
+          "keysAloneSuffice": false
+        }
+      ]
+    },
+    {
+      "symbol": "XAUt0",
+      "category": "rwa",
+      "mint": "AymATz4TCL9sWNEEV9Kvyz45CHVhDZ6kUgjTJPzLpU9P",
+      "source": "https://api.coingecko.com/api/v3/coins/tether-gold-tokens",
+      "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "decimals": 6,
+      "supplyRaw": "1864998736",
+      "supply": "1,864",
+      "extensions": [],
+      "facts": {},
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "9FJsE8HkoJgxbbydk2R1Gc3hUruNJWwXR6AKYZWWY7Sy",
+          "classification": {
+            "kind": "spl-multisig",
+            "m": 1,
+            "n": 2,
+            "signers": [
+              "XWxJJE6Dq8EgdnhMWYU587f7St4HJuWbBHPstV2GtKR",
+              "51XXg9grz3dofW32uGC67wTuFsvMYRg62A4SVthG7JjT"
+            ]
+          },
+          "signers": [
+            {
+              "address": "XWxJJE6Dq8EgdnhMWYU587f7St4HJuWbBHPstV2GtKR",
+              "classification": {
+                "kind": "program-pda",
+                "ownerProgram": "9zWqf5jhauvxMc9RETXD9xbaMBrJpzPzGB6PR34Ksq6Z"
+              }
+            },
+            {
+              "address": "51XXg9grz3dofW32uGC67wTuFsvMYRg62A4SVthG7JjT",
+              "classification": {
+                "kind": "squads-v4-vault",
+                "multisig": "BiFqKEtVL9iv2ZYBw4oE7qFysftof69G6N5LTpQ7xitp",
+                "configAuthority": null,
+                "threshold": 3,
+                "members": 7,
+                "timeLockSeconds": 0,
+                "vaultIndex": 0
+              }
+            }
+          ],
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: the token program executes as soon as m members sign"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "freeze",
+          "address": "9FJsE8HkoJgxbbydk2R1Gc3hUruNJWwXR6AKYZWWY7Sy",
+          "classification": {
+            "kind": "spl-multisig",
+            "m": 1,
+            "n": 2,
+            "signers": [
+              "XWxJJE6Dq8EgdnhMWYU587f7St4HJuWbBHPstV2GtKR",
+              "51XXg9grz3dofW32uGC67wTuFsvMYRg62A4SVthG7JjT"
+            ]
+          },
+          "signers": [
+            {
+              "address": "XWxJJE6Dq8EgdnhMWYU587f7St4HJuWbBHPstV2GtKR",
+              "classification": {
+                "kind": "program-pda",
+                "ownerProgram": "9zWqf5jhauvxMc9RETXD9xbaMBrJpzPzGB6PR34Ksq6Z"
+              }
+            },
+            {
+              "address": "51XXg9grz3dofW32uGC67wTuFsvMYRg62A4SVthG7JjT",
+              "classification": {
+                "kind": "squads-v4-vault",
+                "multisig": "BiFqKEtVL9iv2ZYBw4oE7qFysftof69G6N5LTpQ7xitp",
+                "configAuthority": null,
+                "threshold": 3,
+                "members": 7,
+                "timeLockSeconds": 0,
+                "vaultIndex": 0
+              }
+            }
+          ],
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: the token program executes as soon as m members sign"
+          },
+          "keysAloneSuffice": false
+        }
+      ]
+    },
+    {
+      "symbol": "XAUM",
+      "category": "rwa",
+      "mint": "5aLhp9VnUEKcsdtkfsf2DUgpJfomx7GmYVny24dHUZoB",
+      "source": "https://api.coingecko.com/api/v3/coins/matrixdock-gold",
+      "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "decimals": 9,
+      "supplyRaw": "1575246084234",
+      "supply": "1,575",
+      "extensions": [
+        "metadataPointer",
+        "permanentDelegate",
+        "transferFeeConfig",
+        "pausableConfig",
+        "tokenMetadata"
+      ],
+      "facts": {
+        "paused": false
+      },
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "5aLhp9VnUEKcsdtkfsf2DUgpJfomx7GmYVny24dHUZoB",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "freeze",
+          "address": "5aLhp9VnUEKcsdtkfsf2DUgpJfomx7GmYVny24dHUZoB",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "metadataPointer.authority",
+          "address": "5aLhp9VnUEKcsdtkfsf2DUgpJfomx7GmYVny24dHUZoB",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "permanentDelegate.delegate",
+          "address": "5aLhp9VnUEKcsdtkfsf2DUgpJfomx7GmYVny24dHUZoB",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "transferFeeConfig.transferFeeConfigAuthority",
+          "address": "5aLhp9VnUEKcsdtkfsf2DUgpJfomx7GmYVny24dHUZoB",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "transferFeeConfig.withdrawWithheldAuthority",
+          "address": "5aLhp9VnUEKcsdtkfsf2DUgpJfomx7GmYVny24dHUZoB",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "pausableConfig.authority",
+          "address": "5aLhp9VnUEKcsdtkfsf2DUgpJfomx7GmYVny24dHUZoB",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "tokenMetadata.updateAuthority",
+          "address": "5aLhp9VnUEKcsdtkfsf2DUgpJfomx7GmYVny24dHUZoB",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        }
+      ]
+    },
+    {
+      "symbol": "TSLAx",
+      "category": "stock",
+      "mint": "XsDoVfqeBukxuZHWhdvWHBhgEHjGNst4MLodqsJHzoB",
+      "source": "https://api.coingecko.com/api/v3/coins/tesla-xstock",
+      "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "decimals": 8,
+      "supplyRaw": "22963598083588",
+      "supply": "229,635",
+      "extensions": [
+        "metadataPointer",
+        "permanentDelegate",
+        "defaultAccountState",
+        "scaledUiAmountConfig",
+        "pausableConfig",
+        "confidentialTransferMint",
+        "transferHook",
+        "tokenMetadata"
+      ],
+      "facts": {
+        "defaultAccountState": "initialized",
+        "uiAmountMultiplier": "1",
+        "paused": false,
+        "transferHookProgram": null
+      },
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "7pt9tkctJPK7PPNQJ77GKg8ZffSF6QxoMiCFYHxrtaCj",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "freeze",
+          "address": "JDq14BWvqCRFNu1krb12bcRpbGtJZ1FLEakMw6FdxJNs",
+          "classification": {
+            "kind": "squads-v4-vault",
+            "multisig": "8gep9m2BmCqz4qCQMcqZoqnaGedXgRWehFYhKaPuiu8X",
+            "configAuthority": null,
+            "threshold": 2,
+            "members": 4,
+            "timeLockSeconds": 0,
+            "vaultIndex": 0
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: Squads v4 time_lock is 0"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "metadataPointer.authority",
+          "address": "5aMNNLQJwAEeoemTEMkv5NVjqKwvvefRYCQ5Z67HFvEq",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "11111111111111111111111111111111"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "permanentDelegate.delegate",
+          "address": "5aMNNLQJwAEeoemTEMkv5NVjqKwvvefRYCQ5Z67HFvEq",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "11111111111111111111111111111111"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "scaledUiAmountConfig.authority",
+          "address": "S7vYFFWH6BjJyEsdrPQpqpYTqLTrPRK6KW3VwsJuRaS",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "pausableConfig.authority",
+          "address": "JDq14BWvqCRFNu1krb12bcRpbGtJZ1FLEakMw6FdxJNs",
+          "classification": {
+            "kind": "squads-v4-vault",
+            "multisig": "8gep9m2BmCqz4qCQMcqZoqnaGedXgRWehFYhKaPuiu8X",
+            "configAuthority": null,
+            "threshold": 2,
+            "members": 4,
+            "timeLockSeconds": 0,
+            "vaultIndex": 0
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: Squads v4 time_lock is 0"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "confidentialTransferMint.authority",
+          "address": "5aMNNLQJwAEeoemTEMkv5NVjqKwvvefRYCQ5Z67HFvEq",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "11111111111111111111111111111111"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "transferHook.authority",
+          "address": "5aMNNLQJwAEeoemTEMkv5NVjqKwvvefRYCQ5Z67HFvEq",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "11111111111111111111111111111111"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "tokenMetadata.updateAuthority",
+          "address": "5aMNNLQJwAEeoemTEMkv5NVjqKwvvefRYCQ5Z67HFvEq",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "11111111111111111111111111111111"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        }
+      ]
+    },
+    {
+      "symbol": "NVDAx",
+      "category": "stock",
+      "mint": "Xsc9qvGR1efVDFGLrVsmkzv3qi45LTBjeUKSPmx9qEh",
+      "source": "https://api.coingecko.com/api/v3/coins/nvidia-xstock",
+      "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "decimals": 8,
+      "supplyRaw": "32126567903598",
+      "supply": "321,265",
+      "extensions": [
+        "metadataPointer",
+        "permanentDelegate",
+        "defaultAccountState",
+        "scaledUiAmountConfig",
+        "pausableConfig",
+        "confidentialTransferMint",
+        "transferHook",
+        "tokenMetadata"
+      ],
+      "facts": {
+        "defaultAccountState": "initialized",
+        "uiAmountMultiplier": "1.0009180758490996",
+        "paused": false,
+        "transferHookProgram": null
+      },
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "7pt9tkctJPK7PPNQJ77GKg8ZffSF6QxoMiCFYHxrtaCj",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "freeze",
+          "address": "JDq14BWvqCRFNu1krb12bcRpbGtJZ1FLEakMw6FdxJNs",
+          "classification": {
+            "kind": "squads-v4-vault",
+            "multisig": "8gep9m2BmCqz4qCQMcqZoqnaGedXgRWehFYhKaPuiu8X",
+            "configAuthority": null,
+            "threshold": 2,
+            "members": 4,
+            "timeLockSeconds": 0,
+            "vaultIndex": 0
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: Squads v4 time_lock is 0"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "metadataPointer.authority",
+          "address": "5aMNNLQJwAEeoemTEMkv5NVjqKwvvefRYCQ5Z67HFvEq",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "11111111111111111111111111111111"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "permanentDelegate.delegate",
+          "address": "5aMNNLQJwAEeoemTEMkv5NVjqKwvvefRYCQ5Z67HFvEq",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "11111111111111111111111111111111"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "scaledUiAmountConfig.authority",
+          "address": "S7vYFFWH6BjJyEsdrPQpqpYTqLTrPRK6KW3VwsJuRaS",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "pausableConfig.authority",
+          "address": "JDq14BWvqCRFNu1krb12bcRpbGtJZ1FLEakMw6FdxJNs",
+          "classification": {
+            "kind": "squads-v4-vault",
+            "multisig": "8gep9m2BmCqz4qCQMcqZoqnaGedXgRWehFYhKaPuiu8X",
+            "configAuthority": null,
+            "threshold": 2,
+            "members": 4,
+            "timeLockSeconds": 0,
+            "vaultIndex": 0
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: Squads v4 time_lock is 0"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "confidentialTransferMint.authority",
+          "address": "5aMNNLQJwAEeoemTEMkv5NVjqKwvvefRYCQ5Z67HFvEq",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "11111111111111111111111111111111"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "transferHook.authority",
+          "address": "5aMNNLQJwAEeoemTEMkv5NVjqKwvvefRYCQ5Z67HFvEq",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "11111111111111111111111111111111"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "tokenMetadata.updateAuthority",
+          "address": "5aMNNLQJwAEeoemTEMkv5NVjqKwvvefRYCQ5Z67HFvEq",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "11111111111111111111111111111111"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        }
+      ]
+    },
+    {
+      "symbol": "CRCLx",
+      "category": "stock",
+      "mint": "XsueG8BtpquVJX9LVLLEGuViXUungE6WmK5YZ3p3bd1",
+      "source": "https://api.coingecko.com/api/v3/coins/circle-xstock",
+      "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "decimals": 8,
+      "supplyRaw": "82107755365763",
+      "supply": "821,077",
+      "extensions": [
+        "metadataPointer",
+        "permanentDelegate",
+        "defaultAccountState",
+        "scaledUiAmountConfig",
+        "pausableConfig",
+        "confidentialTransferMint",
+        "transferHook",
+        "tokenMetadata"
+      ],
+      "facts": {
+        "defaultAccountState": "initialized",
+        "uiAmountMultiplier": "1",
+        "paused": false,
+        "transferHookProgram": null
+      },
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "7pt9tkctJPK7PPNQJ77GKg8ZffSF6QxoMiCFYHxrtaCj",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "freeze",
+          "address": "JDq14BWvqCRFNu1krb12bcRpbGtJZ1FLEakMw6FdxJNs",
+          "classification": {
+            "kind": "squads-v4-vault",
+            "multisig": "8gep9m2BmCqz4qCQMcqZoqnaGedXgRWehFYhKaPuiu8X",
+            "configAuthority": null,
+            "threshold": 2,
+            "members": 4,
+            "timeLockSeconds": 0,
+            "vaultIndex": 0
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: Squads v4 time_lock is 0"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "metadataPointer.authority",
+          "address": "5aMNNLQJwAEeoemTEMkv5NVjqKwvvefRYCQ5Z67HFvEq",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "11111111111111111111111111111111"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "permanentDelegate.delegate",
+          "address": "5aMNNLQJwAEeoemTEMkv5NVjqKwvvefRYCQ5Z67HFvEq",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "11111111111111111111111111111111"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "scaledUiAmountConfig.authority",
+          "address": "S7vYFFWH6BjJyEsdrPQpqpYTqLTrPRK6KW3VwsJuRaS",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "pausableConfig.authority",
+          "address": "JDq14BWvqCRFNu1krb12bcRpbGtJZ1FLEakMw6FdxJNs",
+          "classification": {
+            "kind": "squads-v4-vault",
+            "multisig": "8gep9m2BmCqz4qCQMcqZoqnaGedXgRWehFYhKaPuiu8X",
+            "configAuthority": null,
+            "threshold": 2,
+            "members": 4,
+            "timeLockSeconds": 0,
+            "vaultIndex": 0
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: Squads v4 time_lock is 0"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "confidentialTransferMint.authority",
+          "address": "5aMNNLQJwAEeoemTEMkv5NVjqKwvvefRYCQ5Z67HFvEq",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "11111111111111111111111111111111"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "transferHook.authority",
+          "address": "5aMNNLQJwAEeoemTEMkv5NVjqKwvvefRYCQ5Z67HFvEq",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "11111111111111111111111111111111"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "tokenMetadata.updateAuthority",
+          "address": "5aMNNLQJwAEeoemTEMkv5NVjqKwvvefRYCQ5Z67HFvEq",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "11111111111111111111111111111111"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        }
+      ]
+    },
+    {
+      "symbol": "SPYx",
+      "category": "stock",
+      "mint": "XsoCS1TfEyfFhfvj8EtZ528L3CaKBDBRqRapnBbDF2W",
+      "source": "https://api.coingecko.com/api/v3/coins/sp500-xstock",
+      "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "decimals": 8,
+      "supplyRaw": "9523084155330",
+      "supply": "95,230",
+      "extensions": [
+        "metadataPointer",
+        "permanentDelegate",
+        "defaultAccountState",
+        "scaledUiAmountConfig",
+        "pausableConfig",
+        "confidentialTransferMint",
+        "transferHook",
+        "tokenMetadata"
+      ],
+      "facts": {
+        "defaultAccountState": "initialized",
+        "uiAmountMultiplier": "1.003909240011759",
+        "paused": false,
+        "transferHookProgram": null
+      },
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "7pt9tkctJPK7PPNQJ77GKg8ZffSF6QxoMiCFYHxrtaCj",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "freeze",
+          "address": "JDq14BWvqCRFNu1krb12bcRpbGtJZ1FLEakMw6FdxJNs",
+          "classification": {
+            "kind": "squads-v4-vault",
+            "multisig": "8gep9m2BmCqz4qCQMcqZoqnaGedXgRWehFYhKaPuiu8X",
+            "configAuthority": null,
+            "threshold": 2,
+            "members": 4,
+            "timeLockSeconds": 0,
+            "vaultIndex": 0
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: Squads v4 time_lock is 0"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "metadataPointer.authority",
+          "address": "5aMNNLQJwAEeoemTEMkv5NVjqKwvvefRYCQ5Z67HFvEq",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "11111111111111111111111111111111"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "permanentDelegate.delegate",
+          "address": "5aMNNLQJwAEeoemTEMkv5NVjqKwvvefRYCQ5Z67HFvEq",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "11111111111111111111111111111111"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "scaledUiAmountConfig.authority",
+          "address": "S7vYFFWH6BjJyEsdrPQpqpYTqLTrPRK6KW3VwsJuRaS",
+          "classification": {
+            "kind": "system-key",
+            "funded": true
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: one signature from this key is enough for the token program"
+          },
+          "keysAloneSuffice": true
+        },
+        {
+          "role": "pausableConfig.authority",
+          "address": "JDq14BWvqCRFNu1krb12bcRpbGtJZ1FLEakMw6FdxJNs",
+          "classification": {
+            "kind": "squads-v4-vault",
+            "multisig": "8gep9m2BmCqz4qCQMcqZoqnaGedXgRWehFYhKaPuiu8X",
+            "configAuthority": null,
+            "threshold": 2,
+            "members": 4,
+            "timeLockSeconds": 0,
+            "vaultIndex": 0
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: Squads v4 time_lock is 0"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "confidentialTransferMint.authority",
+          "address": "5aMNNLQJwAEeoemTEMkv5NVjqKwvvefRYCQ5Z67HFvEq",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "11111111111111111111111111111111"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "transferHook.authority",
+          "address": "5aMNNLQJwAEeoemTEMkv5NVjqKwvvefRYCQ5Z67HFvEq",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "11111111111111111111111111111111"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "tokenMetadata.updateAuthority",
+          "address": "5aMNNLQJwAEeoemTEMkv5NVjqKwvvefRYCQ5Z67HFvEq",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": "11111111111111111111111111111111"
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        }
+      ]
+    },
+    {
+      "symbol": "TSLAon",
+      "category": "stock",
+      "mint": "KeGv7bsfR4MheC1CkmnAVceoApjrkvBhHYjWb67ondo",
+      "source": "https://api.coingecko.com/api/v3/coins/tesla-ondo-tokenized-stock",
+      "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "decimals": 9,
+      "supplyRaw": "505141656533",
+      "supply": "505",
+      "extensions": [
+        "scaledUiAmountConfig",
+        "metadataPointer",
+        "pausableConfig",
+        "defaultAccountState",
+        "confidentialTransferMint",
+        "transferHook",
+        "tokenMetadata"
+      ],
+      "facts": {
+        "uiAmountMultiplier": "1",
+        "paused": false,
+        "defaultAccountState": "initialized",
+        "transferHookProgram": null
+      },
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "9foMHsSDq7nMg4WPusSz9eY7tyxyukqborA8GyU5cUxD",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "freeze",
+          "address": "51QVCuHfL1FeNjd8BDeffCKhCcAYoULnVB3yjNhShiuK",
+          "classification": {
+            "kind": "squads-v4-vault",
+            "multisig": "CDCCa8yPj9eyE57ZT4NJ1pbNdeFCcJEoTyy4UjNbC3pF",
+            "configAuthority": null,
+            "threshold": 3,
+            "members": 8,
+            "timeLockSeconds": 0,
+            "vaultIndex": 0
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: Squads v4 time_lock is 0"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "scaledUiAmountConfig.authority",
+          "address": "9foMHsSDq7nMg4WPusSz9eY7tyxyukqborA8GyU5cUxD",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "metadataPointer.authority",
+          "address": "9foMHsSDq7nMg4WPusSz9eY7tyxyukqborA8GyU5cUxD",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "pausableConfig.authority",
+          "address": "9foMHsSDq7nMg4WPusSz9eY7tyxyukqborA8GyU5cUxD",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "confidentialTransferMint.authority",
+          "address": "9foMHsSDq7nMg4WPusSz9eY7tyxyukqborA8GyU5cUxD",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "transferHook.authority",
+          "address": "9foMHsSDq7nMg4WPusSz9eY7tyxyukqborA8GyU5cUxD",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "tokenMetadata.updateAuthority",
+          "address": "9foMHsSDq7nMg4WPusSz9eY7tyxyukqborA8GyU5cUxD",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        }
+      ]
+    },
+    {
+      "symbol": "NVDAon",
+      "category": "stock",
+      "mint": "gEGtLTPNQ7jcg25zTetkbmF7teoDLcrfTnQfmn2ondo",
+      "source": "https://api.coingecko.com/api/v3/coins/nvidia-ondo-tokenized-stock",
+      "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "decimals": 9,
+      "supplyRaw": "16747373515148",
+      "supply": "16,747",
+      "extensions": [
+        "scaledUiAmountConfig",
+        "metadataPointer",
+        "pausableConfig",
+        "defaultAccountState",
+        "confidentialTransferMint",
+        "transferHook",
+        "tokenMetadata"
+      ],
+      "facts": {
+        "uiAmountMultiplier": "1.0017152487959897",
+        "paused": false,
+        "defaultAccountState": "initialized",
+        "transferHookProgram": null
+      },
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "9foMHsSDq7nMg4WPusSz9eY7tyxyukqborA8GyU5cUxD",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "freeze",
+          "address": "51QVCuHfL1FeNjd8BDeffCKhCcAYoULnVB3yjNhShiuK",
+          "classification": {
+            "kind": "squads-v4-vault",
+            "multisig": "CDCCa8yPj9eyE57ZT4NJ1pbNdeFCcJEoTyy4UjNbC3pF",
+            "configAuthority": null,
+            "threshold": 3,
+            "members": 8,
+            "timeLockSeconds": 0,
+            "vaultIndex": 0
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: Squads v4 time_lock is 0"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "scaledUiAmountConfig.authority",
+          "address": "9foMHsSDq7nMg4WPusSz9eY7tyxyukqborA8GyU5cUxD",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "metadataPointer.authority",
+          "address": "9foMHsSDq7nMg4WPusSz9eY7tyxyukqborA8GyU5cUxD",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "pausableConfig.authority",
+          "address": "9foMHsSDq7nMg4WPusSz9eY7tyxyukqborA8GyU5cUxD",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "confidentialTransferMint.authority",
+          "address": "9foMHsSDq7nMg4WPusSz9eY7tyxyukqborA8GyU5cUxD",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "transferHook.authority",
+          "address": "9foMHsSDq7nMg4WPusSz9eY7tyxyukqborA8GyU5cUxD",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "tokenMetadata.updateAuthority",
+          "address": "9foMHsSDq7nMg4WPusSz9eY7tyxyukqborA8GyU5cUxD",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        }
+      ]
+    },
+    {
+      "symbol": "CRCLon",
+      "category": "stock",
+      "mint": "6xHEyem9hmkGtVq6XGCiQUGpPsHBaoYuYdFNZa5ondo",
+      "source": "https://api.coingecko.com/api/v3/coins/circle-internet-group-ondo-tokenized-stock",
+      "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "decimals": 9,
+      "supplyRaw": "16521179011304",
+      "supply": "16,521",
+      "extensions": [
+        "scaledUiAmountConfig",
+        "metadataPointer",
+        "pausableConfig",
+        "defaultAccountState",
+        "confidentialTransferMint",
+        "transferHook",
+        "tokenMetadata"
+      ],
+      "facts": {
+        "uiAmountMultiplier": "1",
+        "paused": false,
+        "defaultAccountState": "initialized",
+        "transferHookProgram": null
+      },
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "9foMHsSDq7nMg4WPusSz9eY7tyxyukqborA8GyU5cUxD",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "freeze",
+          "address": "51QVCuHfL1FeNjd8BDeffCKhCcAYoULnVB3yjNhShiuK",
+          "classification": {
+            "kind": "squads-v4-vault",
+            "multisig": "CDCCa8yPj9eyE57ZT4NJ1pbNdeFCcJEoTyy4UjNbC3pF",
+            "configAuthority": null,
+            "threshold": 3,
+            "members": 8,
+            "timeLockSeconds": 0,
+            "vaultIndex": 0
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: Squads v4 time_lock is 0"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "scaledUiAmountConfig.authority",
+          "address": "9foMHsSDq7nMg4WPusSz9eY7tyxyukqborA8GyU5cUxD",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "metadataPointer.authority",
+          "address": "9foMHsSDq7nMg4WPusSz9eY7tyxyukqborA8GyU5cUxD",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "pausableConfig.authority",
+          "address": "9foMHsSDq7nMg4WPusSz9eY7tyxyukqborA8GyU5cUxD",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "confidentialTransferMint.authority",
+          "address": "9foMHsSDq7nMg4WPusSz9eY7tyxyukqborA8GyU5cUxD",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "transferHook.authority",
+          "address": "9foMHsSDq7nMg4WPusSz9eY7tyxyukqborA8GyU5cUxD",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "tokenMetadata.updateAuthority",
+          "address": "9foMHsSDq7nMg4WPusSz9eY7tyxyukqborA8GyU5cUxD",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        }
+      ]
+    },
+    {
+      "symbol": "SPYon",
+      "category": "stock",
+      "mint": "k18WJUULWheRkSpSquYGdNNmtuE2Vbw1hpuUi92ondo",
+      "source": "https://api.coingecko.com/api/v3/coins/spdr-s-p-500-etf-ondo-tokenized-etf",
+      "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "decimals": 9,
+      "supplyRaw": "1518266188895",
+      "supply": "1,518",
+      "extensions": [
+        "scaledUiAmountConfig",
+        "metadataPointer",
+        "pausableConfig",
+        "defaultAccountState",
+        "confidentialTransferMint",
+        "transferHook",
+        "tokenMetadata"
+      ],
+      "facts": {
+        "uiAmountMultiplier": "1.0094730727840426",
+        "paused": false,
+        "defaultAccountState": "initialized",
+        "transferHookProgram": null
+      },
+      "authorities": [
+        {
+          "role": "mint",
+          "address": "9foMHsSDq7nMg4WPusSz9eY7tyxyukqborA8GyU5cUxD",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "freeze",
+          "address": "51QVCuHfL1FeNjd8BDeffCKhCcAYoULnVB3yjNhShiuK",
+          "classification": {
+            "kind": "squads-v4-vault",
+            "multisig": "CDCCa8yPj9eyE57ZT4NJ1pbNdeFCcJEoTyy4UjNbC3pF",
+            "configAuthority": null,
+            "threshold": 3,
+            "members": 8,
+            "timeLockSeconds": 0,
+            "vaultIndex": 0
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: Squads v4 time_lock is 0"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "scaledUiAmountConfig.authority",
+          "address": "9foMHsSDq7nMg4WPusSz9eY7tyxyukqborA8GyU5cUxD",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "metadataPointer.authority",
+          "address": "9foMHsSDq7nMg4WPusSz9eY7tyxyukqborA8GyU5cUxD",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "pausableConfig.authority",
+          "address": "9foMHsSDq7nMg4WPusSz9eY7tyxyukqborA8GyU5cUxD",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "confidentialTransferMint.authority",
+          "address": "9foMHsSDq7nMg4WPusSz9eY7tyxyukqborA8GyU5cUxD",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "transferHook.authority",
+          "address": "9foMHsSDq7nMg4WPusSz9eY7tyxyukqborA8GyU5cUxD",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        },
+        {
+          "role": "tokenMetadata.updateAuthority",
+          "address": "9foMHsSDq7nMg4WPusSz9eY7tyxyukqborA8GyU5cUxD",
+          "classification": {
+            "kind": "pda-unresolved",
+            "accountOwner": null
+          },
+          "delay": {
+            "provable": false,
+            "seconds": null,
+            "basis": "none visible onchain: program logic was not analysed, so a delay or cap inside it would not show here"
+          },
+          "keysAloneSuffice": false
+        }
+      ]
+    }
+  ],
+  "skipped": []
+}

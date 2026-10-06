@@ -66,6 +66,15 @@ Squads decides who can sign. Vetowall decides what a signature is allowed to do,
 
 No wallet migration and no program change: the vault signs through a normal vault transaction. Addresses and limits are in [app/README.md](app/README.md).
 
+## Who holds the keys today
+
+`posture/` is a script that reads, from Solana mainnet, who controls the mint, freeze, permanent-delegate and pause authorities of 34 stablecoin and tokenized-asset mints: the 19 stablecoins above $10M on Solana that have a sourced mint address, plus a sample of RWA and stock tokens. Scanned at slot 453895666 on 2026-10-06:
+
+- For **17 of 34** mints (11 of the 19 stablecoins), signatures from ordinary system-owned keys are enough to mint: a single key, or an SPL multisig whose key members meet the threshold. No program sits between the signer and the token program, so nothing onchain applies a delay or a cap.
+- **No authority on any of the 34 has a delay we could prove onchain.** Both Squads multisigs we could resolve have a time lock of zero.
+
+This is what the chain shows and nothing more. A key may be MPC- or HSM-backed, an issuer may enforce caps and reviews offchain, and for the 15 mint authorities that are program PDAs we did not read the program, so a cap or delay may exist there. Method, limits and the per-mint table are in [posture/SUMMARY.md](posture/SUMMARY.md); `npm run scan` reproduces it.
+
 ## Devnet
 
 | Program | Address |
@@ -92,6 +101,7 @@ Built with `anchor build --arch v0`. The current deploy is tagged `devnet-2026-1
 | `idl/` | Generated IDLs for both programs |
 | `app/` | The issuer console served on GitHub Pages, the devnet seed script and the script that guards an existing mint |
 | `guardian/` | The offchain watcher that holds the veto key: rules decide, the AI only explains |
+| `posture/` | The mainnet scan of who holds issuers' authorities, with its results |
 | `web/` | The console rebuilt on Next.js, with the RPC key kept server-side (deploy steps in its README) |
 
 ## Build and test
