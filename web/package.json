@@ -29,5 +29,9 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "typescript": "^5.9.3"
+  },
+  "overrides": {
+    "jayson": "^5.0.0",
+    "toml": "^4.2.0"
   }
 }

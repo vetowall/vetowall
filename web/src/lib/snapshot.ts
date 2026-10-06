@@ -41,8 +41,12 @@ const timeout = (ms: number) => new Promise<never>((_, reject) => setTimeout(() 
  */
 export async function getSnapshot(config = DEFAULT_CONFIG, mint?: string): Promise<Payload> {
   try {
-    const read = config === DEFAULT_CONFIG && !mint ? shared(config, null) : load(config, mint ?? null);
-    return await Promise.race([read, timeout(25_000)]);
+    const cached = config === DEFAULT_CONFIG && !mint;
+    const payload = await Promise.race([cached ? shared(config, null) : load(config, mint ?? null), timeout(25_000)]);
+    // The cache serves its old entry once while it refreshes, however old. After an idle hour that would
+    // show stale supply and reserves as live, so anything older than a minute is read again.
+    if (cached && Date.now() / 1000 - payload.at > 60) return await Promise.race([load(config, null), timeout(25_000)]);
+    return payload;
   } catch (e) {
     console.warn('Live snapshot unavailable, serving sample data:', scrub(e));
     const programUp = await Promise.race([isDeployed(conn), timeout(5_000)]).catch(() => false);

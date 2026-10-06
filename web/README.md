@@ -29,7 +29,8 @@ npm ci
 cp .env.example .env.local   # optional; defaults work against public devnet
 npm run dev                  # http://localhost:3000
 npm test                     # report, records, RPC allowlist and rate limit (node:test)
-npm run build
+npm run typecheck
+npm run build && npm run start   # the production server, as Vercel runs it
 ```
 
 | Variable | Scope | Default | Purpose |
@@ -40,18 +41,35 @@ npm run build
 
 ## Deploy on Vercel
 
+Have one thing ready: a Helius devnet RPC URL. In the Helius dashboard, create an API key and copy the devnet endpoint, which looks like `https://devnet.helius-rpc.com/?api-key=…`.
+
 1. In Vercel, **Add New → Project** and import the `vetowall/vetowall` repository.
-2. Set **Root Directory** to `web`. The framework preset is detected as Next.js; keep the default build and install commands.
-3. Under **Environment Variables** (Production and Preview), add:
-   - `SOLANA_RPC_URL`: your Helius devnet URL, `https://devnet.helius-rpc.com/?api-key=…`
-   - `NEXT_PUBLIC_VETOWALL_CONFIG`: `BQodWY1t1CVVJHpGdR9UnDg3wY3gyTsBDne5y2hSfTgp` (or a config from `npm run seed:devnet` in `app/`)
-   - `GUARDIAN_URL`: optional, the guardian service's base URL
-4. Deploy. Open `/api/snapshot` on the deployment and check that `snap.source` is `"live"`.
-5. **Restrict the Helius key.** It now lives only on Vercel's servers, but lock it down anyway:
-   - In the Helius dashboard, limit it to devnet.
-   - Set a credit or rate cap.
-   - Don't reuse it for anything else.
-   - If it ever shipped in a public bundle (the old Pages build inlined `VITE_RPC_URL`), rotate it.
+2. Set **Root Directory** to `web`. The framework preset is detected as Next.js. Keep the default build, output and install commands, and a Node.js version of 22.x or 24.x.
+3. Under **Environment Variables**, add these for Production and Preview:
+
+   | Variable | Required | Value | Where it comes from | Meaning |
+   |---|---|---|---|---|
+   | `SOLANA_RPC_URL` | yes | `https://devnet.helius-rpc.com/?api-key=…` | Helius dashboard | The RPC the server reads the chain with, and the upstream of `/api/rpc`. Server only. Without it the console falls back to the public devnet RPC, which rate-limits the history crawl |
+   | `NEXT_PUBLIC_VETOWALL_CONFIG` | no | `BQodWY1t1CVVJHpGdR9UnDg3wY3gyTsBDne5y2hSfTgp` | The default is the live vUSD demo. For your own issuer, the config address printed by `npm run seed:devnet` in `app/` | The Vetowall config the console shows. It's public, and it's fixed at build time |
+   | `GUARDIAN_URL` | no | `https://<service>.onrender.com` | The Render service from [`guardian/README.md`](../guardian/README.md) | Base URL of the guardian. `/api/decisions` fetches `$GUARDIAN_URL/decisions`. Server only. Leave it out until the guardian is deployed |
+
+   Don't give `SOLANA_RPC_URL` a `NEXT_PUBLIC_` prefix. That prefix is what makes Next.js copy a value into the browser bundle.
+4. Click **Deploy**.
+5. Check it. Open `https://<deployment>/api/snapshot`. You want:
+   - `snap.source` is `"live"`. `"demo"` means the server couldn't read the config, so look at the function log for `Live snapshot unavailable` and check `SOLANA_RPC_URL`.
+   - `programUp` is `true`.
+   - `at` (unix seconds) is within the last minute. The snapshot cache hands out its old entry once while it refreshes, so if `at` is old, reload.
+
+A variable changed later only reaches new deployments, so redeploy after editing one.
+
+Once `GUARDIAN_URL` is set, `/api/decisions` shows `"source": "live"` only after the guardian has logged its first decision. Until then it serves the labelled samples, even when the guardian is up. To check the link itself, open the guardian's own `/health`.
+
+**Restrict the Helius key.** It lives only on Vercel's servers, but lock it down anyway:
+
+- In the Helius dashboard, limit it to devnet.
+- Set a credit or rate cap.
+- Don't reuse it for anything else.
+- If it ever shipped in a public bundle (the old Pages build inlined `VITE_RPC_URL`), rotate it.
 
 `.github/workflows/web.yml` runs `npm ci`, the tests and the build on every change under `web/`. It also fails if `.next/static` contains an RPC key.
 

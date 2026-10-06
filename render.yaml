@@ -1,11 +1,16 @@
 # Render blueprint for the guardian (render.com → New → Blueprint → this repo).
-# After the first deploy, add the guardian keypair as a Secret File named
-# guardian.json, and optionally ANTHROPIC_API_KEY.
+# Render asks for RPC_URL and ANTHROPIC_API_KEY when it creates the blueprint.
+# The first deploy fails with "ENOENT ... /etc/secrets/guardian.json", because a
+# blueprint can't carry secret files: add the guardian keypair under
+# Environment → Secret Files as guardian.json, and saving it redeploys.
+# guardian/README.md has the full steps. Render sets PORT itself.
 services:
   - type: web
     name: vetowall-guardian
     runtime: node
     # A free instance sleeps when idle, and a sleeping guardian vetoes nothing.
+    # It also can't mount the disk below. This is the smallest paid instance
+    # (0.5 CPU, 512 MB), named by the plan ID in Render's blueprint reference.
     plan: starter
     rootDir: guardian
     buildCommand: npm ci

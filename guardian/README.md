@@ -29,19 +29,54 @@ The program forbids the guardian from vetoing proposals that target Vetowall its
 You need Node 24 or later; it runs the TypeScript directly, with no build step.
 
 ```bash
-npm install --no-audit --no-fund
-cp .env.example .env        # set CONFIG and GUARDIAN_KEYPAIR
+npm ci --no-audit --no-fund
+cp .env.example .env        # works as copied: public devnet RPC and the live demo config
 npm run dry-run             # decides and logs, sends nothing
-npm start                   # vetoes for real
+npm start                   # vetoes for real; uncomment GUARDIAN_KEYPAIR in .env first
 npm test                    # node:test unit tests
 npm run typecheck
 ```
 
-`--dry-run` doesn't need a keypair. Its log records have `"veto_tx": null`.
+`--dry-run` doesn't need a keypair, and its log records have `"veto_tx": null`. If `GUARDIAN_KEYPAIR` is set, though, a dry run still reads that file and exits when it's missing. That's why `.env.example` ships the line commented out.
 
-## Host it
+Check it with `curl localhost:8787/health`: `"ok":true` and a `last_poll` time mean the first poll of the config went through.
 
-[`render.yaml`](../render.yaml) at the repo root is a Render blueprint: **New → Blueprint**, pick this repository, set `RPC_URL`, then add the guardian keypair as a Secret File named `guardian.json`. It uses a paid always-on instance, because a free one sleeps when idle and a sleeping guardian vetoes nothing, and a 1 GB disk for the decision log. Point the console at it with `VITE_GUARDIAN_URL` (or `GUARDIAN_URL` for `web/`).
+## Deploy on Render
+
+[`render.yaml`](../render.yaml) at the repo root is a Render blueprint. It runs `npm ci` and `npm start` in `guardian/` on Node 24, and Render checks `GET /health`. It uses the smallest paid instance (0.5 CPU, 512 MB) with a 1 GB disk for the decision log. A free instance won't do: it sleeps when idle, a sleeping guardian vetoes nothing, and it can't mount a disk.
+
+Have two things ready before you start:
+
+- **The guardian keypair file.** This is the Solana CLI JSON (an array of 64 numbers) for the key the config names as its guardian. For the live demo config, `npm run seed:devnet` in `app/` wrote it to `~/worldsfair/keys/devnet-demo/guardian.json`. The key pays the fee for each veto (5,000 lamports), so keep about 0.01 SOL on it.
+- **A keyed devnet RPC URL**, e.g. Helius: `https://devnet.helius-rpc.com/?api-key=…` from the Helius dashboard. The public devnet RPC works for a trial, but it rate-limits `getProgramAccounts`, which the guardian calls every 15 seconds.
+
+Then:
+
+1. In Render, **New → Blueprint**, and connect the `vetowall/vetowall` repository. Render reads `render.yaml` and asks for the two values it doesn't store in the file:
+   - `RPC_URL`: the keyed devnet URL. It's required. The guardian exits at start if it's empty.
+   - `ANTHROPIC_API_KEY`: optional, from console.anthropic.com. If the form won't take an empty value, put in any placeholder and delete the variable under **Environment** after step 2. Without it, explanations use the fixed template.
+2. Apply the blueprint. **The first deploy fails**, and the log ends with `ENOENT: no such file or directory, open '/etc/secrets/guardian.json'`. That's expected, because a blueprint can't carry secret files.
+3. Open the `vetowall-guardian` service, go to **Environment → Secret Files → Add Secret File**. Name it `guardian.json`, paste the keypair file's contents, and **Save Changes**. Saving starts a new deploy.
+4. When the deploy is live, open `https://<service>.onrender.com/health`. It should show:
+   - `"ok": true` and a recent `last_poll`
+   - `"dry_run": false`
+   - `"guardian"` equal to the config's guardian address. If it differs, the service log says `warning: Config guardian is …` and every veto will fail, so you've uploaded the wrong key.
+5. Point the console at the service: set `GUARDIAN_URL` to `https://<service>.onrender.com` on Vercel (see [`web/README.md`](../web/README.md)), or `VITE_GUARDIAN_URL` for the old `app/`.
+
+Every variable the service reads:
+
+| Variable | Set by | Value | Meaning |
+|---|---|---|---|
+| `RPC_URL` | you, in step 1 | keyed devnet URL | Solana JSON-RPC endpoint. The WebSocket URL is derived from it (`https` becomes `wss`) |
+| `CONFIG` | `render.yaml` | `BQodWY1t1CVVJHpGdR9UnDg3wY3gyTsBDne5y2hSfTgp` | The Vetowall config to guard (the live vUSD demo). Edit `render.yaml` for another issuer |
+| `GUARDIAN_KEYPAIR` | `render.yaml` | `/etc/secrets/guardian.json` | Where Render mounts the secret file from step 3 |
+| `GUARDIAN_LOG` | `render.yaml` | `/var/data/decisions.jsonl` | The decision log, on the disk so it outlives deploys |
+| `NODE_VERSION` | `render.yaml` | `24` | Read by Render, not by the guardian. Node 24 runs the TypeScript sources directly |
+| `PORT` | Render | Render's own | The port the HTTP server listens on. Don't set it |
+| `ANTHROPIC_API_KEY` | you, optional | Anthropic API key | Claude rewords each veto's explanation |
+| `PROGRAM_ID`, `WS_URL`, `POLL_MS`, `MINT_MULTIPLE`, `MINT_CEILING_TOKENS` | nobody | defaults in [`.env.example`](.env.example) | Only set these to override a default |
+
+Two things to know about this setup. A service with a disk restarts with a few seconds of downtime on every deploy, and it can't run more than one instance. And `/health` answers 200 even when `ok` is false, so Render won't restart a guardian whose polls keep failing. Watch `ok` yourself, or with an uptime monitor that reads the body.
 
 ## Interfaces
 
