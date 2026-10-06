@@ -39,6 +39,7 @@ pub fn handle_init_reserve(
 ) -> Result<()> {
     let config = &ctx.accounts.config;
     config.require_governor(&config.key(), &ctx.accounts.governor.key())?;
+    config.require_independent_attestor(&attestor)?;
     let reserve = &mut ctx.accounts.reserve;
     reserve.config = config.key();
     reserve.mint = mint;
@@ -62,6 +63,7 @@ pub struct SetAttestor<'info> {
 pub fn handle_set_attestor(ctx: Context<SetAttestor>, attestor: Pubkey) -> Result<()> {
     let config = &ctx.accounts.config;
     config.require_governor(&config.key(), &ctx.accounts.governor.key())?;
+    config.require_independent_attestor(&attestor)?;
     ctx.accounts.reserve.attestor = attestor;
     emit!(ChangeRecord {
         subject: Some(attestor),

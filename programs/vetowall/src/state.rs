@@ -61,6 +61,48 @@ impl Config {
         Ok(())
     }
 
+    /// Refuses a config in which one key holds two of proposer, approver and
+    /// guardian.
+    ///
+    /// The whole point of the three roles is that no single key is enough. If
+    /// the approver is the proposer, maker-checker is one signature. If the
+    /// guardian is the proposer or the approver, the only party able to veto
+    /// a proposal is one of the parties that made it. The console would still
+    /// show three roles, so nobody would notice. We check on every path that
+    /// writes a role (`initialize`, `set_proposer`, `set_approver`,
+    /// `set_guardian`), after the write, so the invariant holds for every
+    /// config created from this build on.
+    ///
+    /// What this doesn't prove: that the keys belong to different people or
+    /// devices. Two addresses can share one seed phrase, and nothing onchain
+    /// can see that. A missing approver (`None`) is still allowed; it is the
+    /// documented single-signer mode, not a collision.
+    pub fn require_distinct_roles(&self) -> Result<()> {
+        require!(self.approver != Some(self.proposer), ErrorCode::SameRole);
+        require!(self.approver != Some(self.guardian), ErrorCode::SameRole);
+        require_keys_neq!(self.guardian, self.proposer, ErrorCode::SameRole);
+        Ok(())
+    }
+
+    /// Refuses an attestor that is also the proposer or the approver.
+    ///
+    /// The attestor sets the reserve figure that every mint is checked
+    /// against. A signer who can also attest raises the bound and then mints
+    /// up to it, so the reserve check would only ever compare a key with
+    /// itself. The guardian may be the attestor: it can't mint, so holding
+    /// both gains it nothing.
+    ///
+    /// This is checked when an attestor is set (`init_reserve`,
+    /// `set_attestor`). It is not re-checked when the proposer or approver
+    /// later changes, because a `Config` doesn't list its reserves. Such a
+    /// change is a sealed-config proposal that waits out the `Max` delay in
+    /// public, so the guardian's rules are where it gets caught.
+    pub fn require_independent_attestor(&self, attestor: &Pubkey) -> Result<()> {
+        require_keys_neq!(*attestor, self.proposer, ErrorCode::SameRole);
+        require!(self.approver != Some(*attestor), ErrorCode::SameRole);
+        Ok(())
+    }
+
     /// Maker-checker: with an approver configured, the proposer alone can't
     /// start anything.
     pub fn require_approver(&self, approver: Option<&Signer>) -> Result<()> {

@@ -624,3 +624,104 @@ fn veto_and_guardian_pause_leave_records() {
         (RecordKind::GuardianExecuted, disc(&[PAUSABLE, PAUSE]), Some(ActionClass::Safe), guardian.pubkey(), None, None)
     );
 }
+
+/// Creates a second, unsealed config in the same VM, so its admin can call
+/// the role setters directly. Returns the send result and the config address.
+fn fresh_config(env: &mut Env, proposer: Pubkey, approver: Option<Pubkey>, guardian: Pubkey) -> (Sent, Pubkey) {
+    let config_kp = Keypair::new();
+    let init = Instruction::new_with_bytes(
+        vetowall::id(),
+        &vetowall::instruction::Initialize { proposer, approver, guardian, delays: DELAYS }.data(),
+        vetowall::accounts::Initialize { admin: env.admin.pubkey(), config: config_kp.pubkey(), system_program: system_program::ID }
+            .to_account_metas(None),
+    );
+    (tx!(env, [init], [&env.admin, &config_kp]), config_kp.pubkey())
+}
+
+fn govern_ix(env: &Env, config: Pubkey, data: Vec<u8>) -> Instruction {
+    Instruction::new_with_bytes(
+        vetowall::id(),
+        &data,
+        vetowall::accounts::Govern { config, governor: env.admin.pubkey() }.to_account_metas(None),
+    )
+}
+
+#[test]
+fn a_config_cannot_be_created_with_one_key_in_two_roles() {
+    let mut env = setup();
+    let [p, a, g] = std::array::from_fn(|_| Pubkey::new_unique());
+    assert_err(fresh_config(&mut env, p, Some(p), g).0, VetowallError::SameRole);
+    assert_err(fresh_config(&mut env, p, Some(a), p).0, VetowallError::SameRole);
+    assert_err(fresh_config(&mut env, p, Some(a), a).0, VetowallError::SameRole);
+    // No approver is the single-signer mode, but the guardian must still differ from the proposer.
+    assert_err(fresh_config(&mut env, p, None, p).0, VetowallError::SameRole);
+    fresh_config(&mut env, p, None, g).0.unwrap();
+    fresh_config(&mut env, p, Some(a), g).0.unwrap();
+}
+
+#[test]
+fn a_role_cannot_be_changed_to_a_key_that_holds_another() {
+    let mut env = setup();
+    let [p, a, g, fresh] = std::array::from_fn(|_| Pubkey::new_unique());
+    let (res, config) = fresh_config(&mut env, p, Some(a), g);
+    res.unwrap();
+    let admin = env.admin.insecure_clone();
+
+    for (data, what) in [
+        (vetowall::instruction::SetApprover { approver: Some(p) }.data(), "approver = proposer"),
+        (vetowall::instruction::SetApprover { approver: Some(g) }.data(), "approver = guardian"),
+        (vetowall::instruction::SetProposer { proposer: a }.data(), "proposer = approver"),
+        (vetowall::instruction::SetProposer { proposer: g }.data(), "proposer = guardian"),
+        (vetowall::instruction::SetGuardian { guardian: p }.data(), "guardian = proposer"),
+        (vetowall::instruction::SetGuardian { guardian: a }.data(), "guardian = approver"),
+    ] {
+        let res = tx!(env, [govern_ix(&env, config, data)], [&admin]);
+        assert!(res.is_err(), "{what} should be refused");
+        assert_err(res, VetowallError::SameRole);
+    }
+    // The refusals left the config as it was.
+    let c: vetowall::Config = load(&env.svm, &config);
+    assert_eq!((c.proposer, c.approver, c.guardian), (p, Some(a), g));
+
+    // Rotating to an unused key, and removing the approver, still work.
+    tx!(env, [govern_ix(&env, config, vetowall::instruction::SetGuardian { guardian: fresh }.data())], [&admin]).unwrap();
+    tx!(env, [govern_ix(&env, config, vetowall::instruction::SetApprover { approver: None }.data())], [&admin]).unwrap();
+    // With the approver gone, its old key is free to become the guardian.
+    tx!(env, [govern_ix(&env, config, vetowall::instruction::SetGuardian { guardian: a }.data())], [&admin]).unwrap();
+}
+
+#[test]
+fn the_attestor_cannot_be_a_signer_of_mints() {
+    let mut env = setup();
+    let [p, a, g, outsider] = std::array::from_fn(|_| Pubkey::new_unique());
+    let (res, config) = fresh_config(&mut env, p, Some(a), g);
+    res.unwrap();
+    let admin = env.admin.insecure_clone();
+    let mint = env.mint;
+    let reserve = Pubkey::find_program_address(&[vetowall::RESERVE_SEED, config.as_ref(), mint.as_ref()], &vetowall::id()).0;
+    let init_reserve = |attestor: Pubkey| {
+        Instruction::new_with_bytes(
+            vetowall::id(),
+            &vetowall::instruction::InitReserve { mint, attestor, max_age: DAY }.data(),
+            vetowall::accounts::InitReserve { config, governor: admin.pubkey(), reserve, system_program: system_program::ID }
+                .to_account_metas(None),
+        )
+    };
+    assert_err(tx!(env, [init_reserve(p)], [&admin]), VetowallError::SameRole);
+    assert_err(tx!(env, [init_reserve(a)], [&admin]), VetowallError::SameRole);
+    // The guardian can't mint, so it may attest.
+    tx!(env, [init_reserve(g)], [&admin]).unwrap();
+
+    let set_attestor = |attestor: Pubkey| {
+        Instruction::new_with_bytes(
+            vetowall::id(),
+            &vetowall::instruction::SetAttestor { attestor }.data(),
+            vetowall::accounts::SetAttestor { config, governor: admin.pubkey(), reserve }.to_account_metas(None),
+        )
+    };
+    assert_err(tx!(env, [set_attestor(p)], [&admin]), VetowallError::SameRole);
+    assert_err(tx!(env, [set_attestor(a)], [&admin]), VetowallError::SameRole);
+    tx!(env, [set_attestor(outsider)], [&admin]).unwrap();
+    let r: vetowall::Reserve = load(&env.svm, &reserve);
+    assert_eq!(r.attestor, outsider);
+}

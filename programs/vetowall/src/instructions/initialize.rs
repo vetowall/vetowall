@@ -33,5 +33,6 @@ pub fn handle_initialize(
     config.guardian = guardian;
     config.delays = delays;
     config.authority_bump = authority_bump;
-    Ok(())
+    // A failed check aborts the transaction, so the half-written account above never persists.
+    config.require_distinct_roles()
 }

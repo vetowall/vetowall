@@ -79,7 +79,9 @@ Proposal fields are only ever appended. Proposals are allocated at max size and 
 
 **Reserve bound:** `Reserve` key must equal `limit.reserve`; the account at `mint_index` must match the stored meta and `reserve.mint`, and be owned by SPL Token or Token-2022 (`BadReserveAccount` otherwise). Staleness (`now - updated_at > max_age`) is checked before the amount. A new `Reserve` has `updated_at = 0`, so it is stale until first attested. One reserve per policy, so a policy's limit covers one mint.
 
-**Errors added beyond the ones named above:** `NotApprover`, `BadDiscriminator`, `WideTagsFull`, `BadReserveAccount`, `NotAttestor` (appended after v1's codes; see the IDL for numbers).
+**Errors added beyond the ones named above:** `NotApprover`, `BadDiscriminator`, `WideTagsFull`, `BadReserveAccount`, `NotAttestor`, `SameRole` (appended after v1's codes; see the IDL for numbers).
+
+**Role separation.** `initialize` and the three role setters fail with `SameRole` if one key would hold two of proposer, approver and guardian. `init_reserve` and `set_attestor` fail with `SameRole` if the attestor is the proposer or the approver; the guardian may attest, because it can't mint. A missing approver is still allowed (single-signer mode). The check compares addresses only: it can't tell whether two keys belong to one person, and it isn't re-run against existing reserves when the proposer or approver later changes (that change is a `Max` proposal, visible for the whole delay).
 
 **Amount parsing:** a little-endian u64 at `amount_offset`. Data that's too short fails with `BadAmount`.
 

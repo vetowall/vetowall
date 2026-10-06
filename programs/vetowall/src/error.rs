@@ -54,4 +54,6 @@ pub enum ErrorCode {
     BadReserveAccount,
     #[msg("Signer is not the reserve's attestor")]
     NotAttestor,
+    #[msg("Proposer, approver, guardian and attestor must be different keys")]
+    SameRole,
 }

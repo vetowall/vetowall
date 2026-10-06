@@ -22,6 +22,7 @@ pub fn handle_set_proposer(ctx: Context<Govern>, proposer: Pubkey) -> Result<()>
     let config = &mut ctx.accounts.config;
     config.require_governor(&config.key(), &ctx.accounts.governor.key())?;
     config.proposer = proposer;
+    config.require_distinct_roles()?;
     emit!(ChangeRecord {
         subject: Some(proposer),
         ..ChangeRecord::new(RecordKind::ProposerSet, config.key(), ctx.accounts.governor.key())?
@@ -33,6 +34,7 @@ pub fn handle_set_approver(ctx: Context<Govern>, approver: Option<Pubkey>) -> Re
     let config = &mut ctx.accounts.config;
     config.require_governor(&config.key(), &ctx.accounts.governor.key())?;
     config.approver = approver;
+    config.require_distinct_roles()?;
     emit!(ChangeRecord {
         subject: approver,
         ..ChangeRecord::new(RecordKind::ApproverSet, config.key(), ctx.accounts.governor.key())?
@@ -44,6 +46,7 @@ pub fn handle_set_guardian(ctx: Context<Govern>, guardian: Pubkey) -> Result<()>
     let config = &mut ctx.accounts.config;
     config.require_governor(&config.key(), &ctx.accounts.governor.key())?;
     config.guardian = guardian;
+    config.require_distinct_roles()?;
     emit!(ChangeRecord {
         subject: Some(guardian),
         ..ChangeRecord::new(RecordKind::GuardianSet, config.key(), ctx.accounts.governor.key())?

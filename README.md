@@ -119,6 +119,9 @@ The generated IDLs are committed in `idl/` for the console and the guardian. `do
 | `only_the_attestor_can_attest` | The admin, proposer or an attacker can't attest reserves |
 | `freeze_goes_through_the_params_timelock` | `FreezeAccount` has no fast lane; queued, it freezes the account after 48h |
 | `pausable_sub_instructions_resolve_to_their_own_policies` | Pause `[44, 1]` and Resume `[44, 2]` share a first byte but hit separate policies: the guardian pauses instantly, Resume takes 48h |
+| `a_config_cannot_be_created_with_one_key_in_two_roles` | `initialize` fails with `SameRole` when proposer, approver and guardian aren't three different keys |
+| `a_role_cannot_be_changed_to_a_key_that_holds_another` | The role setters refuse the same collisions and leave the config unchanged |
+| `the_attestor_cannot_be_a_signer_of_mints` | The proposer or approver can't also attest reserves; the guardian can, because it can't mint |
 
 ## License
 

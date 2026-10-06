@@ -995,6 +995,11 @@
       "code": 6025,
       "name": "NotAttestor",
       "msg": "Signer is not the reserve's attestor"
+    },
+    {
+      "code": 6026,
+      "name": "SameRole",
+      "msg": "Proposer, approver, guardian and attestor must be different keys"
     }
   ],
   "types": [
