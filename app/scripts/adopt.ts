@@ -24,9 +24,8 @@ import { readFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
 import { Keypair, PublicKey, Transaction, type TransactionInstruction } from '@solana/web3.js';
-import { createSetAuthorityInstruction, getExtensionTypes, getMint } from '@solana/spl-token';
-import { createUpdateAuthorityInstruction } from '@solana/spl-token-metadata';
-import { AdoptError, capInBaseUnits, parseOptions, planHandover, requireComplete, type Plan } from '../src/adopt';
+import { getExtensionTypes, getMint } from '@solana/spl-token';
+import { AdoptError, capInBaseUnits, handoverIxs, parseOptions, planHandover, requireComplete, type Plan } from '../src/adopt';
 import { RPC_URL, connection, explorer, keypairSigner, run, type Signer } from '../src/chain';
 import { TOKEN_2022, readMint } from '../src/token';
 import { isDeployed, pda, setupIxs } from '../src/vetowall';
@@ -44,15 +43,6 @@ function loadKeypair(path: string): Keypair {
   } catch {
     throw new Error(`Can't read a keypair from ${path}. Set KEYPAIR to a Solana CLI keypair file.`);
   }
-}
-
-/** Builds one instruction per authority in the plan, each moving it from `holder` to the Vetowall PDA. */
-function handoverIxs(plan: Plan, mint: PublicKey, holder: PublicKey, authority: PublicKey): TransactionInstruction[] {
-  return plan.handover.map((a) =>
-    a.move === 'metadata'
-      ? createUpdateAuthorityInstruction({ programId: TOKEN_2022, metadata: mint, oldAuthority: holder, newAuthority: authority })
-      : createSetAuthorityInstruction(mint, holder, a.move, authority, [], TOKEN_2022),
-  );
 }
 
 /** Prints what a run with --yes would do, including everything it would leave outside Vetowall. */

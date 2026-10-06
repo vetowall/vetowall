@@ -8,8 +8,9 @@
 // the Vetowall PDA it only leaves through a queued SetAuthority that waits out
 // the Max delay. So we refuse anything we can't honour exactly, instead of
 // filling in a default and moving the keys anyway.
-import { PublicKey } from '@solana/web3.js';
-import { AuthorityType, ExtensionType } from '@solana/spl-token';
+import { PublicKey, type TransactionInstruction } from '@solana/web3.js';
+import { AuthorityType, ExtensionType, TOKEN_2022_PROGRAM_ID, createSetAuthorityInstruction } from '@solana/spl-token';
+import { createUpdateAuthorityInstruction } from '@solana/spl-token-metadata';
 
 /**
  * Why a run was refused. The script prints the message; the kind is there so
@@ -263,6 +264,22 @@ export function planHandover(authorities: MintAuthority[], extensions: Extension
     foreign: authorities.filter((a) => a.holder !== null && a.holder !== me),
     unhandled: extensions.filter((e) => !COVERED.includes(e)).map((e) => ExtensionType[e] ?? `extension ${e}`),
   };
+}
+
+/**
+ * Builds one instruction per authority in the plan, each moving it from `holder` to the Vetowall PDA.
+ *
+ * It lives here, not in `scripts/adopt.ts`, because `scripts/squads.ts` hands a
+ * mint over the same way and a second copy could drift from the `MOVES` table.
+ * The caller sends all of them in one transaction, so the authorities move
+ * together or not at all.
+ */
+export function handoverIxs(plan: Plan, mint: PublicKey, holder: PublicKey, authority: PublicKey): TransactionInstruction[] {
+  return plan.handover.map((a) =>
+    a.move === 'metadata'
+      ? createUpdateAuthorityInstruction({ programId: TOKEN_2022_PROGRAM_ID, metadata: mint, oldAuthority: holder, newAuthority: authority })
+      : createSetAuthorityInstruction(mint, holder, a.move, authority, [], TOKEN_2022_PROGRAM_ID),
+  );
 }
 
 /**

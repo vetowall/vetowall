@@ -49,6 +49,43 @@ npm run adopt -- <mint> --yes --partial   # accept that some authority stays out
 - The decisions live in `src/adopt.ts` and are tested in `src/adopt.test.ts`; `scripts/adopt.ts` only does I/O.
 - It prints the config. Open `https://vetowall.github.io/vetowall/?config=<config>` to see the token in the console.
 
+## A Squads vault as the approver
+
+Squads decides who can sign; Vetowall decides what a signature is allowed to do, and when. `scripts/squads.ts` shows the two working together on devnet, against the deployed Squads v4 program (`SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf`):
+
+```sh
+VITE_RPC_URL=<devnet rpc> npm run squads   # about 0.07 SOL from ~/.config/solana/id.json
+```
+
+Each run creates a 2-of-3 multisig, a Token-2022 mint and a sealed config whose **approver is the multisig's vault PDA**. The proposer is a plain key, and the guardian and attestor have their own keys. The mint's seven authorities start on the payer and are handed to the Vetowall PDA with the same plan and instructions as `scripts/adopt.ts`. Member and role keys are kept in `~/worldsfair/keys/devnet-squads/` (chmod 600) and reused. Then it sends:
+
+| | What is sent | Result |
+|---|---|---|
+| (a) | `execute_now` for a 250,000 mint, stored as a vault transaction, approved by 2 of 3 members, executed with the proposer co-signing | Lands. Supply is read back as 250,000 |
+| (b) | The same `execute_now` from the proposer alone | Vetowall refuses: `NotApprover` |
+| (c) | `execute_now` for a 2,000,000 mint (the daily cap is 1,000,000), again approved by 2 of 3 and executed with the proposer | Vetowall refuses: `OverCap`. The vault then approves a `queue` of the same mint, which lands as Proposal #0 with the 120 s `Params` timelock, open to a guardian veto |
+
+So a vault approval is necessary (b) but not sufficient (c): a threshold of members can't push a mint past the cap, only into the timelock.
+
+**How both signatures reach one instruction.** `execute_now` and `queue` need the proposer and the approver as signers of the same instruction, and a vault PDA can only sign through a CPI from Squads. So the Vetowall instruction is stored in a vault transaction. At `vault_transaction_execute`, Squads signs for the vault and requires every other signer named in the stored message to be a signer of the outer transaction (`executable_transaction_message.rs` in Squads-Protocol/v4), then passes that flag to the inner instruction. The proposer therefore signs the execute transaction, next to the executing member. The program needed no change.
+
+Limits: the script doesn't execute or veto Proposal #0. A refused attempt made through Squads (c) doesn't show up in the console's timeline, which only decodes top-level Vetowall instructions of failed transactions; the queued proposal and (a) and (b) do.
+
+Addresses and transactions from the run of 2026-10-06 (devnet):
+
+| | |
+|---|---|
+| Multisig (2 of 3) | [`DY6fpnqyj88xhhyhdyAo5RAAN846RfuC75djLBE4WK4V`](https://explorer.solana.com/address/DY6fpnqyj88xhhyhdyAo5RAAN846RfuC75djLBE4WK4V?cluster=devnet) |
+| Vault (approver) | [`4hGCUQrjHWq1U4ukZ4j4XmUaTWiNXX7hkFoGFqpfuDAJ`](https://explorer.solana.com/address/4hGCUQrjHWq1U4ukZ4j4XmUaTWiNXX7hkFoGFqpfuDAJ?cluster=devnet) |
+| Config | [`3xQLxkuaStKrSBnCUbbPNkUhjpJmYWjoBeH6vwzn5dGM`](https://explorer.solana.com/address/3xQLxkuaStKrSBnCUbbPNkUhjpJmYWjoBeH6vwzn5dGM?cluster=devnet) ([console](https://vetowall.github.io/vetowall/?config=3xQLxkuaStKrSBnCUbbPNkUhjpJmYWjoBeH6vwzn5dGM)) |
+| Mint (sqUSD) | [`7bYUmxEKEpSe6sezbrYN8k2Ekt4FLnrb3K32f72ryb71`](https://explorer.solana.com/address/7bYUmxEKEpSe6sezbrYN8k2Ekt4FLnrb3K32f72ryb71?cluster=devnet) |
+| Proposer | `4toEm6Q871cbfJ6tGKvKDNHgYg2pBdiLNA8JLkBrX4vo` |
+| Guardian | `J7eoE1ThaQSitUnXtNyFqnCLTJsoR2Zq88D9VFMtqw8G` |
+| (a) mint lands | [`4pcaB6Kb…gb32e`](https://explorer.solana.com/tx/4pcaB6KbQdi8RCYFjuucSe8yqAp2RDeSFkCT2a4EKPpzSV2icJCw4FxXadxi6r5t2G6STRsfwzJs9RLnVe8gb32e?cluster=devnet) (Squads `VaultTransactionExecute` → Vetowall `ExecuteNow` → Token-2022 `MintTo`) |
+| (b) `NotApprover` | [`3ctXntk9…BrSFA`](https://explorer.solana.com/tx/3ctXntk9K8UB6E912UyExkWRV9zaHpuJng5bno7rkqzsDndzCN92vszWpm2rVoHN4Y5wVoHbbefXAVsBFL3BrSFA?cluster=devnet) |
+| (c) `OverCap` | [`5QaqDPvk…FuJmr`](https://explorer.solana.com/tx/5QaqDPvktn7pUgYo9hQzLGXgGqrXZb9cy2pHdasK2DfP1ZGPHyqsvQuRc8jszuX8ErofhNcWuffffHyX9pFFuJmr?cluster=devnet) |
+| (c) queued instead | [`kZFVm6pL…THeBv`](https://explorer.solana.com/tx/kZFVm6pLGLTeKw7X6WbRES1F5MX1YD2jfHYEysiSLfnACf5k2RuVxYvw1H51QWMQeU5NHeamdHavcvK2UqTHeBv?cluster=devnet), Proposal #0 `4m7RzMpfezj3DU3CXKj5vSZQf35JYAaGoR4u9Zdi3r7R` |
+
 ## Seeding the live devnet demo
 
 ```sh
