@@ -82,7 +82,7 @@ This is what the chain shows and nothing more. A key may be MPC- or HSM-backed, 
 | `vetowall` | [`G8LSBa3y5XqY5fK4R6NTK84oPru3W3hsNzRwjunLWedr`](https://explorer.solana.com/address/G8LSBa3y5XqY5fK4R6NTK84oPru3W3hsNzRwjunLWedr?cluster=devnet) |
 | `mock_vault` | [`46BaaWFuFK3T8akXjL2xFzcv6M5AWAKXFcuxdU3jfc3a`](https://explorer.solana.com/address/46BaaWFuFK3T8akXjL2xFzcv6M5AWAKXFcuxdU3jfc3a?cluster=devnet) |
 
-Built with `anchor build --arch v0`. The current deploy is tagged `devnet-2026-10-06` (slot 508084092). The devnet demo config uses short delays (Safe 0s, Params 120s, Authority 180s, Max 300s) so the flow fits in a demo. The tests check the real delays: 48h, 72h and 7 days.
+Built with `anchor build --arch v0`. The current deploy is tagged `devnet-2026-10-06b` (slot 508093038). The devnet demo config uses short delays (Safe 0s, Params 120s, Authority 180s, Max 300s) so the flow fits in a demo. The tests check the real delays: 48h, 72h and 7 days.
 
 ## Prior work and credits
 
@@ -129,6 +129,7 @@ The generated IDLs are committed in `idl/` for the console and the guardian. `do
 | `only_the_proposer_queues_and_only_the_authority_signs` | Forged proposers, foreign signers and swapped policy accounts are rejected |
 | `guardian_can_veto_config_changes_other_than_its_own_rotation` | A queued takeover of the proposer role is vetoed and can never execute |
 | `a_matured_proposal_expires_after_the_grace_period` | A proposal nobody executed within 14 days of its timelock is dead |
+| `presigned_setup_is_refused` | `initialize` held back on a durable nonce fails with `NonceTxForbidden`; without the Instructions sysvar it fails outright |
 
 `programs/vetowall/tests/issuer.rs` runs a stablecoin issuer on a real Token-2022 mint (with the Pausable extension) whose mint, freeze and pause authorities are Vetowall's PDA:
 
